@@ -333,6 +333,20 @@
       "desc": "",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781767106689,
+      "name": "Jaqueta #4",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Jaquetas",
+        "Peça única (conjunto)"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1y-bX0UbCC2SU7QCLB7dqIx93iR6bAfcB/view?usp=drive_link",
+      "desc": "Peça do Conjunto coladinho",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
