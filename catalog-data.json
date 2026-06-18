@@ -109,6 +109,18 @@
       "desc": "",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781758341074,
+      "name": "Jaqueta #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1h220O78m-GZy9kPPuHEEv5Mr69wQED_Y/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
