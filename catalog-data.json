@@ -114,22 +114,6 @@
       "hasGlb": true
     },
     {
-      "id": 1781757313400,
-      "name": "Camiseta #1",
-      "category": "Masculino",
-      "categories": [
-        "Masculino",
-        "Camisetas",
-        "Mecânica",
-        "Policia",
-        "Restaurante"
-      ],
-      "thumbnail": "https://drive.google.com/file/d/1LEEm3UlipYbZiNlglWCCcQXw3aKGa6M9/view?usp=drive_link",
-      "desc": "",
-      "colors": [],
-      "hasGlb": true
-    },
-    {
       "id": 1781757349614,
       "name": "Camiseta #1",
       "category": "Masculino",
