@@ -61,7 +61,6 @@ header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop
 .hint{font-size:0.72rem;color:var(--muted);margin-top:0.25rem;line-height:1.5;}
 .hint strong{color:var(--text);}
 
-/* THUMB PREVIEW */
 .thumb-upload-area{display:flex;gap:1rem;align-items:flex-start;}
 .thumb-preview-box{width:90px;height:90px;border-radius:8px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
 .thumb-preview-box img{width:100%;height:100%;object-fit:cover;}
@@ -90,7 +89,8 @@ td{padding:0.75rem 0.85rem;font-size:0.88rem;border-bottom:1px solid rgba(255,45
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:rgba(255,45,120,0.03);}
 .badge{display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:0.06em;padding:0.2rem 0.55rem;border-radius:999px;text-transform:uppercase;}
-.badge-cat{background:rgba(155,48,255,0.15);color:var(--purple);}
+.badge-ok{background:rgba(34,197,94,0.15);color:var(--green);}
+.badge-no{background:rgba(239,68,68,0.1);color:var(--red);}
 .thumb-tiny{width:44px;height:44px;border-radius:6px;background:var(--dark3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 .thumb-tiny img{width:100%;height:100%;object-fit:cover;}
 
@@ -112,6 +112,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 .toast.show{display:flex;}
 .toast.success{border-color:rgba(34,197,94,0.4);color:var(--green);}
 .toast.error{border-color:rgba(239,68,68,0.4);color:var(--red);}
+.toast.info{border-color:rgba(155,48,255,0.4);color:var(--purple);}
 
 .edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem;}
 .edit-overlay.open{display:flex;}
@@ -121,6 +122,12 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 .edit-modal-body{padding:1.5rem;display:flex;flex-direction:column;gap:0.85rem;}
 .edit-close{background:none;border:none;color:var(--muted);cursor:pointer;line-height:0;}
 .edit-close:hover{color:var(--text);}
+
+.drop-area{border:2px dashed var(--border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s;}
+.drop-area:hover{border-color:var(--pink);}
+.drop-area.has-file{border-color:var(--green);background:rgba(34,197,94,0.04);}
+.progress-bar{width:100%;height:4px;background:var(--dark3);border-radius:2px;margin-top:0.75rem;display:none;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:2px;width:0%;transition:width 0.3s;}
 
 @media(max-width:640px){.sidebar{display:none;}.form-grid{grid-template-columns:1fr;}}
 </style>
@@ -176,15 +183,11 @@ tr:hover td{background:rgba(255,45,120,0.03);}
           <div class="stat-card"><div class="stat-val" id="stat-cats">0</div><div class="stat-label">Categorias</div></div>
         </div>
         <div class="card-box">
-          <h3>Acesso Rápido</h3>
+          <h3>Configuração GitHub</h3>
           <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:1rem">
-            Link público: <code style="color:var(--pink);font-size:0.82rem">https://seuuser.github.io/bd-catalogo</code><br>
-            Link admin: <code style="color:var(--pink);font-size:0.82rem">https://seuuser.github.io/bd-catalogo/admin.html</code>
+            Repositório: <code style="color:var(--pink);font-size:0.82rem" id="repo-display">brunacdacroce/catologo-mods-roupas-bdstudio</code>
           </p>
-          <p style="font-size:0.82rem;color:var(--muted);line-height:1.6">
-            ⚠️ Os dados ficam salvos no localStorage deste navegador. Use sempre o mesmo navegador/computador para gerenciar. Faça backup regularmente.
-          </p>
-          <div id="token-section" style="margin-top:1rem;padding:1rem;background:var(--dark3);border:1px solid var(--border);border-radius:8px;">
+          <div id="token-section" style="padding:1rem;background:var(--dark3);border:1px solid var(--border);border-radius:8px;">
             <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">GitHub Token</div>
             <div id="token-set-info" style="display:none;font-size:0.82rem;color:var(--green);margin-bottom:0.5rem;">✓ Token configurado</div>
             <div id="token-not-set" style="font-size:0.82rem;color:var(--red);margin-bottom:0.5rem;">⚠️ Token não configurado — publicação desativada</div>
@@ -195,30 +198,35 @@ tr:hover td{background:rgba(255,45,120,0.03);}
             </div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="syncToGitHub()">
+            <button class="btn btn-primary" id="publish-btn" onclick="syncToGitHub()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               Publicar catálogo
             </button>
             <button class="btn btn-outline btn-sm" onclick="exportData()">Exportar backup JSON</button>
             <label class="btn btn-outline btn-sm" style="cursor:pointer">Importar backup <input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
           </div>
+          <div class="progress-bar" id="publish-progress"><div class="progress-bar-fill" id="publish-progress-fill"></div></div>
+          <div id="publish-log" style="margin-top:0.75rem;font-size:0.78rem;color:var(--muted);display:none;"></div>
         </div>
       </div>
 
       <!-- MODELS LIST -->
       <div class="page" id="page-models">
         <div class="page-title">Modelos</div>
-        <div class="page-sub">Todos os modelos cadastrados no catálogo</div>
+        <div class="page-sub">Todos os modelos cadastrados</div>
         <div class="card-box">
           <div style="display:flex;justify-content:flex-end;margin-bottom:0.75rem;">
             <button class="btn btn-danger btn-sm" id="bulk-delete-btn" style="display:none" onclick="bulkDelete()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
               Excluir selecionados (<span id="selected-count">0</span>)
             </button>
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th><th>Foto</th><th>Nome</th><th>Categoria</th><th>GLB</th><th>Ações</th></tr></thead>
+              <thead><tr>
+                <th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th>
+                <th>Foto</th><th>Nome</th><th>Gênero</th><th>OBJ</th><th>Ações</th>
+              </tr></thead>
               <tbody id="models-tbody"></tbody>
             </table>
           </div>
@@ -228,7 +236,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       <!-- ADD MODEL -->
       <div class="page" id="page-add">
         <div class="page-title">Adicionar Modelo</div>
-        <div class="page-sub">Preencha os dados e cole os links do Google Drive</div>
+        <div class="page-sub">Preencha os dados, cole o link da thumb do Drive e suba o .obj</div>
 
         <div class="card-box">
           <h3>Informações</h3>
@@ -239,10 +247,14 @@ tr:hover td{background:rgba(255,45,120,0.03);}
             </div>
             <div class="form-group">
               <label>Gênero *</label>
-              <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
                 <input type="checkbox" id="chk-add-gender-Masculino" value="Masculino" class="cat-check"><label class="cat-check-label" for="chk-add-gender-Masculino">Masculino</label>
                 <input type="checkbox" id="chk-add-gender-Feminino" value="Feminino" class="cat-check"><label class="cat-check-label" for="chk-add-gender-Feminino">Feminino</label>
               </div>
+            </div>
+          </div>
+          <div style="margin-top:0.75rem;">
+            <div class="form-group">
               <label>Subcategorias</label>
               <div class="cat-multi" id="add-cat-multi"></div>
             </div>
@@ -253,40 +265,39 @@ tr:hover td{background:rgba(255,45,120,0.03);}
               <textarea id="add-desc" placeholder="Detalhes, estilo, variações disponíveis..."></textarea>
             </div>
           </div>
-
         </div>
 
         <div class="card-box">
-          <h3>Foto de Capa (PNG)</h3>
+          <h3>Foto de Capa</h3>
           <div class="thumb-upload-area">
             <div class="thumb-preview-box" id="add-thumb-preview">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             </div>
             <div class="thumb-input-col">
-              <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link do Google Drive (PNG) *</label>
-              <input type="url" id="add-thumb" placeholder="https://drive.google.com/file/d/ID/view?usp=sharing" oninput="previewThumb('add-thumb','add-thumb-preview')">
+              <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link do Google Drive *</label>
+              <input type="url" id="add-thumb" placeholder="https://drive.google.com/file/d/SEU_ID/view?usp=sharing" oninput="previewThumb('add-thumb','add-thumb-preview')">
               <span class="hint">
-                <strong>Como pegar o link:</strong> No Drive, clique com botão direito no PNG → Compartilhar → "Qualquer pessoa com o link" → Copiar link.<br>
-                O preview ao lado confirma se a imagem carregou corretamente.
+                No Drive → botão direito na imagem → Compartilhar → "Qualquer pessoa com o link" → Copiar link.<br>
+                O preview ao lado confirma se carregou.
               </span>
             </div>
           </div>
         </div>
 
         <div class="card-box">
-          <h3>Arquivo 3D (.GLB)</h3>
-          <div class="form-group">
-            <label>Selecionar arquivo .glb do PC *</label>
-            <div id="glb-drop-area" style="border:2px dashed var(--border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s;" onclick="document.getElementById('add-glb-file').click()">
-              <input type="file" id="add-glb-file" accept=".glb,.gltf" style="display:none">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--muted);margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <p id="glb-drop-label" style="font-size:0.85rem;color:var(--muted)">Clique aqui ou arraste o arquivo .glb</p>
-            </div>
+          <h3>Arquivo 3D (.OBJ)</h3>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">
+            Exporte do Blender: <strong style="color:var(--text);">File → Export → Wavefront (.obj)</strong> — sem textura, só geometria.
+          </p>
+          <div class="drop-area" id="obj-drop-area" onclick="document.getElementById('add-obj-file').click()">
+            <input type="file" id="add-obj-file" accept=".obj" style="display:none" onchange="onObjSelected(this)">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--muted);margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p id="obj-drop-label" style="font-size:0.85rem;color:var(--muted)">Clique aqui ou arraste o arquivo .obj</p>
           </div>
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-primary" onclick="addModel()">Adicionar ao Catálogo</button>
+          <button class="btn btn-primary" id="btn-add-model" onclick="addModel()">Adicionar ao Catálogo</button>
           <button class="btn btn-outline" onclick="clearAddForm()">Limpar</button>
         </div>
       </div>
@@ -294,7 +305,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       <!-- CATEGORIES -->
       <div class="page" id="page-categories">
         <div class="page-title">Categorias</div>
-        <div class="page-sub">Gerencie as categorias exibidas no catálogo público</div>
+        <div class="page-sub">Subcategorias exibidas no catálogo público</div>
         <div class="card-box">
           <h3>Categorias Ativas</h3>
           <div class="cat-list" id="cat-list"></div>
@@ -323,7 +334,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       <div class="form-group"><label>Nome *</label><input type="text" id="edit-name"></div>
       <div class="form-group">
         <label>Gênero *</label>
-        <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
           <input type="checkbox" id="chk-edit-gender-Masculino" value="Masculino" class="cat-check"><label class="cat-check-label" for="chk-edit-gender-Masculino">Masculino</label>
           <input type="checkbox" id="chk-edit-gender-Feminino" value="Feminino" class="cat-check"><label class="cat-check-label" for="chk-edit-gender-Feminino">Feminino</label>
         </div>
@@ -333,19 +344,19 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 
       <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;gap:1rem;align-items:flex-start;">
         <div class="thumb-preview-box" id="edit-thumb-preview" style="width:72px;height:72px;border-radius:6px;flex-shrink:0;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
         </div>
         <div style="flex:1;display:flex;flex-direction:column;gap:0.35rem;">
-          <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link PNG (Google Drive) *</label>
+          <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link Thumb (Google Drive) *</label>
           <input type="url" id="edit-thumb" placeholder="https://drive.google.com/file/d/..." oninput="previewThumb('edit-thumb','edit-thumb-preview')">
         </div>
       </div>
 
       <div class="form-group">
-        <label>Substituir arquivo .glb (opcional)</label>
-        <div style="border:2px dashed var(--border);border-radius:8px;padding:1rem;text-align:center;cursor:pointer;" onclick="document.getElementById('edit-glb-file').click()">
-          <input type="file" id="edit-glb-file" accept=".glb,.gltf" style="display:none">
-          <p id="edit-glb-label" style="font-size:0.82rem;color:var(--muted)">Clique para trocar o arquivo .glb</p>
+        <label>Substituir arquivo .obj (opcional)</label>
+        <div class="drop-area" id="edit-obj-area" onclick="document.getElementById('edit-obj-file').click()">
+          <input type="file" id="edit-obj-file" accept=".obj" style="display:none" onchange="onObjSelectedEdit(this)">
+          <p id="edit-obj-label" style="font-size:0.82rem;color:var(--muted)">Clique para trocar o arquivo .obj</p>
         </div>
       </div>
       <div class="form-group"><label>Descrição</label><textarea id="edit-desc"></textarea></div>
@@ -361,42 +372,59 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 <div class="toast" id="toast"></div>
 
 <script>
-const ADMIN_PASSWORD = 'bdstudio2024'; // ← MUDE AQUI
-const STORAGE_KEY = 'bd_catalog_v2';
-let GITHUB_TOKEN = localStorage.getItem('bd_github_token') || '';
-const GENDERS = ['Masculino','Feminino'];
-const GITHUB_REPO = 'brunacdacroce/catologo-mods-roupas-bdstudio';
-const GITHUB_FILE = 'catalog-data.json';
-let items = [];
-let categories = ['Feminino','Masculino','Unissex','Uniforme','Facção','Especial'];
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const ADMIN_PASSWORD = 'bdstudio2024';
+const STORAGE_KEY    = 'bd_catalog_v3';
+const GITHUB_REPO    = 'brunacdacroce/catologo-mods-roupas-bdstudio';
+const GITHUB_FILE    = 'catalog-data.json';
+const GENDERS        = ['Masculino','Feminino'];
 
-function loadData() {
-  try { const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); items=d.items||[]; categories=d.categories||categories; } catch(e){}
-}
-function saveData() {
-  // Don't save glbData in localStorage — too large. Only save metadata.
-  const lightweight = {
-    categories,
-    items: items.map(i => ({
-      id: i.id,
-      name: i.name,
-      category: i.category,
-      categories: i.categories,
-      thumbnail: i.thumbnail,
-      desc: i.desc,
-      colors: i.colors,
-      glbData: i.glbData === 'uploaded' ? 'uploaded' : null
-    }))
-  };
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lightweight));
-  } catch(e) {
-    // If still too large, clear and retry
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lightweight));
+let GITHUB_TOKEN = localStorage.getItem('bd_github_token') || '';
+let items        = [];
+let categories   = ['Feminino','Masculino','Unissex','Uniforme','Facção','Especial'];
+let pendingObjData     = null; // base64 do OBJ para add
+let pendingEditObjData = null; // base64 do OBJ para edit
+
+// ── AUTH ─────────────────────────────────────────────────────────────────────
+function doLogin() {
+  const v = document.getElementById('pwd-input').value;
+  if (v === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    loadData(); renderAll(); updateTokenUI();
+    document.querySelectorAll('.nav-item').forEach(n => n.onclick = () => switchPage(n.dataset.page));
+  } else {
+    document.getElementById('login-error').style.display = 'block';
   }
 }
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pwd-input').value = '';
+}
 
+// ── DATA ─────────────────────────────────────────────────────────────────────
+function loadData() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    items      = d.items      || [];
+    categories = d.categories || categories;
+  } catch(e) {}
+}
+function saveData() {
+  const light = {
+    categories,
+    items: items.map(i => ({
+      id: i.id, name: i.name, category: i.category,
+      categories: i.categories, thumbnail: i.thumbnail,
+      desc: i.desc, hasObj: i.hasObj || false
+    }))
+  };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(light)); }
+  catch(e) { localStorage.removeItem(STORAGE_KEY); localStorage.setItem(STORAGE_KEY, JSON.stringify(light)); }
+}
+
+// ── TOKEN ─────────────────────────────────────────────────────────────────────
 function saveToken() {
   const val = document.getElementById('token-input').value.trim();
   if (!val) { showToast('Cole o token antes de salvar.','error'); return; }
@@ -406,454 +434,234 @@ function saveToken() {
   updateTokenUI();
   showToast('Token salvo!','success');
 }
-
 function clearToken() {
   GITHUB_TOKEN = '';
   localStorage.removeItem('bd_github_token');
   updateTokenUI();
   showToast('Token removido.','success');
 }
-
 function updateTokenUI() {
   const has = !!GITHUB_TOKEN;
   document.getElementById('token-set-info').style.display = has ? 'block' : 'none';
-  document.getElementById('token-not-set').style.display = has ? 'none' : 'block';
+  document.getElementById('token-not-set').style.display  = has ? 'none'  : 'block';
 }
 
-async function syncToGitHub() {
-  if (!GITHUB_TOKEN) { showToast('Configure o GitHub Token no Dashboard primeiro.','error'); return; }
-  showToast('Enviando para o servidor...','success');
-  try {
-    // 1. Upload GLBs first (new files only)
-    await ensureModelsFolder();
-    for (const item of items) {
-      if (item.glbData && item.glbData.startsWith('data:')) {
-        const base64 = item.glbData.split(',')[1];
-        if (base64) {
-          await saveFileToGitHub(`models/${item.id}.glb`, base64);
-          // Mark as uploaded (remove base64 from memory, keep reference)
-          item.glbData = 'uploaded';
-        }
-      }
-    }
-
-    // 2. Build metadata
-    const meta = {
-      categories,
-      items: items.map(i => ({
-        id: i.id,
-        name: i.name,
-        category: i.category,
-        categories: i.categories,
-        thumbnail: i.thumbnail,
-        desc: i.desc,
-        colors: i.colors,
-        hasGlb: !!(i.glbData)
-      }))
-    };
-
-    // 3. Always get FRESH SHA right before saving catalog JSON
-    const freshSha = await getFileSHA(GITHUB_FILE);
-    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
-    await saveFileToGitHubWithSHA(GITHUB_FILE, b64, freshSha);
-
-    saveData();
-    showToast('Catálogo publicado com sucesso!','success');
-  } catch(e) {
-    showToast('Erro ao salvar: ' + e.message,'error');
-  }
+// ── OBJ UPLOAD ────────────────────────────────────────────────────────────────
+function onObjSelected(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    // Store raw text (OBJ is text)
+    pendingObjData = e.target.result;
+    const area  = document.getElementById('obj-drop-area');
+    const label = document.getElementById('obj-drop-label');
+    area.classList.add('has-file');
+    label.textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)';
+    label.style.color = 'var(--green)';
+  };
+  reader.readAsText(file);
+}
+function onObjSelectedEdit(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingEditObjData = e.target.result;
+    document.getElementById('edit-obj-label').textContent = '✓ ' + file.name;
+    document.getElementById('edit-obj-label').style.color = 'var(--green)';
+    document.getElementById('edit-obj-area').classList.add('has-file');
+  };
+  reader.readAsText(file);
 }
 
-async function getFileSHA(path) {
-  // Use refs API to get latest commit tree — more reliable for large files
-  try {
-    // First try direct contents API
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-      headers: { 
-        'Authorization': `token ${GITHUB_TOKEN}`, 
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.sha) return d.sha;
-    }
-    // Fallback: use git trees API to find the file SHA
-    const refRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/git/refs/heads/main`, {
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!refRes.ok) return null;
-    const ref = await refRes.json();
-    const commitSha = ref.object.sha;
-    const treeRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/git/trees/${commitSha}?recursive=1`, {
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!treeRes.ok) return null;
-    const tree = await treeRes.json();
-    const file = (tree.tree || []).find(f => f.path === path);
-    return file ? file.sha : null;
-  } catch(e) { return null; }
-}
-
-async function saveFileToGitHubWithSHA(path, base64Content, sha) {
-  const body = { message: `Update ${path}`, content: base64Content };
-  if (sha) body.sha = sha;
-  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  if (res.ok) return;
-  const err = await res.json().catch(()=>({message:'Erro desconhecido'}));
-  // One more retry with even fresher SHA
-  if (err.message && (err.message.includes('expected') || err.message.includes('sha'))) {
-    const sha2 = await getFileSHA(path);
-    const body2 = { message: `Update ${path}`, content: base64Content };
-    if (sha2) body2.sha = sha2;
-    const res2 = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body2)
-    });
-    if (res2.ok) return;
-    const err2 = await res2.json().catch(()=>({message:'Erro desconhecido'}));
-    throw new Error(err2.message);
-  }
-  throw new Error(err.message || 'GitHub API error');
-}
-
-async function saveFileToGitHub(path, base64Content) {
-  // Always get fresh SHA before writing
-  const sha = await getFileSHA(path);
-  
-  const body = { message: `Update ${path}`, content: base64Content };
-  if (sha) body.sha = sha;
-
-  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-
-  if (res.ok) return;
-
-  // If conflict, try once more with fresh SHA
-  const err = await res.json().catch(()=>({message:'Erro desconhecido'}));
-  if (err.message && (err.message.includes('expected') || err.message.includes('sha'))) {
-    const sha2 = await getFileSHA(path);
-    const body2 = { message: `Update ${path}`, content: base64Content };
-    if (sha2) body2.sha = sha2;
-    const res2 = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body2)
-    });
-    if (res2.ok) return;
-    const err2 = await res2.json().catch(()=>({message:'Erro desconhecido'}));
-    throw new Error(err2.message || 'GitHub API error');
-  }
-  throw new Error(err.message || 'GitHub API error');
-}
-
-async function ensureModelsFolder() {
-  // GitHub doesn't have real folders — create a .gitkeep if models/ doesn't exist
-  try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/models/.gitkeep`, {
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) {
-      // Create it
-      await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/models/.gitkeep`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${GITHUB_TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Create models folder', content: btoa('') })
-      });
-    }
-  } catch(e) {}
-}
-
-// LOGIN
-function doLogin() {
-  if (document.getElementById('pwd-input').value === ADMIN_PASSWORD) {
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app').style.display='flex';
-    loadData(); renderAll();
-  } else {
-    document.getElementById('login-error').style.display='block';
-    document.getElementById('pwd-input').value='';
-    document.getElementById('pwd-input').focus();
-  }
-}
-function doLogout() {
-  document.getElementById('app').style.display='none';
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('pwd-input').value='';
-  document.getElementById('login-error').style.display='none';
-}
-
-// NAV
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    item.classList.add('active');
-    document.getElementById('page-'+item.dataset.page).classList.add('active');
-    if (item.dataset.page==='add') populateCatSelect('add-cat');
-    if (item.dataset.page==='categories') renderCategories();
-    if (item.dataset.page==='models') renderModelsTable();
-  });
-});
-
-function renderAll() {
-  document.getElementById('stat-total').textContent = items.length;
-  document.getElementById('stat-cats').textContent = categories.length;
-  updateTokenUI();
-  renderModelsTable(); renderCategories();
-  populateCatSelect('add-cat'); populateCatSelect('edit-cat');
-}
-
-// Converte link do Drive para URL direta de imagem
+// ── THUMB PREVIEW ─────────────────────────────────────────────────────────────
 function gdriveImg(url) {
-  if (!url) return null;
-  const m = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{20,})/);
-  if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
-  return url;
+  if (!url) return '';
+  const m = url.match(/[-\w]{25,}/);
+  return m ? `https://lh3.googleusercontent.com/d/${m[0]}` : '';
 }
-
-// Converte link do Drive para URL de download direto do GLB
-function gdriveDownload(url) {
-  if (!url) return null;
-  const m = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{20,})/);
-  if (m) return `https://drive.google.com/uc?export=download&id=${m[1]}`;
-  return url;
-}
-
-// Preview ao vivo da thumbnail
 function previewThumb(inputId, previewId) {
-  const url = document.getElementById(inputId).value.trim();
+  const val = document.getElementById(inputId).value.trim();
   const box = document.getElementById(previewId);
-  const imgUrl = gdriveImg(url);
-  if (imgUrl) {
-    box.innerHTML = `<img src="${imgUrl}" onerror="this.parentElement.innerHTML='<svg width=\\'22\\'height=\\'22\\'viewBox=\\'0 0 24 24\\'fill=\\'none\\'stroke=\\'currentColor\\'stroke-width=\\'1.5\\'style=\\'opacity:.25\\'><rect x=\\'3\\'y=\\'3\\'width=\\'18\\'height=\\'18\\'rx=\\'2\\'/><circle cx=\\'8.5\\'cy=\\'8.5\\'r=\\'1.5\\'/><path d=\\'m21 15-5-5L5 21\\'/></svg>'">`;
+  const url = gdriveImg(val);
+  if (url) {
+    box.innerHTML = `<img src="${url}" onerror="this.parentElement.innerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none stroke=currentColor stroke-width=1.5 style=opacity:.3><rect x=3 y=3 width=18 height=18 rx=2/></svg>'" style="width:100%;height:100%;object-fit:cover">`;
   } else {
-    box.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
+    box.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
   }
 }
 
-// MODELS TABLE
-function renderModelsTable() {
+// ── ADD MODEL ─────────────────────────────────────────────────────────────────
+function addModel() {
+  const name  = document.getElementById('add-name').value.trim();
+  const thumb = document.getElementById('add-thumb').value.trim();
+  const desc  = document.getElementById('add-desc').value.trim();
+  const cats  = getSelectedCats('add');
+  const genders = cats.filter(c => GENDERS.includes(c));
+
+  if (!name)  { showToast('Nome obrigatório.','error'); return; }
+  if (!genders.length) { showToast('Selecione Masculino ou Feminino.','error'); return; }
+  if (!thumb) { showToast('Link da thumb obrigatório.','error'); return; }
+  if (!pendingObjData) { showToast('Selecione o arquivo .obj.','error'); return; }
+
+  if (isDuplicateName(name, genders, null)) {
+    showToast(`Já existe "${name}" nesse gênero.`,'error'); return;
+  }
+
+  const id = Date.now();
+  items.unshift({
+    id, name, category: cats[0]||genders[0],
+    categories: cats, thumbnail: thumb, desc,
+    hasObj: true, objData: pendingObjData
+  });
+
+  pendingObjData = null;
+  clearAddForm();
+  saveData();
+  renderAll();
+  showToast('Modelo adicionado! Clique em Publicar catálogo.','success');
+  switchPage('models');
+}
+
+function clearAddForm() {
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-thumb').value = '';
+  document.getElementById('add-desc').value = '';
+  document.getElementById('add-thumb-preview').innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
+  const area  = document.getElementById('obj-drop-area');
+  const label = document.getElementById('obj-drop-label');
+  area.classList.remove('has-file');
+  label.textContent = 'Clique aqui ou arraste o arquivo .obj';
+  label.style.color = '';
+  document.getElementById('add-obj-file').value = '';
+  GENDERS.forEach(g => {
+    const el = document.getElementById('chk-add-gender-'+g);
+    if (el) el.checked = false;
+  });
+  pendingObjData = null;
+  populateCatSelect('add-cat');
+}
+
+// ── MODELS TABLE ──────────────────────────────────────────────────────────────
+function renderModels() {
   const tbody = document.getElementById('models-tbody');
-  if (!items.length) { tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">Nenhum modelo cadastrado.</td></tr>'; return; }
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Nenhum modelo cadastrado.</td></tr>`;
+    return;
+  }
   tbody.innerHTML = items.map(item => {
     const imgUrl = gdriveImg(item.thumbnail);
+    const gender = (item.categories||[item.category]).filter(c=>GENDERS.includes(c)).join(', ') || '—';
+    const objBadge = (item.hasObj || item.objData) 
+      ? '<span class="badge badge-ok">✓ OBJ</span>'
+      : '<span class="badge badge-no">Sem OBJ</span>';
     return `<tr>
-      <td><input type="checkbox" class="row-check" data-id="${item.id}" onchange="updateBulkBtn()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--pink)"></td>
-      <td><div class="thumb-tiny">${imgUrl ? `<img src="${imgUrl}" onerror="this.style.display='none'">` : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`}</div></td>
+      <td><input type="checkbox" class="row-check" value="${item.id}" onchange="updateBulkUI()"></td>
+      <td><div class="thumb-tiny">${imgUrl ? `<img src="${imgUrl}" onerror="this.style.display='none'">` : ''}</div></td>
       <td style="font-weight:500">${item.name}</td>
-      <td>${(item.categories||[item.category]).map(c=>`<span class="badge badge-cat" style="margin-right:3px">${c}</span>`).join("")}</td>
-      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:0.75rem">${item.glbUrl ? '✓ configurado' : '—'}</td>
-      <td><div style="display:flex;gap:0.5rem">
+      <td><span class="badge" style="background:rgba(155,48,255,.15);color:var(--purple)">${gender}</span></td>
+      <td>${objBadge}</td>
+      <td style="display:flex;gap:0.4rem;align-items:center">
         <button class="btn btn-outline btn-sm" onclick="openEdit('${item.id}')">Editar</button>
         <button class="btn btn-danger btn-sm" onclick="deleteModel('${item.id}')">Excluir</button>
-      </div></td>
+      </td>
     </tr>`;
   }).join('');
 }
 
-// ADD
-let pendingGlbData = null;
-let pendingEditGlbData = null;
-
-document.getElementById('add-glb-file').addEventListener('change', function() {
-  const file = this.files[0]; if (!file) return;
-  document.getElementById('glb-drop-label').textContent = 'Lendo arquivo...';
-  const reader = new FileReader();
-  reader.onload = e => {
-    pendingGlbData = e.target.result;
-    document.getElementById('glb-drop-label').textContent = '✓ ' + file.name;
-    document.getElementById('glb-drop-area').style.borderColor = 'var(--pink)';
-  };
-  reader.readAsDataURL(file);
-});
-
-document.getElementById('edit-glb-file').addEventListener('change', function() {
-  const file = this.files[0]; if (!file) return;
-  document.getElementById('edit-glb-label').textContent = 'Lendo arquivo...';
-  const reader = new FileReader();
-  reader.onload = e => {
-    pendingEditGlbData = e.target.result;
-    document.getElementById('edit-glb-label').textContent = '✓ ' + file.name;
-  };
-  reader.readAsDataURL(file);
-});
-
-// Drag & drop GLB
-const dropArea = document.getElementById('glb-drop-area');
-dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='var(--pink)'; });
-dropArea.addEventListener('dragleave', () => { if(!pendingGlbData) dropArea.style.borderColor=''; });
-dropArea.addEventListener('drop', e => {
-  e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  if (!file || !/\.(glb|gltf)$/i.test(file.name)) { showToast('Arquivo inválido. Use .glb ou .gltf','error'); return; }
-  document.getElementById('glb-drop-label').textContent = 'Lendo arquivo...';
-  const reader = new FileReader();
-  reader.onload = ev => {
-    pendingGlbData = ev.target.result;
-    document.getElementById('glb-drop-label').textContent = '✓ ' + file.name;
-    dropArea.style.borderColor = 'var(--pink)';
-  };
-  reader.readAsDataURL(file);
-});
-
-function addModel() {
-  const btn = document.getElementById('btn-add-model');
-  const name = document.getElementById('add-name').value.trim();
-  const cats = getSelectedCats('add');
-  const thumb = document.getElementById('add-thumb').value.trim();
-  const desc = document.getElementById('add-desc').value.trim();
-  if (!name) { showToast('Preencha o nome da roupa.','error'); return; }
-  if (!cats.length) { showToast('Selecione pelo menos uma categoria.','error'); return; }
-  if (!pendingGlbData) { showToast('Selecione o arquivo .glb.','error'); return; }
-  const addGenders = cats.filter(c => GENDERS.filter(g=>g!=='Todos').includes(c));
-  if (isDuplicateName(name, addGenders)) {
-    showToast(`Já existe "${name}" no mesmo gênero. Altere o nome antes de publicar.`,'error');
-    return;
-  }
-  if (!thumb) { showToast('Cole o link da foto PNG.','error'); return; }
-  items.push({ id: Date.now(), name, categories: cats, category: cats[0], glbData: pendingGlbData, thumbnail: thumb, desc, colors: [] });
-  saveData(); renderAll(); clearAddForm();
-  if (btn) { btn.textContent = 'Publicando...'; btn.disabled = true; }
-  syncToGitHub().finally(() => {
-    if (btn) { btn.textContent = 'Adicionar ao Catálogo'; btn.disabled = false; }
-  });
-}
-
-function clearAddForm() {
-  ['add-name','add-thumb','add-desc'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
-  pendingGlbData = null;
-  document.getElementById('glb-drop-label').textContent = 'Clique aqui ou arraste o arquivo .glb';
-  document.getElementById('glb-drop-area').style.borderColor = '';
-}
-
-// DELETE
 function deleteModel(id) {
   if (!confirm('Excluir este modelo?')) return;
-  items = items.filter(i=>String(i.id)!==String(id));
+  items = items.filter(i => String(i.id) !== String(id));
   saveData(); renderAll();
-  showToast('Modelo excluído.','success');
-  syncToGitHub();
+  showToast('Modelo excluído. Clique em Publicar para atualizar.','success');
 }
 
 function toggleSelectAll(cb) {
   document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
-  updateBulkBtn();
+  updateBulkUI();
 }
-
-function updateBulkBtn() {
-  const checked = document.querySelectorAll('.row-check:checked').length;
+function updateBulkUI() {
+  const checked = document.querySelectorAll('.row-check:checked');
   const btn = document.getElementById('bulk-delete-btn');
-  const cnt = document.getElementById('selected-count');
-  if (btn) btn.style.display = checked > 0 ? 'flex' : 'none';
-  if (cnt) cnt.textContent = checked;
-  const all = document.querySelectorAll('.row-check').length;
-  const sa = document.getElementById('select-all');
-  if (sa) sa.checked = checked === all && all > 0;
+  document.getElementById('selected-count').textContent = checked.length;
+  btn.style.display = checked.length ? 'flex' : 'none';
 }
-
 function bulkDelete() {
-  const ids = Array.from(document.querySelectorAll('.row-check:checked')).map(c => c.dataset.id);
-  if (!ids.length) return;
-  if (!confirm(`Excluir ${ids.length} modelo(s)?`)) return;
+  const ids = [...document.querySelectorAll('.row-check:checked')].map(c => c.value);
+  if (!ids.length || !confirm(`Excluir ${ids.length} modelo(s)?`)) return;
   items = items.filter(i => !ids.includes(String(i.id)));
   saveData(); renderAll();
   showToast(`${ids.length} modelo(s) excluído(s).`,'success');
-  syncToGitHub();
 }
 
-function isDuplicateName(name, genders, excludeId=null) {
-  return items.some(item => {
-    if (excludeId && String(item.id) === String(excludeId)) return false;
-    if (item.name.toLowerCase() !== name.toLowerCase()) return false;
-    const itemGenders = (item.categories||[item.category]).filter(c => GENDERS.filter(g=>g!=='Todos').includes(c));
-    return genders.some(g => itemGenders.includes(g));
+// ── EDIT MODAL ────────────────────────────────────────────────────────────────
+function openEdit(id) {
+  const item = items.find(i => String(i.id) === String(id));
+  if (!item) return;
+  pendingEditObjData = null;
+  populateCatSelect('edit-cat');
+  document.getElementById('edit-id').value   = item.id;
+  document.getElementById('edit-name').value = item.name;
+  document.getElementById('edit-thumb').value = item.thumbnail || '';
+  document.getElementById('edit-desc').value  = item.desc || '';
+  setSelectedCats('edit', item.categories || [item.category]);
+  const imgUrl = gdriveImg(item.thumbnail);
+  const box = document.getElementById('edit-thumb-preview');
+  box.innerHTML = imgUrl ? `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover">` : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
+  const lbl = document.getElementById('edit-obj-label');
+  lbl.style.color = '';
+  lbl.textContent = (item.hasObj || item.objData) ? '✓ OBJ atual mantido — clique para trocar' : 'Sem OBJ. Clique para adicionar.';
+  document.getElementById('edit-obj-area').classList.remove('has-file');
+  document.getElementById('edit-overlay').classList.add('open');
+}
+function closeEdit() { document.getElementById('edit-overlay').classList.remove('open'); pendingEditObjData = null; }
+function saveEdit() {
+  const id   = document.getElementById('edit-id').value;
+  const idx  = items.findIndex(i => String(i.id) === String(id));
+  if (idx === -1) return;
+  const editName    = document.getElementById('edit-name').value.trim();
+  const editCats    = getSelectedCats('edit');
+  const editGenders = editCats.filter(c => GENDERS.includes(c));
+  if (!editName) { showToast('Nome obrigatório.','error'); return; }
+  if (!editGenders.length) { showToast('Selecione um gênero.','error'); return; }
+  if (isDuplicateName(editName, editGenders, id)) {
+    showToast(`Já existe "${editName}" nesse gênero.`,'error'); return;
+  }
+  items[idx] = {
+    ...items[idx],
+    name:       editName,
+    categories: editCats,
+    category:   editCats[0] || items[idx].category,
+    thumbnail:  document.getElementById('edit-thumb').value.trim() || null,
+    desc:       document.getElementById('edit-desc').value.trim(),
+    hasObj:     !!(pendingEditObjData || items[idx].hasObj || items[idx].objData),
+    objData:    pendingEditObjData || items[idx].objData || null,
+  };
+  pendingEditObjData = null;
+  saveData(); renderAll(); closeEdit();
+  showToast('Modelo atualizado! Clique em Publicar.','success');
+}
+document.getElementById('edit-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('edit-overlay')) closeEdit();
+});
+
+// ── DUPLICATE CHECK ───────────────────────────────────────────────────────────
+function isDuplicateName(name, genders, excludeId) {
+  return items.some(i => {
+    if (excludeId && String(i.id) === String(excludeId)) return false;
+    if (i.name.toLowerCase() !== name.toLowerCase()) return false;
+    const iGenders = (i.categories || [i.category]).filter(c => GENDERS.includes(c));
+    return genders.some(g => iGenders.includes(g));
   });
 }
 
-// EDIT
-function openEdit(id) {
-  const item = items.find(i=>String(i.id)===String(id));
-  if (!item) return;
-  populateCatSelect('edit-cat');
-  pendingEditGlbData = null;
-  document.getElementById('edit-id').value = item.id;
-  document.getElementById('edit-name').value = item.name;
-  setTimeout(() => setSelectedCats('edit', item.categories || [item.category]), 50);
-  document.getElementById('edit-thumb').value = item.thumbnail||'';
-  document.getElementById('edit-desc').value = item.desc||'';
-  // show current glb status
-  const glbLabel = document.getElementById('edit-glb-label');
-  if (glbLabel) glbLabel.textContent = item.glbData ? '✓ Arquivo GLB atual mantido — clique para trocar' : 'Nenhum arquivo. Clique para adicionar .glb';
-  // preview thumb
-  const imgUrl = gdriveImg(item.thumbnail);
-  const box = document.getElementById('edit-thumb-preview');
-  box.innerHTML = imgUrl ? `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
-  document.getElementById('edit-overlay').classList.add('open');
-}
-function closeEdit() { document.getElementById('edit-overlay').classList.remove('open'); }
-function saveEdit() {
-  const id = document.getElementById('edit-id').value;
-  const idx = items.findIndex(i=>String(i.id)===String(id));
-  if (idx===-1) return;
-  const editName = document.getElementById('edit-name').value.trim();
-  const editCats = getSelectedCats('edit');
-  const editGenders = editCats.filter(c => GENDERS.filter(g=>g!=='Todos').includes(c));
-  if (isDuplicateName(editName, editGenders, id)) {
-    showToast(`Já existe "${editName}" no mesmo gênero. Altere o nome.`,'error');
-    return;
-  }
-  items[idx] = { ...items[idx],
-    name: document.getElementById('edit-name').value.trim(),
-    categories: getSelectedCats('edit'),
-    category: getSelectedCats('edit')[0] || items[idx].category,
-    glbData: pendingEditGlbData || items[idx].glbData,
-    thumbnail: document.getElementById('edit-thumb').value.trim()||null,
-    desc: document.getElementById('edit-desc').value.trim(),
-    colors: items[idx].colors||[],
-  };
-  pendingEditGlbData = null;
-  document.getElementById('edit-glb-label').textContent = 'Clique para trocar o arquivo .glb';
-  saveData(); renderAll(); closeEdit();
-  showToast('Modelo atualizado!','success');
-  syncToGitHub();
-}
-document.getElementById('edit-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('edit-overlay')) closeEdit(); });
-
-// CATEGORIES
+// ── CATEGORIES ────────────────────────────────────────────────────────────────
 function renderCategories() {
   const list = document.getElementById('cat-list');
-  if (!categories.length) {
-    list.innerHTML = '<span style="color:var(--muted);font-size:0.82rem">Nenhuma categoria criada.</span>';
-    return;
-  }
+  if (!categories.length) { list.innerHTML = '<span style="color:var(--muted);font-size:0.82rem">Nenhuma categoria.</span>'; return; }
   list.innerHTML = categories.map((c,i) => `
     <div class="cat-tag" id="cat-item-${i}">
       <span class="cat-tag-name" id="cat-name-${i}">${c}</span>
-      <span class="cat-tag-editing" id="cat-edit-${i}">
-        <input type="text" id="cat-input-${i}" value="${c}">
-      </span>
+      <span class="cat-tag-editing" id="cat-edit-${i}"><input type="text" id="cat-input-${i}" value="${c}"></span>
       <button class="cat-action edit" onclick="startEditCat(${i})" id="cat-btn-edit-${i}" title="Editar">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
@@ -864,11 +672,10 @@ function renderCategories() {
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
       <button class="cat-action remove" onclick="removeCategory(${i})" id="cat-btn-remove-${i}" title="Excluir">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
       </button>
     </div>`).join('');
 }
-
 function startEditCat(i) {
   document.getElementById('cat-name-'+i).style.display='none';
   document.getElementById('cat-edit-'+i).style.display='flex';
@@ -876,10 +683,10 @@ function startEditCat(i) {
   document.getElementById('cat-btn-remove-'+i).style.display='none';
   document.getElementById('cat-btn-save-'+i).style.display='inline-flex';
   document.getElementById('cat-btn-cancel-'+i).style.display='inline-flex';
-  document.getElementById('cat-input-'+i).focus();
-  document.getElementById('cat-input-'+i).onkeydown=e=>{ if(e.key==='Enter') saveEditCat(i); if(e.key==='Escape') cancelEditCat(i); };
+  const inp = document.getElementById('cat-input-'+i);
+  inp.focus();
+  inp.onkeydown = e => { if(e.key==='Enter') saveEditCat(i); if(e.key==='Escape') cancelEditCat(i); };
 }
-
 function cancelEditCat(i) {
   document.getElementById('cat-name-'+i).style.display='';
   document.getElementById('cat-edit-'+i).style.display='none';
@@ -888,36 +695,37 @@ function cancelEditCat(i) {
   document.getElementById('cat-btn-save-'+i).style.display='none';
   document.getElementById('cat-btn-cancel-'+i).style.display='none';
 }
-
 function saveEditCat(i) {
   const val = document.getElementById('cat-input-'+i).value.trim();
   if (!val) { showToast('Nome inválido.','error'); return; }
-  if (categories.includes(val) && categories[i]!==val) { showToast('Categoria já existe.','error'); return; }
+  if (categories.includes(val) && categories[i] !== val) { showToast('Já existe.','error'); return; }
   const old = categories[i];
   categories[i] = val;
-  items.forEach(item=>{ if(item.category===old) item.category=val; if(item.categories) item.categories=item.categories.map(c=>c===old?val:c); });
+  items.forEach(item => {
+    if (item.category === old) item.category = val;
+    if (item.categories) item.categories = item.categories.map(c => c===old ? val : c);
+  });
   saveData(); renderAll();
   showToast(`Categoria renomeada para "${val}".`,'success');
 }
-
 function addCategory() {
   const val = document.getElementById('new-cat-input').value.trim();
-  if (!val||categories.includes(val)) { showToast('Categoria inválida ou já existe.','error'); return; }
+  if (!val || categories.includes(val)) { showToast('Inválida ou já existe.','error'); return; }
   categories.push(val); saveData(); renderAll();
-  document.getElementById('new-cat-input').value='';
-  showToast(`Categoria "${val}" adicionada.`,'success');
+  document.getElementById('new-cat-input').value = '';
+  showToast(`"${val}" adicionada.`,'success');
 }
-
 function removeCategory(i) {
   const cat = categories[i];
-  if (GENDERS.includes(cat)) { showToast('Masculino e Feminino não podem ser removidos.','error'); return; }
-  if (items.some(item=>(item.categories||[item.category]).includes(cat))) { showToast(`Não é possível excluir: há modelos em "${cat}". Mova-os primeiro.`,'error'); return; }
+  if (GENDERS.includes(cat)) { showToast('Masculino/Feminino não podem ser removidos.','error'); return; }
+  if (items.some(item => (item.categories||[item.category]).includes(cat))) {
+    showToast(`Há modelos em "${cat}". Mova-os primeiro.`,'error'); return;
+  }
   categories.splice(i,1); saveData(); renderAll();
-  showToast(`Categoria "${cat}" excluída.`,'success');
+  showToast(`"${cat}" excluída.`,'success');
 }
-
 function populateCatSelect(id) {
-  const suffix = id === 'add-cat' ? 'add' : 'edit';
+  const suffix    = id === 'add-cat' ? 'add' : 'edit';
   const container = document.getElementById(suffix+'-cat-multi');
   if (!container) return;
   const subcats = categories.filter(c => !GENDERS.includes(c));
@@ -926,49 +734,154 @@ function populateCatSelect(id) {
     <label class="cat-check-label" for="chk-${suffix}-${c}">${c}</label>
   `).join('');
 }
-
 function getSelectedCats(suffix) {
-  const genders = GENDERS.filter(g => {
-    const el = document.getElementById('chk-'+suffix+'-gender-'+g);
-    return el && el.checked;
-  });
-  const subcats = categories.filter(c => !GENDERS.includes(c) && (() => {
-    const el = document.getElementById('chk-'+suffix+'-'+c);
-    return el && el.checked;
-  })());
+  const genders = GENDERS.filter(g => { const el = document.getElementById('chk-'+suffix+'-gender-'+g); return el && el.checked; });
+  const subcats = categories.filter(c => !GENDERS.includes(c) && (() => { const el = document.getElementById('chk-'+suffix+'-'+c); return el && el.checked; })());
   return [...genders, ...subcats];
 }
-
 function setSelectedCats(suffix, selected) {
   const arr = Array.isArray(selected) ? selected : [selected];
-  GENDERS.forEach(g => {
-    const el = document.getElementById('chk-'+suffix+'-gender-'+g);
-    if (el) el.checked = arr.includes(g);
-  });
-  categories.filter(c=>!GENDERS.includes(c)).forEach(c => {
-    const el = document.getElementById('chk-'+suffix+'-'+c);
-    if (el) el.checked = arr.includes(c);
-  });
+  GENDERS.forEach(g => { const el = document.getElementById('chk-'+suffix+'-gender-'+g); if (el) el.checked = arr.includes(g); });
+  categories.filter(c=>!GENDERS.includes(c)).forEach(c => { const el = document.getElementById('chk-'+suffix+'-'+c); if (el) el.checked = arr.includes(c); });
 }
 
-// BACKUP
+// ── GITHUB SYNC ───────────────────────────────────────────────────────────────
+async function getFileSHA(path) {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}?t=${Date.now()}`, {
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (r.status === 404) return null;
+    const d = await r.json();
+    return d.sha || null;
+  } catch(e) { return null; }
+}
+
+async function putFile(path, content, sha, isBinary) {
+  const body = { message: `update ${path}`, content };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const err = await r.json();
+    throw new Error(err.message || r.status);
+  }
+  return r.json();
+}
+
+function setProgress(pct, msg) {
+  const bar  = document.getElementById('publish-progress');
+  const fill = document.getElementById('publish-progress-fill');
+  const log  = document.getElementById('publish-log');
+  bar.style.display = 'block';
+  log.style.display = 'block';
+  fill.style.width  = pct + '%';
+  log.textContent   = msg;
+}
+
+async function syncToGitHub() {
+  if (!GITHUB_TOKEN) { showToast('Configure o GitHub Token primeiro.','error'); return; }
+  const btn = document.getElementById('publish-btn');
+  btn.disabled = true;
+  btn.textContent = 'Publicando...';
+  setProgress(5, 'Iniciando publicação...');
+
+  try {
+    // 1. Upload OBJ files para modelos novos/editados
+    const toUpload = items.filter(i => i.objData && typeof i.objData === 'string');
+    for (let idx = 0; idx < toUpload.length; idx++) {
+      const item = toUpload[idx];
+      setProgress(10 + (idx / Math.max(toUpload.length,1)) * 60, `Enviando OBJ: ${item.name}...`);
+      const base64 = btoa(unescape(encodeURIComponent(item.objData)));
+      const sha    = await getFileSHA(`models/${item.id}.obj`);
+      await putFile(`models/${item.id}.obj`, base64, sha, false);
+      item.hasObj  = true;
+      item.objData = null; // limpa da memória após upload
+    }
+
+    // 2. Salva catalog-data.json
+    setProgress(75, 'Salvando catálogo...');
+    const meta = {
+      categories,
+      items: items.map(i => ({
+        id: i.id, name: i.name, category: i.category,
+        categories: i.categories, thumbnail: i.thumbnail,
+        desc: i.desc, hasObj: i.hasObj || false
+      }))
+    };
+    const jsonB64 = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
+    const jsonSha = await getFileSHA(GITHUB_FILE);
+    await putFile(GITHUB_FILE, jsonB64, jsonSha, false);
+
+    setProgress(100, '✓ Publicado com sucesso!');
+    saveData();
+    showToast('Catálogo publicado!','success');
+    setTimeout(() => {
+      document.getElementById('publish-progress').style.display = 'none';
+      document.getElementById('publish-log').style.display = 'none';
+    }, 3000);
+
+  } catch(e) {
+    setProgress(0, '✗ Erro: ' + e.message);
+    showToast('Erro: ' + e.message,'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Publicar catálogo';
+  }
+}
+
+// ── BACKUP ────────────────────────────────────────────────────────────────────
 function exportData() {
-  const blob=new Blob([JSON.stringify({items,categories},null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`bd-catalogo-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  const blob = new Blob([JSON.stringify({items,categories},null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `bd-catalogo-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
 }
 function importData(input) {
-  const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{ try { const d=JSON.parse(e.target.result); if(!d.items||!d.categories) throw new Error(); items=d.items; categories=d.categories; saveData(); renderAll(); showToast('Backup importado!','success'); } catch { showToast('Arquivo inválido.','error'); } };
-  reader.readAsText(file); input.value='';
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!d.items || !d.categories) throw new Error();
+      items = d.items; categories = d.categories;
+      saveData(); renderAll();
+      showToast('Backup importado!','success');
+    } catch { showToast('Arquivo inválido.','error'); }
+  };
+  reader.readAsText(file);
+  input.value = '';
 }
 
-// TOAST
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderStats() {
+  document.getElementById('stat-total').textContent = items.length;
+  document.getElementById('stat-cats').textContent  = categories.filter(c=>!GENDERS.includes(c)).length;
+}
+function renderAll() {
+  renderStats(); renderModels(); renderCategories();
+  populateCatSelect('add-cat'); populateCatSelect('edit-cat');
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+name)?.classList.add('active');
+  document.querySelector(`.nav-item[data-page="${name}"]`)?.classList.add('active');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg, type='success') {
-  const t=document.getElementById('toast'); t.textContent=msg; t.className=`toast ${type} show`;
-  clearTimeout(toastTimer); toastTimer=setTimeout(()=>{t.className='toast';},3000);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 4000);
 }
 </script>
 </body>
