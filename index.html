@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BD Studio — Catálogo de Roupas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap');
+:root {
+  --pink:#FF2D78; --purple:#9B30FF;
+  --dark:#0A0A0F; --dark2:#111118; --dark3:#1A1A24;
+  --border:rgba(255,45,120,0.15); --text:#E8E8F0; --muted:#888899;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;border-radius:50%;animation:float linear infinite;}
+@keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:0.4;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
+
+/* ── HEADER ── */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;transition:all 0.3s;}
+header.scrolled{box-shadow:0 4px 30px rgba(255,45,120,0.08);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:0.08em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+.header-nav{display:flex;align-items:center;gap:0.5rem;position:absolute;left:50%;transform:translateX(-50%);}
+.nav-link{background:none;border:none;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;padding:0.4rem 0.75rem;border-radius:6px;transition:all 0.2s;letter-spacing:0.03em;}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+.nav-link.active{color:var(--text);}
+.discord-btn{display:flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border:none;padding:0.45rem 1.1rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.25s;text-decoration:none;position:relative;overflow:hidden;}
+.discord-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.15);opacity:0;transition:opacity 0.2s;}
+.discord-btn:hover::after{opacity:1;}
+.discord-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,45,120,0.4);}
+
+/* ── PAGES ── */
+.page{display:none;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 2rem 60px;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(155,48,255,0.12) 0%,rgba(255,45,120,0.06) 40%,transparent 70%);pointer-events:none;animation:pulse-glow 4s ease-in-out infinite;}
+@keyframes pulse-glow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}}
+.hero-eyebrow{font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--pink);margin-bottom:1.25rem;opacity:0;animation:fade-up 0.8s 0.2s forwards;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,6rem);letter-spacing:0.04em;line-height:0.95;margin-bottom:1.5rem;opacity:0;animation:fade-up 0.8s 0.4s forwards;}
+.hero h1 .grad{background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{color:var(--muted);font-size:1.05rem;font-weight:300;max-width:500px;line-height:1.7;margin-bottom:2.5rem;opacity:0;animation:fade-up 0.8s 0.6s forwards;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:fade-up 0.8s 0.8s forwards;}
+.btn-hero-primary{display:flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border:none;padding:0.85rem 2rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.25s;text-decoration:none;box-shadow:0 0 30px rgba(255,45,120,0.3);}
+.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,45,120,0.5);}
+.btn-hero-outline{display:flex;align-items:center;gap:0.5rem;background:transparent;color:var(--text);border:1px solid var(--border);padding:0.85rem 2rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;letter-spacing:0.04em;transition:all 0.25s;text-decoration:none;}
+.btn-hero-outline:hover{border-color:var(--pink);color:var(--pink);transform:translateY(-2px);}
+.scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--muted);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;animation:bounce 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+.scroll-arrow{width:20px;height:20px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);}
+
+@keyframes fade-up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── CATALOG PAGE ── */
+.catalog-wrap{padding-top:80px;min-height:100vh;}
+.catalog-header{text-align:center;padding:2.5rem 2rem 0.5rem;max-width:760px;margin:0 auto;position:relative;}
+.catalog-header-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:220px;background:radial-gradient(ellipse,rgba(155,48,255,0.1) 0%,rgba(255,45,120,0.05) 40%,transparent 70%);pointer-events:none;animation:pulse-glow 4s ease-in-out infinite;}
+.catalog-header-logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);letter-spacing:0.1em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:0.4rem;opacity:0;animation:fade-up 0.7s 0.1s forwards;}
+.catalog-header-sub{font-size:0.82rem;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1.1rem;opacity:0;animation:fade-up 0.7s 0.25s forwards;}
+.catalog-header-hint{display:inline-flex;align-items:flex-start;gap:0.5rem;background:var(--dark2);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1.1rem;font-size:0.82rem;color:var(--muted);line-height:1.6;text-align:left;max-width:580px;opacity:0;animation:fade-up 0.7s 0.4s forwards;transition:border-color 0.3s,box-shadow 0.3s;}
+.catalog-header-hint:hover{border-color:rgba(255,45,120,0.35);box-shadow:0 4px 20px rgba(155,48,255,0.1);}
+.controls{opacity:0;animation:fade-up 0.7s 0.55s forwards;}
+.section-label{opacity:0;animation:fade-up 0.6s 0.7s forwards;}
+.controls{max-width:960px;margin:2rem auto;padding:0 2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;justify-content:center;}
+.search-box{flex:1;min-width:220px;max-width:340px;position:relative;}
+.search-box input{width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:0.7rem 1rem 0.7rem 2.5rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+.search-box input:focus{border-color:var(--pink);}
+.search-icon{position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+.categories{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;}
+.cat-btn{background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:0.5rem 1.1rem;border-radius:999px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;}
+.cat-btn:hover{border-color:var(--pink);color:var(--text);}
+.cat-btn.active{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
+.grid-section{max-width:1200px;margin:0 auto;padding:0 2rem 6rem;}
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.15em;color:var(--pink);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;}
+.empty{grid-column:1/-1;text-align:center;padding:4rem 0;color:var(--muted);font-size:0.9rem;}
+
+/* ── CARD ── */
+.card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;opacity:0;animation:card-in 0.5s forwards;}
+@keyframes card-in{to{opacity:1;transform:translateY(0);}}
+.card{transform:translateY(20px);}
+.card:hover{transform:translateY(-6px) scale(1.01);border-color:rgba(255,45,120,0.5);box-shadow:0 16px 48px rgba(155,48,255,0.2);}
+.card-thumb{width:100%;aspect-ratio:1;background:var(--dark3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.card-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.card:hover .card-thumb img{transform:scale(1.06);}
+.thumb-placeholder{display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--muted);font-size:0.78rem;}
+.thumb-placeholder svg{opacity:0.3;}
+.card-badge{position:absolute;top:0.6rem;right:0.6rem;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:0.65rem;font-weight:600;letter-spacing:0.08em;padding:0.25rem 0.6rem;border-radius:999px;text-transform:uppercase;}
+.card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,15,0.7) 0%,transparent 50%);opacity:0;transition:opacity 0.3s;}
+.card:hover .card-overlay{opacity:1;}
+.card-body{padding:1rem;}
+.card-name{font-weight:600;font-size:0.95rem;margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-cat{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+.card-btn{margin-top:0.85rem;width:100%;padding:0.55rem;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;}
+.card-btn:hover{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
+
+/* ── SOBRE PAGE ── */
+.sobre-wrap{padding:100px 2rem 80px;max-width:900px;margin:0 auto;}
+.sobre-eyebrow{font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--pink);margin-bottom:1rem;}
+.sobre-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:0.04em;line-height:1;margin-bottom:1.5rem;}
+.sobre-title span{background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sobre-intro{color:var(--muted);font-size:1rem;line-height:1.8;margin-bottom:3rem;max-width:720px;}
+.sobre-section{margin-bottom:2.5rem;}
+.sobre-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:0.12em;color:var(--pink);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;}
+.sobre-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.service-card{background:var(--dark2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color 0.25s,transform 0.25s;opacity:0;}
+.service-card.visible{animation:fade-up 0.5s forwards;}
+.service-card:hover{border-color:rgba(255,45,120,0.35);transform:translateY(-3px);}
+.service-card h4{font-size:0.88rem;font-weight:600;margin-bottom:0.75rem;color:var(--text);}
+.service-card ul{list-style:none;display:flex;flex-direction:column;gap:0.3rem;}
+.service-card ul li{font-size:0.8rem;color:var(--muted);line-height:1.5;padding-left:1rem;position:relative;}
+.service-card ul li::before{content:'·';position:absolute;left:0;color:var(--pink);}
+.process-steps{display:flex;flex-direction:column;gap:0.75rem;}
+.process-step{display:flex;align-items:flex-start;gap:1rem;padding:1rem 1.25rem;background:var(--dark2);border:1px solid var(--border);border-radius:10px;transition:border-color 0.25s;opacity:0;}
+.process-step.visible{animation:fade-up 0.5s forwards;}
+.process-step:hover{border-color:rgba(255,45,120,0.3);}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.04em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;line-height:1;}
+.step-text{font-size:0.88rem;color:var(--muted);line-height:1.6;}
+.mission-box{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center;position:relative;overflow:hidden;}
+.mission-box::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,45,120,0.05),rgba(155,48,255,0.05));pointer-events:none;}
+.mission-box p{color:var(--muted);font-size:0.95rem;line-height:1.8;max-width:680px;margin:0 auto 1.5rem;}
+.mission-tag{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.15em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ── SOCIAL PAGE ── */
+.social-wrap{padding:120px 2rem 80px;max-width:700px;margin:0 auto;text-align:center;}
+.social-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:0.04em;line-height:1;margin-bottom:0.75rem;}
+.social-title span{background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.social-sub{color:var(--muted);font-size:0.95rem;margin-bottom:3rem;line-height:1.6;}
+.social-cards{display:flex;flex-direction:column;gap:1rem;max-width:480px;margin:0 auto;}
+.social-card{display:flex;align-items:center;gap:1.25rem;background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-decoration:none;color:var(--text);transition:all 0.3s;position:relative;overflow:hidden;}
+.social-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s;}
+.social-card.instagram::before{background:linear-gradient(135deg,rgba(255,45,120,0.08),rgba(155,48,255,0.08));}
+.social-card.tiktok::before{background:linear-gradient(135deg,rgba(0,0,0,0),rgba(255,45,120,0.06));}
+.social-card.discord::before{background:linear-gradient(135deg,rgba(88,101,242,0.1),rgba(155,48,255,0.08));}
+.social-card:hover{transform:translateY(-4px);border-color:rgba(255,45,120,0.4);box-shadow:0 12px 40px rgba(155,48,255,0.15);}
+.social-card:hover::before{opacity:1;}
+.social-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.social-icon.ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+.social-icon.tk{background:#000;border:1px solid rgba(255,255,255,0.1);}
+.social-icon.dc{background:#5865F2;}
+.social-info{flex:1;text-align:left;}
+.social-platform{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;}
+.social-handle{font-weight:600;font-size:1rem;}
+.social-arrow{color:var(--muted);transition:transform 0.2s,color 0.2s;}
+.social-card:hover .social-arrow{transform:translateX(4px);color:var(--pink);}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;animation:modal-in 0.25s ease;}
+@keyframes modal-in{from{opacity:0;}to{opacity:1;}}
+.modal{background:var(--dark2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:860px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;animation:modal-scale 0.25s ease;}
+@keyframes modal-scale{from{transform:scale(0.95);}to{transform:scale(1);}}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.08em;}
+.modal-cat-tag{font-size:0.72rem;color:var(--pink);text-transform:uppercase;letter-spacing:0.1em;font-weight:500;margin-bottom:0.2rem;}
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:0.25rem;border-radius:6px;transition:color 0.2s;line-height:0;}
+.modal-close:hover{color:var(--text);}
+.modal-body{display:flex;flex:1;overflow:hidden;min-height:400px;}
+.viewer-area{flex:1;background:var(--dark3);position:relative;}
+#viewer-canvas{width:100%;height:100%;display:block;}
+.viewer-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;color:var(--muted);font-size:0.85rem;}
+.spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--pink);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.viewer-hint{position:absolute;bottom:0.75rem;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.8rem;font-size:0.7rem;color:var(--muted);white-space:nowrap;pointer-events:none;}
+.viewer-controls{position:absolute;top:0.75rem;right:0.75rem;display:flex;flex-direction:column;gap:0.4rem;}
+.vc-btn{width:34px;height:34px;background:rgba(10,10,15,0.75);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(8px);padding:0;}
+.vc-btn:hover{border-color:var(--pink);color:var(--pink);}
+.vc-btn.active{border-color:var(--pink);color:var(--pink);background:rgba(255,45,120,0.1);}
+.viewer-brightness{position:absolute;top:0.75rem;left:0.75rem;background:rgba(10,10,15,0.8);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.75rem;backdrop-filter:blur(8px);display:none;flex-direction:column;gap:0.4rem;min-width:140px;}
+.viewer-brightness.open{display:flex;}
+.viewer-brightness label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.viewer-brightness input[type=range]{-webkit-appearance:none;width:100%;height:3px;border-radius:999px;background:var(--border);outline:none;cursor:pointer;}
+.viewer-brightness input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--pink);cursor:pointer;}
+.viewer-color-panel{position:absolute;top:0.75rem;left:0.75rem;background:rgba(10,10,15,0.9);border:1px solid var(--border);border-radius:12px;padding:1rem;backdrop-filter:blur(12px);display:none;flex-direction:column;gap:0.75rem;min-width:180px;}
+.viewer-color-panel.open{display:flex;}
+.viewer-color-panel label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.color-preset-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;}
+.color-preset{width:100%;aspect-ratio:1;border-radius:6px;border:2px solid transparent;cursor:pointer;transition:all 0.15s;}
+.color-preset:hover{transform:scale(1.15);}
+.color-preset.selected{border-color:#fff;}
+.vcp-custom{display:flex;align-items:center;gap:0.5rem;margin-top:0.25rem;}
+.vcp-custom input[type=color]{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--dark3);cursor:pointer;padding:2px;}
+.vcp-custom span{font-size:0.78rem;color:var(--muted);}
+.modal-sidebar{width:260px;flex-shrink:0;padding:1.5rem;border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:1.25rem;}
+.info-block label{display:block;font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;}
+.info-block p{font-size:0.88rem;line-height:1.5;}
+.divider{height:1px;background:var(--border);}
+.color-swatches{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.swatch{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;position:relative;z-index:1;}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.08em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;}
+.footer-socials{display:flex;justify-content:center;gap:0.75rem;margin-bottom:1.25rem;}
+.footer-social-btn{background:var(--dark3);border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 0.2s;}
+.footer-social-btn:hover{border-color:var(--pink);color:var(--pink);transform:translateY(-2px);}
+.footer-copy{font-size:0.78rem;color:var(--muted);line-height:1.8;}
+.footer-copy a{color:var(--pink);text-decoration:none;}
+.footer-copy a:hover{text-decoration:underline;}
+
+@media(max-width:640px){
+  .modal-body{flex-direction:column;}
+  .modal-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);}
+  .viewer-area{min-height:260px;}
+  .header-nav .nav-link{display:none;}
+  .header-nav .nav-link:last-of-type{display:flex;}
+}
+</style>
+</head>
+<body>
+
+<!-- PARTICLES -->
+<div id="particles"></div>
+
+<!-- HEADER -->
+<header id="main-header">
+  <div class="logo">BD Studio</div>
+  <nav class="header-nav">
+    <button class="nav-link active" data-page="catalog" onclick="showPage('catalog')">Catálogo</button>
+    <button class="nav-link" data-page="sobre" onclick="showPage('sobre')">Sobre Nós</button>
+    <button class="nav-link" data-page="social" onclick="showPage('social')">Redes Sociais</button>
+    <a class="discord-btn" href="https://discord.gg/mmmEZmehVX" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Discord
+    </a>
+  </nav>
+</header>
+
+<!-- CATALOG -->
+<div class="page active" id="page-catalog">
+  <div class="catalog-wrap">
+    <div class="catalog-header">
+      <div class="catalog-header-glow"></div>
+      <div class="catalog-header-logo">BD STUDIO</div>
+      <div class="catalog-header-sub">Mods de Roupas para FiveM &nbsp;·&nbsp; Catálogo Oficial</div>
+      <div class="catalog-header-hint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;opacity:0.6"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
+        Como funciona: Clique em qualquer modelo para visualizar em 3D interativo — gire, aproxime e explore. Anote o número do modelo desejado e informe no ticket.
+      </div>
+    </div>
+    <div class="controls">
+      <div class="search-box">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="search-input" placeholder="Buscar roupa...">
+      </div>
+      <div class="categories" id="cat-filters"></div>
+    </div>
+    <div class="grid-section">
+      <div class="section-label" id="section-label">TODOS OS MODELOS</div>
+      <div class="grid" id="items-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SOBRE -->
+<div class="page" id="page-sobre">
+  <div class="sobre-wrap">
+    <div class="sobre-eyebrow">Quem somos</div>
+    <h1 class="sobre-title">BD <span>Studio</span></h1>
+    <p class="sobre-intro">A BD Studio é um estúdio criativo especializado no universo FiveM, focado em transformar ideias em projetos visuais e funcionais de alto nível. Unimos design, desenvolvimento e estratégia para criar experiências que elevam a identidade e o padrão de servidores, facções e marcas. Nosso trabalho vai além da estética: entregamos organização, desempenho e consistência, sempre com atenção aos detalhes e foco em resultado.</p>
+
+    <div class="sobre-section">
+      <div class="sobre-section-title">O QUE FAZEMOS</div>
+      <div class="services-grid" id="services-grid">
+        <div class="service-card">
+          <h4>FiveM & In-Game</h4>
+          <ul>
+            <li>Roupas, uniformes, kits de tropas e fardamentos</li>
+            <li>Retexturização, conversão e otimização</li>
+            <li>Acessórios 3D (cordões, colares, anéis)</li>
+            <li>Armas personalizadas (neon, texturas)</li>
+            <li>Veículos e plotagens</li>
+            <li>Cabelos, props e peds</li>
+            <li>Mapas e ajustes técnicos</li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h4>Design & Identidade Visual</h4>
+          <ul>
+            <li>Logotipos estáticas e animadas</li>
+            <li>Banners, loadscreen e artes de divulgação</li>
+            <li>Barrinhas, overlays e emotes personalizados</li>
+            <li>Flyers para divulgação de facções</li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h4>Social Media</h4>
+          <ul>
+            <li>Posts, stories e carrosséis</li>
+            <li>Estruturação e padronização de perfil</li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h4>Vídeos & Conteúdo</h4>
+          <ul>
+            <li>Vídeos para TikTok e Reels</li>
+            <li>Cinematics</li>
+            <li>Vídeos institucionais</li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h4>Gestão de Mídias & Posicionamento</h4>
+          <ul>
+            <li>Presença digital constante</li>
+            <li>Divulgação de cidades, servidores e marcas</li>
+            <li>Posicionamento e fortalecimento de identidade</li>
+            <li>Planejamento de conteúdo e cronograma</li>
+            <li>Gestão visual com foco em crescimento</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sobre-section">
+      <div class="sobre-section-title">COMO TRABALHAMOS</div>
+      <div class="process-steps" id="process-steps">
+        <div class="process-step"><div class="step-num">01</div><div class="step-text">Atendimento via ticket no Discord</div></div>
+        <div class="process-step"><div class="step-num">02</div><div class="step-text">Briefing detalhado antes do início de qualquer projeto</div></div>
+        <div class="process-step"><div class="step-num">03</div><div class="step-text">Criações 100% autorais com ajustes dentro do escopo definido</div></div>
+        <div class="process-step"><div class="step-num">04</div><div class="step-text">Prazos e cronogramas alinhados previamente</div></div>
+        <div class="process-step"><div class="step-num">05</div><div class="step-text">Serviços avulsos ou planos mensais — sempre com regras claras para garantir qualidade e organização</div></div>
+      </div>
+    </div>
+
+    <div class="sobre-section">
+      <div class="sobre-section-title">NOSSA MISSÃO</div>
+      <div class="mission-box">
+        <p>Criar experiências visuais fortes, coerentes e profissionais, ajudando projetos digitais a se destacarem, crescerem e se posicionarem com autoridade. Nossa equipe está aqui para lhe ajudar em tudo o que precisar.</p>
+        <a href="https://discord.gg/mmmEZmehVX" target="_blank" class="discord-btn" style="display:inline-flex;margin-top:0.5rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Abrir ticket com amor · BD Studio
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL -->
+<div class="page" id="page-social">
+  <div class="social-wrap">
+    <h1 class="social-title">Nossas <span>Redes</span></h1>
+    <p class="social-sub">Siga a gente e fique por dentro de tudo que o BD Studio produz.</p>
+    <div class="social-cards">
+      <a class="social-card instagram" href="https://www.instagram.com/bdstudio.ofc/" target="_blank">
+        <div class="social-icon ig">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </div>
+        <div class="social-info">
+          <div class="social-platform">Instagram</div>
+          <div class="social-handle">@bdstudio.ofc</div>
+        </div>
+        <svg class="social-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a class="social-card tiktok" href="https://www.tiktok.com/@bdstudio.ofc" target="_blank">
+        <div class="social-icon tk">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.74a4.85 4.85 0 0 1-1.01-.05z"/></svg>
+        </div>
+        <div class="social-info">
+          <div class="social-platform">TikTok</div>
+          <div class="social-handle">@bdstudio.ofc</div>
+        </div>
+        <svg class="social-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a class="social-card discord" href="https://discord.gg/mmmEZmehVX" target="_blank">
+        <div class="social-icon dc">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        </div>
+        <div class="social-info">
+          <div class="social-platform">Discord</div>
+          <div class="social-handle">Abrir Ticket</div>
+        </div>
+        <svg class="social-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VIEWER -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-cat-tag" id="modal-cat"></div>
+        <div class="modal-title" id="modal-name"></div>
+      </div>
+      <button class="modal-close" id="modal-close-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="viewer-area">
+        <canvas id="viewer-canvas"></canvas>
+        <div class="viewer-loading" id="viewer-loading"><div class="spinner"></div><span>Carregando modelo...</span></div>
+        <div class="viewer-hint">Arraste para girar · Scroll para zoom</div>
+        <!-- brightness panel -->
+        <div class="viewer-brightness" id="brightness-panel">
+          <label>Brilho</label>
+          <input type="range" id="brightness-slider" min="0.3" max="3" step="0.05" value="1.2">
+        </div>
+        <!-- color panel -->
+        <div class="viewer-color-panel" id="color-panel">
+          <label>Cor da peça</label>
+          <div class="color-preset-grid" id="color-presets"></div>
+          <div class="vcp-custom">
+            <input type="color" id="custom-color" value="#111118">
+            <span>Personalizada</span>
+          </div>
+        </div>
+        <!-- control buttons -->
+        <div class="viewer-controls">
+          <button class="vc-btn" id="vc-brightness" title="Brilho">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          </button>
+          <button class="vc-btn" id="vc-color" title="Cor da peça">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22C6.477 22 2 17.523 2 12c0-1.49.333-2.909.931-4.18"/><path d="M22 12c0 5.523-4.477 10-10 10"/></svg>
+          </button>
+          <button class="vc-btn" id="vc-zoomin" title="Zoom +">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg>
+          </button>
+          <button class="vc-btn" id="vc-zoomout" title="Zoom -">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M8 11h6"/></svg>
+          </button>
+          <button class="vc-btn" id="vc-reset" title="Resetar vista">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-sidebar">
+        <div class="info-block"><label>Categoria</label><p id="s-cat"></p></div>
+        <div class="info-block"><label>Descrição</label><p id="s-desc"></p></div>
+        <div class="divider"></div>
+        <div class="info-block" id="s-colors-block"><label>Cores disponíveis</label><div class="color-swatches" id="s-colors"></div></div>
+        <div class="divider"></div>
+        <div class="info-block"><label>Como encomendar</label><p style="font-size:0.82rem;color:var(--muted);line-height:1.6">Abra um ticket no nosso Discord e mencione o nome desta roupa.</p>
+          <a href="https://discord.gg/mmmEZmehVX" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.75rem;padding:0.5rem 1rem;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border-radius:7px;font-size:0.8rem;font-weight:600;text-decoration:none;letter-spacing:0.04em;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            Abrir Ticket
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BD Studio</div>
+  <div class="footer-socials">
+    <a class="footer-social-btn" href="https://www.instagram.com/bdstudio.ofc/" target="_blank" title="Instagram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <a class="footer-social-btn" href="https://www.tiktok.com/@bdstudio.ofc" target="_blank" title="TikTok">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.74a4.85 4.85 0 0 1-1.01-.05z"/></svg>
+    </a>
+    <a class="footer-social-btn" href="https://discord.gg/mmmEZmehVX" target="_blank" title="Discord">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    </a>
+  </div>
+  <div class="footer-copy">
+    © 2026 BD Studio &nbsp;·&nbsp; Dúvidas? Entre em contato pelo <a href="https://discord.gg/mmmEZmehVX" target="_blank">Discord</a>
+  </div>
+</footer>
+
+<script type="module">
+const STORAGE_KEY = 'bd_catalog_v2';
+let items = [], categories = ['Feminino','Masculino','Unissex','Uniforme','Facção','Especial'];
+let activeCategory = 'Todos', searchQuery = '', currentViewer = null;
+
+function loadData() {
+  try { const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); items=d.items||[]; categories=d.categories||categories; } catch(e){}
+}
+
+// ── PAGE NAV ──
+window.showPage = function(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (page==='catalog') { renderFilters(); renderGrid(); }
+  if (page==='sobre') initScrollReveal();
+};
+
+// ── SCROLL HEADER ──
+window.addEventListener('scroll', ()=>{
+  document.getElementById('main-header').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── PARTICLES ──
+(function(){
+  const container = document.getElementById('particles');
+  for (let i=0;i<18;i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*3+1;
+    const colors = ['rgba(255,45,120,0.4)','rgba(155,48,255,0.4)','rgba(255,45,120,0.2)'];
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*12+8}s;
+      animation-delay:-${Math.random()*10}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ── SCROLL REVEAL ──
+function initScrollReveal() {
+  const els = document.querySelectorAll('.service-card,.process-step');
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('visible'), i*80);
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.1});
+  els.forEach(el=>obs.observe(el));
+}
+
+// ── CATALOG ──
+function gdriveImg(url) {
+  if(!url) return null;
+  const m=url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{20,})/);
+  return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : url;
+}
+function gdriveDirect(url) {
+  if(!url) return null;
+  const m=url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{20,})/);
+  return m ? `https://drive.google.com/uc?export=download&id=${m[1]}` : url;
+}
+
+function renderFilters() {
+  const el=document.getElementById('cat-filters');
+  el.innerHTML=['Todos',...categories].map(c=>
+    `<button class="cat-btn ${c===activeCategory?'active':''}" data-cat="${c}">${c}</button>`
+  ).join('');
+  el.querySelectorAll('.cat-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{ activeCategory=btn.dataset.cat; renderFilters(); renderGrid(); });
+  });
+}
+
+function renderGrid() {
+  const grid=document.getElementById('items-grid');
+  const label=document.getElementById('section-label');
+  const filtered=items.filter(i=>{
+    const matchCat=activeCategory==='Todos'||i.category===activeCategory;
+    const matchQ=!searchQuery||i.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCat&&matchQ;
+  });
+  label.textContent=activeCategory==='Todos'?'TODOS OS MODELOS':activeCategory.toUpperCase();
+  if(!filtered.length){
+    grid.innerHTML=`<div class="empty">${items.length===0?'Nenhum modelo disponível no momento.':'Nenhum resultado encontrado.'}</div>`;
+    return;
+  }
+  grid.innerHTML=filtered.map((item,i)=>{
+    const imgUrl=gdriveImg(item.thumbnail);
+    return `<div class="card" data-id="${item.id}" style="animation-delay:${i*60}ms">
+      <div class="card-thumb">
+        ${imgUrl?`<img src="${imgUrl}" alt="${item.name}" onerror="this.style.display='none'">`:`<div class="thumb-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span>Modelo 3D</span></div>`}
+        <div class="card-overlay"></div>
+        <span class="card-badge">${item.category}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${item.name}</div>
+        <div class="card-cat">${item.category}</div>
+        <button class="card-btn">Ver em 3D</button>
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click',()=>openModal(card.dataset.id));
+  });
+}
+
+document.getElementById('search-input').addEventListener('input',e=>{ searchQuery=e.target.value; renderGrid(); });
+
+// ── MODAL ──
+async function openModal(id) {
+  const item=items.find(i=>String(i.id)===String(id)); if(!item) return;
+  document.getElementById('modal-name').textContent=item.name;
+  document.getElementById('modal-cat').textContent=item.category;
+  document.getElementById('s-cat').textContent=item.category;
+  document.getElementById('s-desc').textContent=item.desc||'Sem descrição.';
+  const colorsEl=document.getElementById('s-colors');
+  const colorsBlock=document.getElementById('s-colors-block');
+  if(item.colors&&item.colors.length){ colorsEl.innerHTML=item.colors.map(c=>`<div class="swatch" style="background:${c}" title="${c}"></div>`).join(''); colorsBlock.style.display='block'; }
+  else colorsBlock.style.display='none';
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('viewer-loading').style.display='flex';
+  document.getElementById('viewer-loading').innerHTML='<div class="spinner"></div><span>Carregando modelo...</span>';
+  if(item.glbUrl) await initViewer(gdriveDirect(item.glbUrl));
+  else document.getElementById('viewer-loading').innerHTML='<span style="color:var(--muted);font-size:0.82rem">URL do modelo não configurada.</span>';
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); if(currentViewer){currentViewer.dispose();currentViewer=null;} }
+document.getElementById('modal-close-btn').addEventListener('click',closeModal);
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
+
+// ── 3D VIEWER ──
+async function initViewer(url) {
+  const canvas=document.getElementById('viewer-canvas');
+  const loading=document.getElementById('viewer-loading');
+  if(currentViewer){currentViewer.dispose();currentViewer=null;}
+
+  // Reset panels
+  document.getElementById('brightness-panel').classList.remove('open');
+  document.getElementById('color-panel').classList.remove('open');
+  document.getElementById('vc-brightness').classList.remove('active');
+  document.getElementById('vc-color').classList.remove('active');
+
+  try {
+    const THREE=await import('https://unpkg.com/three@0.128.0/build/three.module.js');
+    const {GLTFLoader}=await import('https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js');
+    const {OrbitControls}=await import('https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js');
+    const container=canvas.parentElement;
+    const W=container.clientWidth,H=container.clientHeight;
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
+    const scene=new THREE.Scene();scene.background=new THREE.Color(0x111118);
+    const camera=new THREE.PerspectiveCamera(45,W/H,0.01,1000);camera.position.set(0,1,3);
+    const initCamPos=camera.position.clone();
+    const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=0.08;controls.minDistance=0.1;controls.maxDistance=20;
+    scene.add(new THREE.AmbientLight(0xffffff,0.6));
+    const key=new THREE.DirectionalLight(0xfff0f8,1.4);key.position.set(2,4,3);scene.add(key);
+    const fill=new THREE.DirectionalLight(0xf0e8ff,0.6);fill.position.set(-3,2,-2);scene.add(fill);
+    const rim=new THREE.PointLight(0xFF2D78,0.8,20);rim.position.set(-2,3,-3);scene.add(rim);
+
+    new GLTFLoader().load(url,gltf=>{
+      const model=gltf.scene;
+      const box=new THREE.Box3().setFromObject(model);
+      const center=box.getCenter(new THREE.Vector3());
+      const size=box.getSize(new THREE.Vector3());
+      const s=2/Math.max(size.x,size.y,size.z);
+      model.scale.setScalar(s);model.position.sub(center.multiplyScalar(s));
+      loadedModel=model;scene.add(model);loading.style.display='none';
+      controls.autoRotate=true;controls.autoRotateSpeed=1.5;
+      canvas.addEventListener('pointerdown',()=>{controls.autoRotate=false;},{once:true});
+    },undefined,()=>{ loading.innerHTML='<span style="color:var(--pink);font-size:0.82rem">Erro ao carregar o modelo.</span>'; });
+
+    const ro=new ResizeObserver(()=>{ const W2=container.clientWidth,H2=container.clientHeight; renderer.setSize(W2,H2);camera.aspect=W2/H2;camera.updateProjectionMatrix(); });
+    ro.observe(container);
+    let raf; const animate=()=>{raf=requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);}; animate();
+
+    // ── BRIGHTNESS ──
+    const slider=document.getElementById('brightness-slider');
+    slider.value=1.2;
+    slider.oninput=()=>{ renderer.toneMappingExposure=parseFloat(slider.value); };
+    document.getElementById('vc-brightness').onclick=()=>{
+      const bp=document.getElementById('brightness-panel');
+      const cp=document.getElementById('color-panel');
+      cp.classList.remove('open'); document.getElementById('vc-color').classList.remove('active');
+      bp.classList.toggle('open');
+      document.getElementById('vc-brightness').classList.toggle('active');
+    };
+
+    // ── PIECE COLOR ──
+    let loadedModel=null;
+    const PIECE_PRESETS=['#ffffff','#000000','#ff2d78','#9b30ff','#ff6b00','#00bfff','#ff0000','#00ff88','#c8a97e','#3a3a3a'];
+    const presetGrid=document.getElementById('color-presets');
+    presetGrid.innerHTML=PIECE_PRESETS.map((c,i)=>`<div class="color-preset" data-color="${c}" style="background:${c}" title="${c}"></div>`).join('');
+
+    function applyColorToModel(hexColor) {
+      if(!loadedModel) return;
+      const color=new THREE.Color(hexColor);
+      loadedModel.traverse(child=>{
+        if(child.isMesh){
+          if(Array.isArray(child.material)){
+            child.material.forEach(m=>{ if(m.color) m.color.set(color); });
+          } else {
+            if(child.material&&child.material.color) child.material.color.set(color);
+          }
+        }
+      });
+    }
+
+    presetGrid.querySelectorAll('.color-preset').forEach(el=>{
+      el.onclick=()=>{
+        applyColorToModel(el.dataset.color);
+        document.getElementById('custom-color').value=el.dataset.color;
+        presetGrid.querySelectorAll('.color-preset').forEach(e=>e.classList.remove('selected'));
+        el.classList.add('selected');
+      };
+    });
+    document.getElementById('custom-color').oninput=e=>{
+      applyColorToModel(e.target.value);
+      presetGrid.querySelectorAll('.color-preset').forEach(el=>el.classList.remove('selected'));
+    };
+    document.getElementById('vc-color').onclick=()=>{
+      const cp=document.getElementById('color-panel');
+      const bp=document.getElementById('brightness-panel');
+      bp.classList.remove('open'); document.getElementById('vc-brightness').classList.remove('active');
+      cp.classList.toggle('open');
+      document.getElementById('vc-color').classList.toggle('active');
+    };
+
+    // ── ZOOM ──
+    document.getElementById('vc-zoomin').onclick=()=>{
+      const dir=new THREE.Vector3();camera.getWorldDirection(dir);
+      camera.position.addScaledVector(dir,0.4);controls.update();
+    };
+    document.getElementById('vc-zoomout').onclick=()=>{
+      const dir=new THREE.Vector3();camera.getWorldDirection(dir);
+      camera.position.addScaledVector(dir,-0.4);controls.update();
+    };
+
+    // ── RESET ──
+    document.getElementById('vc-reset').onclick=()=>{
+      camera.position.set(0,1,3);controls.target.set(0,0,0);controls.update();
+      renderer.toneMappingExposure=1.2;slider.value=1.2;
+      document.getElementById('custom-color').value='#ffffff';
+      presetGrid.querySelectorAll('.color-preset').forEach((el,i)=>{ el.classList.toggle('selected',i===0); });
+    };
+
+    currentViewer={dispose(){cancelAnimationFrame(raf);ro.disconnect();renderer.dispose();}};
+  } catch(e){ loading.innerHTML='<span style="color:var(--muted);font-size:0.82rem">Visualizador indisponível.</span>'; }
+}
+
+loadData(); renderFilters(); renderGrid();
+initScrollReveal();
+</script>
+</body>
+</html>
