@@ -589,13 +589,16 @@ function openEdit(id) {
   const item = items.find(i=>String(i.id)===String(id));
   if (!item) return;
   populateCatSelect('edit-cat');
+  pendingEditGlbData = null;
   document.getElementById('edit-id').value = item.id;
   document.getElementById('edit-name').value = item.name;
   setTimeout(() => setSelectedCats('edit', item.categories || [item.category]), 50);
-  document.getElementById('edit-glb').value = item.glbUrl||'';
   document.getElementById('edit-thumb').value = item.thumbnail||'';
   document.getElementById('edit-desc').value = item.desc||'';
   document.getElementById('edit-colors').value = (item.colors||[]).join(', ');
+  // show current glb status
+  const glbLabel = document.getElementById('edit-glb-label');
+  if (glbLabel) glbLabel.textContent = item.glbData ? '✓ Arquivo GLB atual mantido — clique para trocar' : 'Nenhum arquivo. Clique para adicionar .glb';
   // preview thumb
   const imgUrl = gdriveImg(item.thumbnail);
   const box = document.getElementById('edit-thumb-preview');
