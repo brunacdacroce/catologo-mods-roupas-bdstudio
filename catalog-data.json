@@ -421,6 +421,20 @@
       "desc": "",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781768090184,
+      "name": "Faixa de Olho #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Acessórios",
+        "Máscaras"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1yp4SFqhodrh8s3aiKbmMSXZ4UQFNmdN-/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
