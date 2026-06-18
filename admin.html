@@ -163,15 +163,30 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         <div class="stats">
           <div class="stat-card"><div class="stat-val" id="stat-total">0</div><div class="stat-label">Modelos</div></div>
           <div class="stat-card"><div class="stat-val" id="stat-cats">0</div><div class="stat-label">Subcategorias</div></div>
+          <div class="stat-card"><div class="stat-val" id="stat-sync">—</div><div class="stat-label">Último sync</div></div>
         </div>
+
         <div class="card-box">
-          <h3>Acesso Rápido</h3>
+          <h3>GitHub — Sincronização Automática</h3>
           <p style="font-size:0.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">
-            ⚠️ Os dados ficam salvos no localStorage deste navegador. Use sempre o mesmo navegador/computador. Faça backup regularmente.
+            Configure uma vez e o catálogo salva automaticamente no GitHub a cada alteração — acessível de qualquer lugar.
           </p>
+          <div id="token-status" style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;font-size:0.82rem;"></div>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <input type="password" id="token-input" placeholder="Cole seu GitHub Token aqui (ghp_...)" style="flex:1;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:0.6rem 0.85rem;border-radius:7px;font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;">
+            <button class="btn btn-primary btn-sm" onclick="saveToken()">Salvar token</button>
+            <button class="btn btn-danger btn-sm" onclick="clearToken()">Remover</button>
+          </div>
+          <div class="hint" style="margin-top:0.5rem">
+            <strong>Como gerar:</strong> github.com → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → marque <strong>repo</strong> → copie e cole aqui.
+          </div>
+        </div>
+
+        <div class="card-box">
+          <h3>Backup Manual</h3>
           <div class="btn-row">
-            <button class="btn btn-outline btn-sm" onclick="exportData()">Exportar backup JSON</button>
-            <label class="btn btn-outline btn-sm" style="cursor:pointer">Importar backup <input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
+            <button class="btn btn-outline btn-sm" onclick="exportData()">Exportar JSON</button>
+            <label class="btn btn-outline btn-sm" style="cursor:pointer">Importar JSON <input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
           </div>
         </div>
       </div>
@@ -336,9 +351,104 @@ function loadData() {
     }
   } catch(e) {}
 }
+const GITHUB_REPO = 'brunacdacroce/catologo-mods-roupas-bdstudio';
+const GITHUB_FILE = 'catalog-data.json';
+let GITHUB_TOKEN = localStorage.getItem('bd_github_token') || '';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      items = d.items || [];
+      categories = (d.categories || categories).filter(c => !GENDERS.includes(c));
+    }
+  } catch(e) {}
+}
+
 function saveData() {
-  // Store categories without genders; genders are implicit
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, categories }));
+  if (GITHUB_TOKEN) syncToGitHub();
+}
+
+// TOKEN
+function saveToken() {
+  const val = document.getElementById('token-input').value.trim();
+  if (!val) { showToast('Cole o token antes de salvar.','error'); return; }
+  GITHUB_TOKEN = val;
+  localStorage.setItem('bd_github_token', val);
+  document.getElementById('token-input').value = '';
+  updateTokenStatus();
+  showToast('Token salvo! Sync automático ativado.','success');
+}
+function clearToken() {
+  GITHUB_TOKEN = '';
+  localStorage.removeItem('bd_github_token');
+  updateTokenStatus();
+  showToast('Token removido.','success');
+}
+function updateTokenStatus() {
+  const el = document.getElementById('token-status');
+  if (!el) return;
+  if (GITHUB_TOKEN) {
+    el.innerHTML = '<span style="color:var(--green)">✓ Token configurado — sync automático ativo</span>';
+  } else {
+    el.innerHTML = '<span style="color:var(--red)">⚠️ Token não configurado — alterações não serão salvas online</span>';
+  }
+}
+
+// GITHUB SYNC
+async function getFileSHA() {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}?t=${Date.now()}`, {
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (r.status === 404) return null;
+    return (await r.json()).sha || null;
+  } catch(e) { return null; }
+}
+
+let syncTimer = null;
+function syncToGitHub() {
+  // debounce — espera 1s depois da última alteração pra não spammar a API
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    updateSyncStatus('⟳ Salvando...');
+    try {
+      const meta = {
+        categories,
+        items: items.map(i => ({
+          id: i.id, name: i.name, category: i.category,
+          categories: i.categories, glbUrl: i.glbUrl,
+          thumbnail: i.thumbnail, desc: i.desc
+        }))
+      };
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
+      const sha = await getFileSHA();
+      const body = { message: 'update catalog', content };
+      if (sha) body.sha = sha;
+      const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+        method: 'PUT',
+        headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!r.ok) throw new Error((await r.json()).message || r.status);
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+      updateSyncStatus('✓ ' + timeStr, true);
+    } catch(e) {
+      updateSyncStatus('✗ Erro: ' + e.message, false, true);
+      showToast('Erro ao sincronizar: ' + e.message, 'error');
+    }
+  }, 1000);
+}
+
+function updateSyncStatus(msg, ok, err) {
+  const el = document.getElementById('stat-sync');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.fontSize = ok || err ? '0.9rem' : '1rem';
+  el.style.color = ok ? 'var(--green)' : err ? 'var(--red)' : 'var(--muted)';
 }
 
 // LOGIN
@@ -346,12 +456,29 @@ function doLogin() {
   if (document.getElementById('pwd-input').value === ADMIN_PASSWORD) {
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='flex';
-    loadData(); renderAll();
+    loadData(); renderAll(); updateTokenStatus();
+    // Tenta carregar dados mais recentes do GitHub se token estiver configurado
+    if (GITHUB_TOKEN) loadFromGitHub();
   } else {
     document.getElementById('login-error').style.display='block';
     document.getElementById('pwd-input').value='';
     document.getElementById('pwd-input').focus();
   }
+}
+
+async function loadFromGitHub() {
+  try {
+    updateSyncStatus('⟳ Carregando...');
+    const r = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/${GITHUB_FILE}?t=${Date.now()}`);
+    if (!r.ok) { updateSyncStatus('—'); return; }
+    const d = await r.json();
+    if (!d.items) return;
+    items = d.items;
+    categories = (d.categories||[]).filter(c=>!GENDERS.includes(c));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({items,categories}));
+    renderAll();
+    updateSyncStatus('✓ Online', true);
+  } catch(e) { updateSyncStatus('—'); }
 }
 function doLogout() {
   document.getElementById('app').style.display='none';
