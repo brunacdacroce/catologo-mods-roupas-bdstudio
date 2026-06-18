@@ -410,6 +410,7 @@ async function syncToGitHub() {
     await saveFileToGitHub(GITHUB_FILE, btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2)))));
 
     // Save GLB only for items that have local glbData (new uploads)
+    await ensureModelsFolder();
     for (const item of items) {
       if (item.glbData && item.glbData.startsWith('data:')) {
         const base64 = item.glbData.split(',')[1];
@@ -448,9 +449,30 @@ async function saveFileToGitHub(path, base64Content) {
     body: JSON.stringify(body)
   });
   if (!res.ok) {
-    const err = await res.json();
+    const err = await res.json().catch(()=>({message:'Erro desconhecido'}));
     throw new Error(err.message || 'GitHub API error');
   }
+}
+
+async function ensureModelsFolder() {
+  // GitHub doesn't have real folders — create a .gitkeep if models/ doesn't exist
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/models/.gitkeep`, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) {
+      // Create it
+      await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/models/.gitkeep`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${GITHUB_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: 'Create models folder', content: btoa('') })
+      });
+    }
+  } catch(e) {}
 }
 
 // LOGIN
