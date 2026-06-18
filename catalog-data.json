@@ -425,8 +425,9 @@
     {
       "id": 1781768090184,
       "name": "Faixa de Olho #1",
-      "category": "Feminino",
+      "category": "Masculino",
       "categories": [
+        "Masculino",
         "Feminino",
         "Acessórios",
         "Máscaras"
