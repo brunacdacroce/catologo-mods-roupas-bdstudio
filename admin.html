@@ -465,16 +465,33 @@ async function syncToGitHub() {
 }
 
 async function getFileSHA(path) {
+  // Use refs API to get latest commit tree — more reliable for large files
   try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}?t=${Date.now()}`, {
+    // First try direct contents API
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
       headers: { 
         'Authorization': `token ${GITHUB_TOKEN}`, 
-        'Accept': 'application/vnd.github.v3+json',
-        'Cache-Control': 'no-cache, no-store'
+        'Accept': 'application/vnd.github.v3+json'
       }
     });
-    if (res.ok) { const d = await res.json(); return d.sha || null; }
-    return null;
+    if (res.ok) {
+      const d = await res.json();
+      if (d.sha) return d.sha;
+    }
+    // Fallback: use git trees API to find the file SHA
+    const refRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/git/refs/heads/main`, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!refRes.ok) return null;
+    const ref = await refRes.json();
+    const commitSha = ref.object.sha;
+    const treeRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/git/trees/${commitSha}?recursive=1`, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!treeRes.ok) return null;
+    const tree = await treeRes.json();
+    const file = (tree.tree || []).find(f => f.path === path);
+    return file ? file.sha : null;
   } catch(e) { return null; }
 }
 
