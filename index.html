@@ -643,9 +643,9 @@ async function initViewer(url) {
   document.getElementById('vc-color').classList.remove('active');
 
   try {
-    const THREE=await import('https://unpkg.com/three@0.128.0/build/three.module.js');
-    const {GLTFLoader}=await import('https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js');
-    const {OrbitControls}=await import('https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js');
+    const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js');
+    const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js');
+    const {OrbitControls}=await import('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js');
     const container=canvas.parentElement;
     const W=container.clientWidth,H=container.clientHeight;
     const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
