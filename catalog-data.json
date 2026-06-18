@@ -136,6 +136,21 @@
       "desc": "",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781758815074,
+      "name": "Camiseta #3",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Camisetas",
+        "Hospital",
+        "Mecânica"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1Xx3uD2tyRe6uvAKCaV6CHkfv9cRvMboV/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
