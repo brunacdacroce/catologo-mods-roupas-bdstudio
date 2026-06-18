@@ -24,7 +24,8 @@
     "Peça única (conjunto)",
     "Vanilla",
     "Coldres",
-    "Coletes"
+    "Coletes",
+    "Moletom"
   ],
   "items": [
     {
@@ -412,7 +413,8 @@
       "category": "Feminino",
       "categories": [
         "Feminino",
-        "Jaquetas"
+        "Jaquetas",
+        "Moletom"
       ],
       "thumbnail": "https://drive.google.com/file/d/1CMUEX8VH_LPOc64-WAFahsJXHi_z1h20/view?usp=drive_link",
       "desc": "",
