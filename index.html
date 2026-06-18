@@ -552,7 +552,7 @@ function renderGrid() {
   const grid=document.getElementById('items-grid');
   const label=document.getElementById('section-label');
   const filtered=items.filter(i=>{
-    const matchCat=activeCategory==='Todos'||i.category===activeCategory;
+    const matchCat=activeCategory==='Todos'||(i.categories||[i.category]).includes(activeCategory);
     const matchQ=!searchQuery||i.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat&&matchQ;
   });
@@ -567,7 +567,7 @@ function renderGrid() {
       <div class="card-thumb">
         ${imgUrl?`<img src="${imgUrl}" alt="${item.name}" onerror="this.style.display='none'">`:`<div class="thumb-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span>Modelo 3D</span></div>`}
         <div class="card-overlay"></div>
-        <span class="card-badge">${item.category}</span>
+        <span class="card-badge">${(item.categories||[item.category]).join(' · ')}</span>
       </div>
       <div class="card-body">
         <div class="card-name">${item.name}</div>
@@ -587,8 +587,8 @@ document.getElementById('search-input').addEventListener('input',e=>{ searchQuer
 async function openModal(id) {
   const item=items.find(i=>String(i.id)===String(id)); if(!item) return;
   document.getElementById('modal-name').textContent=item.name;
-  document.getElementById('modal-cat').textContent=item.category;
-  document.getElementById('s-cat').textContent=item.category;
+  document.getElementById('modal-cat').textContent=(item.categories||[item.category]).join(' · ');
+  document.getElementById('s-cat').textContent=(item.categories||[item.category]).join(', ');
   document.getElementById('s-desc').textContent=item.desc||'Sem descrição.';
   const colorsEl=document.getElementById('s-colors');
   const colorsBlock=document.getElementById('s-colors-block');
@@ -597,8 +597,8 @@ async function openModal(id) {
   document.getElementById('modal').classList.add('open');
   document.getElementById('viewer-loading').style.display='flex';
   document.getElementById('viewer-loading').innerHTML='<div class="spinner"></div><span>Carregando modelo...</span>';
-  if(item.glbUrl) await initViewer(gdriveDirect(item.glbUrl));
-  else document.getElementById('viewer-loading').innerHTML='<span style="color:var(--muted);font-size:0.82rem">URL do modelo não configurada.</span>';
+  if(item.glbData) await initViewer(item.glbData);
+  else document.getElementById('viewer-loading').innerHTML='<span style="color:var(--muted);font-size:0.82rem">Arquivo 3D não encontrado.</span>';
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); if(currentViewer){currentViewer.dispose();currentViewer=null;} }
 document.getElementById('modal-close-btn').addEventListener('click',closeModal);
