@@ -1,0 +1,150 @@
+{
+  "categories": [
+    "Feminino",
+    "Masculino",
+    "Calças",
+    "Camisetas",
+    "Jaquetas",
+    "Croppeds",
+    "Saias",
+    "Calções",
+    "Macacões",
+    "Hospital",
+    "Mecânica",
+    "Policia",
+    "Restaurante",
+    "Acessórios",
+    "Manguitos",
+    "Máscaras",
+    "Óculos",
+    "Sapatos",
+    "Bikinis | Calcinhas",
+    "Juicy Body (Bundão)"
+  ],
+  "items": [
+    {
+      "id": 1781752450375,
+      "name": "Máscara #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Policia",
+        "Máscaras"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1LHOtVnTAouXwV3rU4Dl50y9a_Xfumqy7/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781752638916,
+      "name": "Camiseta #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Camisetas",
+        "Hospital",
+        "Mecânica",
+        "Policia",
+        "Restaurante"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1EZj1vkceOFeSLQf6Azcd0kWMHa3IQtpl/view?usp=sharing",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781754389171,
+      "name": "Calça #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Calças"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1LmuDwwQbp7PwXeOcvZTdiwiPqC9A4ez7/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781755247412,
+      "name": "Calça #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calças"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1bmL79vu0mdNpZqNsNT3T8saNMFVnJSjx/view?usp=sharing",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781756124935,
+      "name": "Camiseta #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Camisetas",
+        "Hospital",
+        "Mecânica",
+        "Policia",
+        "Restaurante"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1LEEm3UlipYbZiNlglWCCcQXw3aKGa6M9/view?usp=sharing",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781757157267,
+      "name": "Camiseta #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Camisetas",
+        "Hospital",
+        "Mecânica",
+        "Policia",
+        "Restaurante"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1LEEm3UlipYbZiNlglWCCcQXw3aKGa6M9/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781757313400,
+      "name": "Camiseta #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Camisetas",
+        "Mecânica",
+        "Policia",
+        "Restaurante"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1LEEm3UlipYbZiNlglWCCcQXw3aKGa6M9/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781757349614,
+      "name": "Camiseta #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Camisetas",
+        "Hospital",
+        "Mecânica",
+        "Policia",
+        "Restaurante"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1LEEm3UlipYbZiNlglWCCcQXw3aKGa6M9/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    }
+  ]
+}
