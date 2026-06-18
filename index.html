@@ -480,7 +480,7 @@ let activeGender = 'Todos', activeSubcat = 'Todos', searchQuery = '', currentVie
 async function loadData() {
   // Try GitHub first
   try {
-    const res = await fetch('https://raw.githubusercontent.com/brunacdacroce/catalogo-mods-roupas-bdstudio/main/catalog-data.json?t=' + Date.now());
+    const res = await fetch('https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/catalog-data.json?t=' + Date.now());
     if (res.ok) {
       const d = await res.json();
       categories = d.categories || categories;
@@ -488,7 +488,7 @@ async function loadData() {
       items = await Promise.all((d.items||[]).map(async item => {
         if (item.hasGlb) {
           try {
-            const glbRes = await fetch(`https://raw.githubusercontent.com/brunacdacroce/catalogo-mods-roupas-bdstudio/main/models/${item.id}.glb?t=` + Date.now());
+            const glbRes = await fetch(`https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/${item.id}.glb?t=` + Date.now());
             if (glbRes.ok) {
               const buf = await glbRes.arrayBuffer();
               const bytes = new Uint8Array(buf);
