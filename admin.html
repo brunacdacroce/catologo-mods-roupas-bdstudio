@@ -374,7 +374,27 @@ function loadData() {
   try { const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); items=d.items||[]; categories=d.categories||categories; } catch(e){}
 }
 function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({items,categories}));
+  // Don't save glbData in localStorage — too large. Only save metadata.
+  const lightweight = {
+    categories,
+    items: items.map(i => ({
+      id: i.id,
+      name: i.name,
+      category: i.category,
+      categories: i.categories,
+      thumbnail: i.thumbnail,
+      desc: i.desc,
+      colors: i.colors,
+      glbData: i.glbData === 'uploaded' ? 'uploaded' : null
+    }))
+  };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(lightweight));
+  } catch(e) {
+    // If still too large, clear and retry
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(lightweight));
+  }
 }
 
 function saveToken() {
