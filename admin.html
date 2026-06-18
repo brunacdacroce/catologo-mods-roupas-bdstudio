@@ -401,10 +401,22 @@ function updateTokenUI() {
 
 async function syncToGitHub() {
   if (!GITHUB_TOKEN) { showToast('Configure o GitHub Token no Dashboard primeiro.','error'); return; }
-  showToast('Salvando no servidor...','success');
+  showToast('Publicando...','success');
   try {
-    // Prepare data without large base64 glbData for JSON file
-    // We store glbData separately per item as individual files
+    // 1. Upload GLBs first (new files only)
+    await ensureModelsFolder();
+    for (const item of items) {
+      if (item.glbData && item.glbData.startsWith('data:')) {
+        const base64 = item.glbData.split(',')[1];
+        if (base64) {
+          await saveFileToGitHub(`models/${item.id}.glb`, base64);
+          // Mark as uploaded (remove base64 from memory, keep reference)
+          item.glbData = 'uploaded';
+        }
+      }
+    }
+
+    // 2. Build metadata
     const meta = {
       categories,
       items: items.map(i => ({
@@ -415,25 +427,17 @@ async function syncToGitHub() {
         thumbnail: i.thumbnail,
         desc: i.desc,
         colors: i.colors,
-        hasGlb: !!i.glbData
+        hasGlb: !!(i.glbData)
       }))
     };
 
-    // Save metadata JSON
-    await saveFileToGitHub(GITHUB_FILE, btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2)))));
+    // 3. Always get FRESH SHA right before saving catalog JSON
+    const freshSha = await getFileSHA(GITHUB_FILE);
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
+    await saveFileToGitHubWithSHA(GITHUB_FILE, b64, freshSha);
 
-    // Save GLB only for items that have local glbData (new uploads)
-    await ensureModelsFolder();
-    for (const item of items) {
-      if (item.glbData && item.glbData.startsWith('data:')) {
-        const base64 = item.glbData.split(',')[1];
-        if (base64) {
-          await saveFileToGitHub(`models/${item.id}.glb`, base64);
-        }
-      }
-    }
-
-    showToast('Catálogo salvo e publicado!','success');
+    saveData();
+    showToast('Catálogo publicado com sucesso!','success');
   } catch(e) {
     showToast('Erro ao salvar: ' + e.message,'error');
   }
@@ -441,12 +445,47 @@ async function syncToGitHub() {
 
 async function getFileSHA(path) {
   try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}?t=${Date.now()}`, {
+      headers: { 
+        'Authorization': `token ${GITHUB_TOKEN}`, 
+        'Accept': 'application/vnd.github.v3+json',
+        'Cache-Control': 'no-cache, no-store'
+      }
     });
     if (res.ok) { const d = await res.json(); return d.sha || null; }
     return null;
   } catch(e) { return null; }
+}
+
+async function saveFileToGitHubWithSHA(path, base64Content, sha) {
+  const body = { message: `Update ${path}`, content: base64Content };
+  if (sha) body.sha = sha;
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (res.ok) return;
+  const err = await res.json().catch(()=>({message:'Erro desconhecido'}));
+  // One more retry with even fresher SHA
+  if (err.message && (err.message.includes('expected') || err.message.includes('sha'))) {
+    const sha2 = await getFileSHA(path);
+    const body2 = { message: `Update ${path}`, content: base64Content };
+    if (sha2) body2.sha = sha2;
+    const res2 = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body2)
+    });
+    if (res2.ok) return;
+    const err2 = await res2.json().catch(()=>({message:'Erro desconhecido'}));
+    throw new Error(err2.message);
+  }
+  throw new Error(err.message || 'GitHub API error');
 }
 
 async function saveFileToGitHub(path, base64Content) {
