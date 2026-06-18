@@ -680,6 +680,7 @@ dropArea.addEventListener('drop', e => {
 });
 
 function addModel() {
+  const btn = document.getElementById('btn-add-model');
   const name = document.getElementById('add-name').value.trim();
   const cats = getSelectedCats('add');
   const thumb = document.getElementById('add-thumb').value.trim();
