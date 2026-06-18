@@ -232,7 +232,12 @@ tr:hover td{background:rgba(255,45,120,0.03);}
               <input type="text" id="add-name" placeholder="Ex: Conjunto Streetwear Feminino">
             </div>
             <div class="form-group">
-              <label>Categoria *</label>
+              <label>Gênero *</label>
+              <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+                <input type="checkbox" id="chk-add-gender-Masculino" value="Masculino" class="cat-check"><label class="cat-check-label" for="chk-add-gender-Masculino">Masculino</label>
+                <input type="checkbox" id="chk-add-gender-Feminino" value="Feminino" class="cat-check"><label class="cat-check-label" for="chk-add-gender-Feminino">Feminino</label>
+              </div>
+              <label>Subcategorias</label>
               <div class="cat-multi" id="add-cat-multi"></div>
             </div>
           </div>
@@ -316,7 +321,15 @@ tr:hover td{background:rgba(255,45,120,0.03);}
     <div class="edit-modal-body">
       <input type="hidden" id="edit-id">
       <div class="form-group"><label>Nome *</label><input type="text" id="edit-name"></div>
-      <div class="form-group"><label>Categorias *</label><div class="cat-multi" id="edit-cat-multi"></div></div>
+      <div class="form-group">
+        <label>Gênero *</label>
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+          <input type="checkbox" id="chk-edit-gender-Masculino" value="Masculino" class="cat-check"><label class="cat-check-label" for="chk-edit-gender-Masculino">Masculino</label>
+          <input type="checkbox" id="chk-edit-gender-Feminino" value="Feminino" class="cat-check"><label class="cat-check-label" for="chk-edit-gender-Feminino">Feminino</label>
+        </div>
+        <label>Subcategorias</label>
+        <div class="cat-multi" id="edit-cat-multi"></div>
+      </div>
 
       <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;gap:1rem;align-items:flex-start;">
         <div class="thumb-preview-box" id="edit-thumb-preview" style="width:72px;height:72px;border-radius:6px;flex-shrink:0;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -754,31 +767,43 @@ function addCategory() {
 
 function removeCategory(i) {
   const cat = categories[i];
+  if (GENDERS.includes(cat)) { showToast('Masculino e Feminino não podem ser removidos.','error'); return; }
   if (items.some(item=>(item.categories||[item.category]).includes(cat))) { showToast(`Não é possível excluir: há modelos em "${cat}". Mova-os primeiro.`,'error'); return; }
   categories.splice(i,1); saveData(); renderAll();
   showToast(`Categoria "${cat}" excluída.`,'success');
 }
+const GENDERS = ['Masculino','Feminino'];
+
 function populateCatSelect(id) {
-  // id is now 'add-cat' or 'edit-cat' — render checkboxes
   const suffix = id === 'add-cat' ? 'add' : 'edit';
   const container = document.getElementById(suffix+'-cat-multi');
   if (!container) return;
-  container.innerHTML = categories.map(c => `
+  const subcats = categories.filter(c => !GENDERS.includes(c));
+  container.innerHTML = subcats.map(c => `
     <input type="checkbox" class="cat-check" id="chk-${suffix}-${c}" value="${c}">
     <label class="cat-check-label" for="chk-${suffix}-${c}">${c}</label>
   `).join('');
 }
 
 function getSelectedCats(suffix) {
-  return categories.filter(c => {
-    const el = document.getElementById('chk-'+suffix+'-'+c);
+  const genders = GENDERS.filter(g => {
+    const el = document.getElementById('chk-'+suffix+'-gender-'+g);
     return el && el.checked;
   });
+  const subcats = categories.filter(c => !GENDERS.includes(c) && (() => {
+    const el = document.getElementById('chk-'+suffix+'-'+c);
+    return el && el.checked;
+  })());
+  return [...genders, ...subcats];
 }
 
 function setSelectedCats(suffix, selected) {
   const arr = Array.isArray(selected) ? selected : [selected];
-  categories.forEach(c => {
+  GENDERS.forEach(g => {
+    const el = document.getElementById('chk-'+suffix+'-gender-'+g);
+    if (el) el.checked = arr.includes(g);
+  });
+  categories.filter(c=>!GENDERS.includes(c)).forEach(c => {
     const el = document.getElementById('chk-'+suffix+'-'+c);
     if (el) el.checked = arr.includes(c);
   });
