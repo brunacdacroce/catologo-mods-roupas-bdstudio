@@ -77,6 +77,11 @@ header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop
 .btn-danger:hover{background:rgba(239,68,68,0.1);}
 .btn-sm{padding:0.4rem 0.85rem;font-size:0.78rem;}
 .btn-row{display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap;}
+.cat-multi{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.cat-check{display:none;}
+.cat-check-label{display:flex;align-items:center;gap:0.35rem;background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:0.4rem 0.85rem;border-radius:999px;font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.2s;user-select:none;}
+.cat-check-label:hover{border-color:var(--pink);color:var(--text);}
+.cat-check:checked + .cat-check-label{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
 
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
@@ -214,7 +219,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
             </div>
             <div class="form-group">
               <label>Categoria *</label>
-              <select id="add-cat"></select>
+              <div class="cat-multi" id="add-cat-multi"></div>
             </div>
           </div>
           <div class="form-grid full" style="margin-top:0.75rem">
@@ -252,11 +257,12 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         <div class="card-box">
           <h3>Arquivo 3D (.GLB)</h3>
           <div class="form-group">
-            <label>Link do Google Drive (.glb) *</label>
-            <input type="url" id="add-glb" placeholder="https://drive.google.com/file/d/ID/view?usp=sharing">
-            <span class="hint">
-              <strong>Como pegar o link:</strong> No Drive, clique com botão direito no .glb → Compartilhar → "Qualquer pessoa com o link" → Copiar link.
-            </span>
+            <label>Selecionar arquivo .glb do PC *</label>
+            <div id="glb-drop-area" style="border:2px dashed var(--border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s;" onclick="document.getElementById('add-glb-file').click()">
+              <input type="file" id="add-glb-file" accept=".glb,.gltf" style="display:none">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--muted);margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p id="glb-drop-label" style="font-size:0.85rem;color:var(--muted)">Clique aqui ou arraste o arquivo .glb</p>
+            </div>
           </div>
         </div>
 
@@ -296,7 +302,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
     <div class="edit-modal-body">
       <input type="hidden" id="edit-id">
       <div class="form-group"><label>Nome *</label><input type="text" id="edit-name"></div>
-      <div class="form-group"><label>Categoria *</label><select id="edit-cat"></select></div>
+      <div class="form-group"><label>Categorias *</label><div class="cat-multi" id="edit-cat-multi"></div></div>
 
       <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;gap:1rem;align-items:flex-start;">
         <div class="thumb-preview-box" id="edit-thumb-preview" style="width:72px;height:72px;border-radius:6px;flex-shrink:0;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -308,7 +314,13 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         </div>
       </div>
 
-      <div class="form-group"><label>Link GLB (Google Drive) *</label><input type="url" id="edit-glb" placeholder="https://drive.google.com/file/d/..."></div>
+      <div class="form-group">
+        <label>Substituir arquivo .glb (opcional)</label>
+        <div style="border:2px dashed var(--border);border-radius:8px;padding:1rem;text-align:center;cursor:pointer;" onclick="document.getElementById('edit-glb-file').click()">
+          <input type="file" id="edit-glb-file" accept=".glb,.gltf" style="display:none">
+          <p id="edit-glb-label" style="font-size:0.82rem;color:var(--muted)">Clique para trocar o arquivo .glb</p>
+        </div>
+      </div>
       <div class="form-group"><label>Descrição</label><textarea id="edit-desc"></textarea></div>
       <div class="form-group"><label>Cores (hex, separados por vírgula)</label><input type="text" id="edit-colors"></div>
       <div class="btn-row">
@@ -408,7 +420,7 @@ function renderModelsTable() {
     return `<tr>
       <td><div class="thumb-tiny">${imgUrl ? `<img src="${imgUrl}" onerror="this.style.display='none'">` : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`}</div></td>
       <td style="font-weight:500">${item.name}</td>
-      <td><span class="badge badge-cat">${item.category}</span></td>
+      <td>${(item.categories||[item.category]).map(c=>`<span class="badge badge-cat" style="margin-right:3px">${c}</span>`).join("")}</td>
       <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:0.75rem">${item.glbUrl ? '✓ configurado' : '—'}</td>
       <td><div style="display:flex;gap:0.5rem">
         <button class="btn btn-outline btn-sm" onclick="openEdit('${item.id}')">Editar</button>
@@ -419,25 +431,72 @@ function renderModelsTable() {
 }
 
 // ADD
+let pendingGlbData = null;
+let pendingEditGlbData = null;
+
+document.getElementById('add-glb-file').addEventListener('change', function() {
+  const file = this.files[0]; if (!file) return;
+  document.getElementById('glb-drop-label').textContent = 'Lendo arquivo...';
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingGlbData = e.target.result;
+    document.getElementById('glb-drop-label').textContent = '✓ ' + file.name;
+    document.getElementById('glb-drop-area').style.borderColor = 'var(--pink)';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('edit-glb-file').addEventListener('change', function() {
+  const file = this.files[0]; if (!file) return;
+  document.getElementById('edit-glb-label').textContent = 'Lendo arquivo...';
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingEditGlbData = e.target.result;
+    document.getElementById('edit-glb-label').textContent = '✓ ' + file.name;
+  };
+  reader.readAsDataURL(file);
+});
+
+// Drag & drop GLB
+const dropArea = document.getElementById('glb-drop-area');
+dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='var(--pink)'; });
+dropArea.addEventListener('dragleave', () => { if(!pendingGlbData) dropArea.style.borderColor=''; });
+dropArea.addEventListener('drop', e => {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (!file || !/\.(glb|gltf)$/i.test(file.name)) { showToast('Arquivo inválido. Use .glb ou .gltf','error'); return; }
+  document.getElementById('glb-drop-label').textContent = 'Lendo arquivo...';
+  const reader = new FileReader();
+  reader.onload = ev => {
+    pendingGlbData = ev.target.result;
+    document.getElementById('glb-drop-label').textContent = '✓ ' + file.name;
+    dropArea.style.borderColor = 'var(--pink)';
+  };
+  reader.readAsDataURL(file);
+});
+
 function addModel() {
   const name = document.getElementById('add-name').value.trim();
-  const cat = document.getElementById('add-cat').value;
-  const glbUrl = document.getElementById('add-glb').value.trim();
+  const cats = getSelectedCats('add');
   const thumb = document.getElementById('add-thumb').value.trim();
   const desc = document.getElementById('add-desc').value.trim();
   const colorsRaw = document.getElementById('add-colors').value.trim();
   if (!name) { showToast('Preencha o nome da roupa.','error'); return; }
-  if (!glbUrl) { showToast('Cole o link do arquivo .glb.','error'); return; }
+  if (!cats.length) { showToast('Selecione pelo menos uma categoria.','error'); return; }
+  if (!pendingGlbData) { showToast('Selecione o arquivo .glb.','error'); return; }
   if (!thumb) { showToast('Cole o link da foto PNG.','error'); return; }
   const colors = colorsRaw ? colorsRaw.split(',').map(c=>c.trim()).filter(Boolean) : [];
-  items.push({ id: Date.now(), name, category: cat, glbUrl, thumbnail: thumb, desc, colors });
+  items.push({ id: Date.now(), name, categories: cats, category: cats[0], glbData: pendingGlbData, thumbnail: thumb, desc, colors });
   saveData(); renderAll(); clearAddForm();
   showToast('Modelo adicionado!','success');
 }
 
 function clearAddForm() {
-  ['add-name','add-glb','add-thumb','add-desc','add-colors'].forEach(id=>document.getElementById(id).value='');
+  ['add-name','add-thumb','add-desc','add-colors'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
+  pendingGlbData = null;
+  document.getElementById('glb-drop-label').textContent = 'Clique aqui ou arraste o arquivo .glb';
+  document.getElementById('glb-drop-area').style.borderColor = '';
 }
 
 // DELETE
@@ -455,7 +514,7 @@ function openEdit(id) {
   populateCatSelect('edit-cat');
   document.getElementById('edit-id').value = item.id;
   document.getElementById('edit-name').value = item.name;
-  document.getElementById('edit-cat').value = item.category;
+  setTimeout(() => setSelectedCats('edit', item.categories || [item.category]), 50);
   document.getElementById('edit-glb').value = item.glbUrl||'';
   document.getElementById('edit-thumb').value = item.thumbnail||'';
   document.getElementById('edit-desc').value = item.desc||'';
@@ -474,12 +533,15 @@ function saveEdit() {
   const colorsRaw = document.getElementById('edit-colors').value.trim();
   items[idx] = { ...items[idx],
     name: document.getElementById('edit-name').value.trim(),
-    category: document.getElementById('edit-cat').value,
-    glbUrl: document.getElementById('edit-glb').value.trim(),
+    categories: getSelectedCats('edit'),
+    category: getSelectedCats('edit')[0] || items[idx].category,
+    glbData: pendingEditGlbData || items[idx].glbData,
     thumbnail: document.getElementById('edit-thumb').value.trim()||null,
     desc: document.getElementById('edit-desc').value.trim(),
     colors: colorsRaw ? colorsRaw.split(',').map(c=>c.trim()).filter(Boolean) : [],
   };
+  pendingEditGlbData = null;
+  document.getElementById('edit-glb-label').textContent = 'Clique para trocar o arquivo .glb';
   saveData(); renderAll(); closeEdit();
   showToast('Modelo atualizado!','success');
 }
@@ -539,7 +601,7 @@ function saveEditCat(i) {
   if (categories.includes(val) && categories[i]!==val) { showToast('Categoria já existe.','error'); return; }
   const old = categories[i];
   categories[i] = val;
-  items.forEach(item=>{ if(item.category===old) item.category=val; });
+  items.forEach(item=>{ if(item.category===old) item.category=val; if(item.categories) item.categories=item.categories.map(c=>c===old?val:c); });
   saveData(); renderAll();
   showToast(`Categoria renomeada para "${val}".`,'success');
 }
@@ -554,14 +616,34 @@ function addCategory() {
 
 function removeCategory(i) {
   const cat = categories[i];
-  if (items.some(item=>item.category===cat)) { showToast(`Não é possível excluir: há modelos em "${cat}". Mova-os primeiro.`,'error'); return; }
+  if (items.some(item=>(item.categories||[item.category]).includes(cat))) { showToast(`Não é possível excluir: há modelos em "${cat}". Mova-os primeiro.`,'error'); return; }
   categories.splice(i,1); saveData(); renderAll();
   showToast(`Categoria "${cat}" excluída.`,'success');
 }
 function populateCatSelect(id) {
-  const sel=document.getElementById(id); const cur=sel.value;
-  sel.innerHTML=categories.map(c=>`<option value="${c}">${c}</option>`).join('');
-  if (categories.includes(cur)) sel.value=cur;
+  // id is now 'add-cat' or 'edit-cat' — render checkboxes
+  const suffix = id === 'add-cat' ? 'add' : 'edit';
+  const container = document.getElementById(suffix+'-cat-multi');
+  if (!container) return;
+  container.innerHTML = categories.map(c => `
+    <input type="checkbox" class="cat-check" id="chk-${suffix}-${c}" value="${c}">
+    <label class="cat-check-label" for="chk-${suffix}-${c}">${c}</label>
+  `).join('');
+}
+
+function getSelectedCats(suffix) {
+  return categories.filter(c => {
+    const el = document.getElementById('chk-'+suffix+'-'+c);
+    return el && el.checked;
+  });
+}
+
+function setSelectedCats(suffix, selected) {
+  const arr = Array.isArray(selected) ? selected : [selected];
+  categories.forEach(c => {
+    const el = document.getElementById('chk-'+suffix+'-'+c);
+    if (el) el.checked = arr.includes(c);
+  });
 }
 
 // BACKUP
