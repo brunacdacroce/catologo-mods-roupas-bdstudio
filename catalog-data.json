@@ -20,7 +20,9 @@
     "Sapatos",
     "Bikinis | Calcinhas",
     "Juicy Body (Bundão)",
-    "Espartilho"
+    "Espartilho",
+    "Peça única (conjunto)",
+    "Vanilla"
   ],
   "items": [
     {
@@ -296,7 +298,8 @@
       "categories": [
         "Feminino",
         "Croppeds",
-        "Espartilho"
+        "Espartilho",
+        "Vanilla"
       ],
       "thumbnail": "https://drive.google.com/file/d/1Pv-I_h5GJAsNHOkEyIczWLaAyX9G_JGM/view?usp=drive_link",
       "desc": "",
