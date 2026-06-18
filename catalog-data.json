@@ -405,6 +405,19 @@
       "desc": "",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781767892083,
+      "name": "Jaqueta #5",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Jaquetas"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1CMUEX8VH_LPOc64-WAFahsJXHi_z1h20/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
