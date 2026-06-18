@@ -661,7 +661,7 @@ async function initViewer(url) {
     const OrbitControls = THREE.OrbitControls || window.THREE.OrbitControls;
     const container=canvas.parentElement;
     const W=container.clientWidth,H=container.clientHeight;
-    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
     renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
     renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
     const scene=new THREE.Scene();scene.background=new THREE.Color(0x111118);
