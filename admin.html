@@ -14,7 +14,6 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--dark);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;}
-
 #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;}
 .login-box{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:380px;text-align:center;}
 .login-logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.08em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.25rem;}
@@ -24,7 +23,6 @@ body{background:var(--dark);color:var(--text);font-family:'Outfit',sans-serif;mi
 .login-btn{width:100%;padding:0.75rem;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;letter-spacing:0.06em;transition:opacity 0.2s;}
 .login-btn:hover{opacity:0.85;}
 .login-error{color:var(--red);font-size:0.82rem;margin-top:0.75rem;display:none;}
-
 #app{display:none;flex-direction:column;min-height:100vh;}
 header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.08em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -40,8 +38,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop
 .nav-item svg{flex-shrink:0;opacity:0.7;}
 .nav-item.active svg{opacity:1;}
 .content{flex:1;padding:1.75rem;overflow-y:auto;}
-.page{display:none;}
-.page.active{display:block;}
+.page{display:none;}.page.active{display:block;}
 .page-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.08em;margin-bottom:0.25rem;}
 .page-sub{color:var(--muted);font-size:0.85rem;margin-bottom:2rem;}
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
@@ -61,6 +58,14 @@ header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop
 .hint{font-size:0.72rem;color:var(--muted);margin-top:0.25rem;line-height:1.5;}
 .hint strong{color:var(--text);}
 
+/* GENDER + SUBCAT CHECKBOXES */
+.check-group{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.25rem;}
+.check-pill input[type=checkbox]{display:none;}
+.check-pill label{display:inline-flex;align-items:center;gap:0.3rem;background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:0.4rem 0.85rem;border-radius:999px;font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.2s;user-select:none;}
+.check-pill label:hover{border-color:var(--pink);color:var(--text);}
+.check-pill input[type=checkbox]:checked + label{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
+
+/* THUMB PREVIEW */
 .thumb-upload-area{display:flex;gap:1rem;align-items:flex-start;}
 .thumb-preview-box{width:90px;height:90px;border-radius:8px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
 .thumb-preview-box img{width:100%;height:100%;object-fit:cover;}
@@ -76,11 +81,6 @@ header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop
 .btn-danger:hover{background:rgba(239,68,68,0.1);}
 .btn-sm{padding:0.4rem 0.85rem;font-size:0.78rem;}
 .btn-row{display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap;}
-.cat-multi{display:flex;flex-wrap:wrap;gap:0.4rem;}
-.cat-check{display:none;}
-.cat-check-label{display:flex;align-items:center;gap:0.35rem;background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:0.4rem 0.85rem;border-radius:999px;font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.2s;user-select:none;}
-.cat-check-label:hover{border-color:var(--pink);color:var(--text);}
-.cat-check:checked + .cat-check-label{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
 
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
@@ -89,21 +89,14 @@ td{padding:0.75rem 0.85rem;font-size:0.88rem;border-bottom:1px solid rgba(255,45
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:rgba(255,45,120,0.03);}
 .badge{display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:0.06em;padding:0.2rem 0.55rem;border-radius:999px;text-transform:uppercase;}
-.badge-ok{background:rgba(34,197,94,0.15);color:var(--green);}
-.badge-no{background:rgba(239,68,68,0.1);color:var(--red);}
+.badge-cat{background:rgba(155,48,255,0.15);color:var(--purple);}
 .thumb-tiny{width:44px;height:44px;border-radius:6px;background:var(--dark3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 .thumb-tiny img{width:100%;height:100%;object-fit:cover;}
 
 .cat-list{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;}
-.cat-tag{display:flex;align-items:center;gap:0.3rem;background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:0.45rem 0.6rem 0.45rem 0.9rem;font-size:0.84rem;}
-.cat-tag-name{flex:1;}
-.cat-tag-editing{display:none;flex:1;}
-.cat-tag-editing input{background:transparent;border:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.84rem;outline:none;width:100%;}
-.cat-action{background:none;border:none;color:var(--muted);cursor:pointer;line-height:0;padding:2px;border-radius:4px;transition:color 0.2s;}
-.cat-action:hover.edit{color:var(--pink);}
-.cat-action:hover.remove{color:var(--red);}
-.cat-action.save{color:var(--green);}
-.cat-action.cancel-edit{color:var(--muted);}
+.cat-tag{display:flex;align-items:center;gap:0.4rem;background:var(--dark3);border:1px solid var(--border);border-radius:999px;padding:0.35rem 0.6rem 0.35rem 0.85rem;font-size:0.82rem;}
+.cat-remove{background:none;border:none;color:var(--muted);cursor:pointer;line-height:0;padding:0;transition:color 0.2s;}
+.cat-remove:hover{color:var(--red);}
 .cat-add-row{display:flex;gap:0.5rem;}
 .cat-add-row input{flex:1;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:0.55rem 0.85rem;border-radius:7px;font-family:'Outfit',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
 .cat-add-row input:focus{border-color:var(--pink);}
@@ -112,7 +105,6 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 .toast.show{display:flex;}
 .toast.success{border-color:rgba(34,197,94,0.4);color:var(--green);}
 .toast.error{border-color:rgba(239,68,68,0.4);color:var(--red);}
-.toast.info{border-color:rgba(155,48,255,0.4);color:var(--purple);}
 
 .edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem;}
 .edit-overlay.open{display:flex;}
@@ -122,12 +114,6 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 .edit-modal-body{padding:1.5rem;display:flex;flex-direction:column;gap:0.85rem;}
 .edit-close{background:none;border:none;color:var(--muted);cursor:pointer;line-height:0;}
 .edit-close:hover{color:var(--text);}
-
-.drop-area{border:2px dashed var(--border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s;}
-.drop-area:hover{border-color:var(--pink);}
-.drop-area.has-file{border-color:var(--green);background:rgba(34,197,94,0.04);}
-.progress-bar{width:100%;height:4px;background:var(--dark3);border-radius:2px;margin-top:0.75rem;display:none;}
-.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:2px;width:0%;transition:width 0.3s;}
 
 @media(max-width:640px){.sidebar{display:none;}.form-grid{grid-template-columns:1fr;}}
 </style>
@@ -155,20 +141,16 @@ tr:hover td{background:rgba(255,45,120,0.03);}
   <div class="main">
     <nav class="sidebar">
       <div class="nav-item active" data-page="dashboard">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        Dashboard
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard
       </div>
       <div class="nav-item" data-page="models">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        Modelos
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Modelos
       </div>
       <div class="nav-item" data-page="add">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-        Adicionar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>Adicionar
       </div>
       <div class="nav-item" data-page="categories">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-        Categorias
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Categorias
       </div>
     </nav>
 
@@ -180,33 +162,17 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         <div class="page-sub">Visão geral do catálogo</div>
         <div class="stats">
           <div class="stat-card"><div class="stat-val" id="stat-total">0</div><div class="stat-label">Modelos</div></div>
-          <div class="stat-card"><div class="stat-val" id="stat-cats">0</div><div class="stat-label">Categorias</div></div>
+          <div class="stat-card"><div class="stat-val" id="stat-cats">0</div><div class="stat-label">Subcategorias</div></div>
         </div>
         <div class="card-box">
-          <h3>Configuração GitHub</h3>
-          <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:1rem">
-            Repositório: <code style="color:var(--pink);font-size:0.82rem" id="repo-display">brunacdacroce/catologo-mods-roupas-bdstudio</code>
+          <h3>Acesso Rápido</h3>
+          <p style="font-size:0.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">
+            ⚠️ Os dados ficam salvos no localStorage deste navegador. Use sempre o mesmo navegador/computador. Faça backup regularmente.
           </p>
-          <div id="token-section" style="padding:1rem;background:var(--dark3);border:1px solid var(--border);border-radius:8px;">
-            <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">GitHub Token</div>
-            <div id="token-set-info" style="display:none;font-size:0.82rem;color:var(--green);margin-bottom:0.5rem;">✓ Token configurado</div>
-            <div id="token-not-set" style="font-size:0.82rem;color:var(--red);margin-bottom:0.5rem;">⚠️ Token não configurado — publicação desativada</div>
-            <div style="display:flex;gap:0.5rem;align-items:center;">
-              <input type="password" id="token-input" placeholder="Cole seu GitHub token aqui" style="flex:1;background:var(--dark);border:1px solid var(--border);color:var(--text);padding:0.55rem 0.85rem;border-radius:7px;font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;">
-              <button class="btn btn-primary btn-sm" onclick="saveToken()">Salvar</button>
-              <button class="btn btn-danger btn-sm" onclick="clearToken()">Limpar</button>
-            </div>
-          </div>
           <div class="btn-row">
-            <button class="btn btn-primary" id="publish-btn" onclick="syncToGitHub()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Publicar catálogo
-            </button>
             <button class="btn btn-outline btn-sm" onclick="exportData()">Exportar backup JSON</button>
             <label class="btn btn-outline btn-sm" style="cursor:pointer">Importar backup <input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
           </div>
-          <div class="progress-bar" id="publish-progress"><div class="progress-bar-fill" id="publish-progress-fill"></div></div>
-          <div id="publish-log" style="margin-top:0.75rem;font-size:0.78rem;color:var(--muted);display:none;"></div>
         </div>
       </div>
 
@@ -215,18 +181,9 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         <div class="page-title">Modelos</div>
         <div class="page-sub">Todos os modelos cadastrados</div>
         <div class="card-box">
-          <div style="display:flex;justify-content:flex-end;margin-bottom:0.75rem;">
-            <button class="btn btn-danger btn-sm" id="bulk-delete-btn" style="display:none" onclick="bulkDelete()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-              Excluir selecionados (<span id="selected-count">0</span>)
-            </button>
-          </div>
           <div class="table-wrap">
             <table>
-              <thead><tr>
-                <th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th>
-                <th>Foto</th><th>Nome</th><th>Gênero</th><th>OBJ</th><th>Ações</th>
-              </tr></thead>
+              <thead><tr><th>Foto</th><th>Nome</th><th>Gênero</th><th>Subcategorias</th><th>GLB</th><th>Ações</th></tr></thead>
               <tbody id="models-tbody"></tbody>
             </table>
           </div>
@@ -236,68 +193,71 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       <!-- ADD MODEL -->
       <div class="page" id="page-add">
         <div class="page-title">Adicionar Modelo</div>
-        <div class="page-sub">Preencha os dados, cole o link da thumb do Drive e suba o .obj</div>
+        <div class="page-sub">Preencha os dados e cole os links do Google Drive</div>
 
         <div class="card-box">
           <h3>Informações</h3>
-          <div class="form-grid">
+          <div class="form-grid full">
             <div class="form-group">
               <label>Nome da roupa *</label>
-              <input type="text" id="add-name" placeholder="Ex: Conjunto Streetwear Feminino">
+              <input type="text" id="add-name" placeholder="Ex: Calça #1">
             </div>
+          </div>
+          <div style="margin-top:0.75rem">
             <div class="form-group">
-              <label>Gênero *</label>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-                <input type="checkbox" id="chk-add-gender-Masculino" value="Masculino" class="cat-check"><label class="cat-check-label" for="chk-add-gender-Masculino">Masculino</label>
-                <input type="checkbox" id="chk-add-gender-Feminino" value="Feminino" class="cat-check"><label class="cat-check-label" for="chk-add-gender-Feminino">Feminino</label>
+              <label>Gênero * (pode selecionar os dois para peças unissex)</label>
+              <div class="check-group" id="add-gender-group">
+                <div class="check-pill"><input type="checkbox" id="add-g-fem" value="Feminino"><label for="add-g-fem">Feminino</label></div>
+                <div class="check-pill"><input type="checkbox" id="add-g-mas" value="Masculino"><label for="add-g-mas">Masculino</label></div>
               </div>
             </div>
           </div>
-          <div style="margin-top:0.75rem;">
+          <div style="margin-top:0.75rem">
             <div class="form-group">
-              <label>Subcategorias</label>
-              <div class="cat-multi" id="add-cat-multi"></div>
+              <label>Subcategorias (opcional)</label>
+              <div class="check-group" id="add-subcat-group"></div>
             </div>
           </div>
           <div class="form-grid full" style="margin-top:0.75rem">
             <div class="form-group">
               <label>Descrição (opcional)</label>
-              <textarea id="add-desc" placeholder="Detalhes, estilo, variações disponíveis..."></textarea>
+              <textarea id="add-desc" placeholder="Detalhes, estilo, variações..."></textarea>
+            </div>
+          </div>
+          <div class="form-grid full" style="margin-top:0.75rem">
+            <div class="form-group">
+              <label>Cores disponíveis (opcional)</label>
+              <input type="text" id="add-colors" placeholder="#FF2D78, #9B30FF, #FFFFFF">
+              <span class="hint">Códigos hex separados por vírgula.</span>
             </div>
           </div>
         </div>
 
         <div class="card-box">
-          <h3>Foto de Capa</h3>
+          <h3>Foto de Capa (PNG)</h3>
           <div class="thumb-upload-area">
             <div class="thumb-preview-box" id="add-thumb-preview">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             </div>
             <div class="thumb-input-col">
-              <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link do Google Drive *</label>
-              <input type="url" id="add-thumb" placeholder="https://drive.google.com/file/d/SEU_ID/view?usp=sharing" oninput="previewThumb('add-thumb','add-thumb-preview')">
-              <span class="hint">
-                No Drive → botão direito na imagem → Compartilhar → "Qualquer pessoa com o link" → Copiar link.<br>
-                O preview ao lado confirma se carregou.
-              </span>
+              <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link Google Drive (PNG) *</label>
+              <input type="url" id="add-thumb" placeholder="https://drive.google.com/file/d/ID/view?usp=sharing" oninput="previewThumb('add-thumb','add-thumb-preview')">
+              <span class="hint"><strong>Como pegar:</strong> Drive → botão direito no PNG → Compartilhar → "Qualquer pessoa com o link" → Copiar link.</span>
             </div>
           </div>
         </div>
 
         <div class="card-box">
-          <h3>Arquivo 3D (.OBJ)</h3>
-          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">
-            Exporte do Blender: <strong style="color:var(--text);">File → Export → Wavefront (.obj)</strong> — sem textura, só geometria.
-          </p>
-          <div class="drop-area" id="obj-drop-area" onclick="document.getElementById('add-obj-file').click()">
-            <input type="file" id="add-obj-file" accept=".obj" style="display:none" onchange="onObjSelected(this)">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--muted);margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <p id="obj-drop-label" style="font-size:0.85rem;color:var(--muted)">Clique aqui ou arraste o arquivo .obj</p>
+          <h3>Arquivo 3D (.GLB)</h3>
+          <div class="form-group">
+            <label>Link Google Drive (.glb) *</label>
+            <input type="url" id="add-glb" placeholder="https://drive.google.com/file/d/ID/view?usp=sharing">
+            <span class="hint"><strong>Como pegar:</strong> Drive → botão direito no .glb → Compartilhar → "Qualquer pessoa com o link" → Copiar link.</span>
           </div>
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-primary" id="btn-add-model" onclick="addModel()">Adicionar ao Catálogo</button>
+          <button class="btn btn-primary" onclick="addModel()">Adicionar ao Catálogo</button>
           <button class="btn btn-outline" onclick="clearAddForm()">Limpar</button>
         </div>
       </div>
@@ -305,12 +265,12 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       <!-- CATEGORIES -->
       <div class="page" id="page-categories">
         <div class="page-title">Categorias</div>
-        <div class="page-sub">Subcategorias exibidas no catálogo público</div>
+        <div class="page-sub">Subcategorias exibidas no catálogo (além de Feminino e Masculino que são fixos)</div>
         <div class="card-box">
-          <h3>Categorias Ativas</h3>
+          <h3>Subcategorias Ativas</h3>
           <div class="cat-list" id="cat-list"></div>
           <div class="cat-add-row">
-            <input type="text" id="new-cat-input" placeholder="Nova categoria..." onkeydown="if(event.key==='Enter')addCategory()">
+            <input type="text" id="new-cat-input" placeholder="Nova subcategoria..." onkeydown="if(event.key==='Enter')addCategory()">
             <button class="btn btn-primary btn-sm" onclick="addCategory()">Adicionar</button>
           </div>
         </div>
@@ -333,13 +293,15 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       <input type="hidden" id="edit-id">
       <div class="form-group"><label>Nome *</label><input type="text" id="edit-name"></div>
       <div class="form-group">
-        <label>Gênero *</label>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-          <input type="checkbox" id="chk-edit-gender-Masculino" value="Masculino" class="cat-check"><label class="cat-check-label" for="chk-edit-gender-Masculino">Masculino</label>
-          <input type="checkbox" id="chk-edit-gender-Feminino" value="Feminino" class="cat-check"><label class="cat-check-label" for="chk-edit-gender-Feminino">Feminino</label>
+        <label>Gênero * (pode selecionar os dois)</label>
+        <div class="check-group" id="edit-gender-group">
+          <div class="check-pill"><input type="checkbox" id="edit-g-fem" value="Feminino"><label for="edit-g-fem">Feminino</label></div>
+          <div class="check-pill"><input type="checkbox" id="edit-g-mas" value="Masculino"><label for="edit-g-mas">Masculino</label></div>
         </div>
+      </div>
+      <div class="form-group">
         <label>Subcategorias</label>
-        <div class="cat-multi" id="edit-cat-multi"></div>
+        <div class="check-group" id="edit-subcat-group"></div>
       </div>
 
       <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;gap:1rem;align-items:flex-start;">
@@ -347,20 +309,14 @@ tr:hover td{background:rgba(255,45,120,0.03);}
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
         </div>
         <div style="flex:1;display:flex;flex-direction:column;gap:0.35rem;">
-          <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link Thumb (Google Drive) *</label>
+          <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Link PNG (Google Drive) *</label>
           <input type="url" id="edit-thumb" placeholder="https://drive.google.com/file/d/..." oninput="previewThumb('edit-thumb','edit-thumb-preview')">
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Substituir arquivo .obj (opcional)</label>
-        <div class="drop-area" id="edit-obj-area" onclick="document.getElementById('edit-obj-file').click()">
-          <input type="file" id="edit-obj-file" accept=".obj" style="display:none" onchange="onObjSelectedEdit(this)">
-          <p id="edit-obj-label" style="font-size:0.82rem;color:var(--muted)">Clique para trocar o arquivo .obj</p>
-        </div>
-      </div>
+      <div class="form-group"><label>Link GLB (Google Drive) *</label><input type="url" id="edit-glb" placeholder="https://drive.google.com/file/d/..."></div>
       <div class="form-group"><label>Descrição</label><textarea id="edit-desc"></textarea></div>
-
+      <div class="form-group"><label>Cores (hex, separados por vírgula)</label><input type="text" id="edit-colors"></div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="saveEdit()">Salvar alterações</button>
         <button class="btn btn-outline" onclick="closeEdit()">Cancelar</button>
@@ -372,516 +328,269 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
 const ADMIN_PASSWORD = 'bdstudio2024';
-const STORAGE_KEY    = 'bd_catalog_v3';
-const GITHUB_REPO    = 'brunacdacroce/catologo-mods-roupas-bdstudio';
-const GITHUB_FILE    = 'catalog-data.json';
-const GENDERS        = ['Masculino','Feminino'];
+const STORAGE_KEY = 'bd_catalog_v2';
+const GENDERS = ['Feminino','Masculino'];
+let items = [];
+let categories = ['Unissex','Uniforme','Facção','Especial']; // subcategorias (sem gêneros)
 
-let GITHUB_TOKEN = localStorage.getItem('bd_github_token') || '';
-let items        = [];
-let categories   = ['Feminino','Masculino','Unissex','Uniforme','Facção','Especial'];
-let pendingObjData     = null; // base64 do OBJ para add
-let pendingEditObjData = null; // base64 do OBJ para edit
-
-// ── AUTH ─────────────────────────────────────────────────────────────────────
-function doLogin() {
-  const v = document.getElementById('pwd-input').value;
-  if (v === ADMIN_PASSWORD) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    loadData(); renderAll(); updateTokenUI();
-    document.querySelectorAll('.nav-item').forEach(n => n.onclick = () => switchPage(n.dataset.page));
-  } else {
-    document.getElementById('login-error').style.display = 'block';
-  }
-}
-function doLogout() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('pwd-input').value = '';
-}
-
-// ── DATA ─────────────────────────────────────────────────────────────────────
 function loadData() {
   try {
-    const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    items      = d.items      || [];
-    categories = d.categories || categories;
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      items = d.items || [];
+      // categories: remove genders if stored there (migração)
+      categories = (d.categories || categories).filter(c => !GENDERS.includes(c));
+    }
   } catch(e) {}
 }
 function saveData() {
-  const light = {
-    categories,
-    items: items.map(i => ({
-      id: i.id, name: i.name, category: i.category,
-      categories: i.categories, thumbnail: i.thumbnail,
-      desc: i.desc, hasObj: i.hasObj || false
-    }))
-  };
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(light)); }
-  catch(e) { localStorage.removeItem(STORAGE_KEY); localStorage.setItem(STORAGE_KEY, JSON.stringify(light)); }
+  // Store categories without genders; genders are implicit
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, categories }));
 }
 
-// ── TOKEN ─────────────────────────────────────────────────────────────────────
-function saveToken() {
-  const val = document.getElementById('token-input').value.trim();
-  if (!val) { showToast('Cole o token antes de salvar.','error'); return; }
-  GITHUB_TOKEN = val;
-  localStorage.setItem('bd_github_token', val);
-  document.getElementById('token-input').value = '';
-  updateTokenUI();
-  showToast('Token salvo!','success');
+// LOGIN
+function doLogin() {
+  if (document.getElementById('pwd-input').value === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    loadData(); renderAll();
+  } else {
+    document.getElementById('login-error').style.display='block';
+    document.getElementById('pwd-input').value='';
+    document.getElementById('pwd-input').focus();
+  }
 }
-function clearToken() {
-  GITHUB_TOKEN = '';
-  localStorage.removeItem('bd_github_token');
-  updateTokenUI();
-  showToast('Token removido.','success');
-}
-function updateTokenUI() {
-  const has = !!GITHUB_TOKEN;
-  document.getElementById('token-set-info').style.display = has ? 'block' : 'none';
-  document.getElementById('token-not-set').style.display  = has ? 'none'  : 'block';
+function doLogout() {
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('pwd-input').value='';
+  document.getElementById('login-error').style.display='none';
 }
 
-// ── OBJ UPLOAD ────────────────────────────────────────────────────────────────
-function onObjSelected(input) {
-  const file = input.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    // Store raw text (OBJ is text)
-    pendingObjData = e.target.result;
-    const area  = document.getElementById('obj-drop-area');
-    const label = document.getElementById('obj-drop-label');
-    area.classList.add('has-file');
-    label.textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)';
-    label.style.color = 'var(--green)';
-  };
-  reader.readAsText(file);
-}
-function onObjSelectedEdit(input) {
-  const file = input.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    pendingEditObjData = e.target.result;
-    document.getElementById('edit-obj-label').textContent = '✓ ' + file.name;
-    document.getElementById('edit-obj-label').style.color = 'var(--green)';
-    document.getElementById('edit-obj-area').classList.add('has-file');
-  };
-  reader.readAsText(file);
+// NAV
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('page-'+item.dataset.page).classList.add('active');
+    if (item.dataset.page==='add') populateSubcatChecks('add');
+    if (item.dataset.page==='categories') renderCategories();
+    if (item.dataset.page==='models') renderModelsTable();
+  });
+});
+
+function renderAll() {
+  document.getElementById('stat-total').textContent = items.length;
+  document.getElementById('stat-cats').textContent = categories.length;
+  renderModelsTable(); renderCategories();
+  populateSubcatChecks('add');
 }
 
-// ── THUMB PREVIEW ─────────────────────────────────────────────────────────────
+// THUMB PREVIEW
 function gdriveImg(url) {
-  if (!url) return '';
-  const m = url.match(/[-\w]{25,}/);
-  return m ? `https://lh3.googleusercontent.com/d/${m[0]}` : '';
+  if (!url) return null;
+  const m = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{20,})/);
+  if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
+  return url;
 }
 function previewThumb(inputId, previewId) {
-  const val = document.getElementById(inputId).value.trim();
+  const url = document.getElementById(inputId).value.trim();
   const box = document.getElementById(previewId);
-  const url = gdriveImg(val);
-  if (url) {
-    box.innerHTML = `<img src="${url}" onerror="this.parentElement.innerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none stroke=currentColor stroke-width=1.5 style=opacity:.3><rect x=3 y=3 width=18 height=18 rx=2/></svg>'" style="width:100%;height:100%;object-fit:cover">`;
+  const imgUrl = gdriveImg(url);
+  if (imgUrl) {
+    box.innerHTML = `<img src="${imgUrl}" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover">`;
   } else {
-    box.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
+    box.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
   }
 }
 
-// ── ADD MODEL ─────────────────────────────────────────────────────────────────
-function addModel() {
-  const name  = document.getElementById('add-name').value.trim();
-  const thumb = document.getElementById('add-thumb').value.trim();
-  const desc  = document.getElementById('add-desc').value.trim();
-  const cats  = getSelectedCats('add');
-  const genders = cats.filter(c => GENDERS.includes(c));
+// SUBCAT CHECKBOXES
+function populateSubcatChecks(prefix) {
+  const container = document.getElementById(prefix+'-subcat-group');
+  if (!container) return;
+  container.innerHTML = categories.map(c => `
+    <div class="check-pill">
+      <input type="checkbox" id="${prefix}-sub-${c}" value="${c}">
+      <label for="${prefix}-sub-${c}">${c}</label>
+    </div>`).join('');
+}
 
-  if (!name)  { showToast('Nome obrigatório.','error'); return; }
-  if (!genders.length) { showToast('Selecione Masculino ou Feminino.','error'); return; }
-  if (!thumb) { showToast('Link da thumb obrigatório.','error'); return; }
-  if (!pendingObjData) { showToast('Selecione o arquivo .obj.','error'); return; }
-
-  if (isDuplicateName(name, genders, null)) {
-    showToast(`Já existe "${name}" nesse gênero.`,'error'); return;
-  }
-
-  const id = Date.now();
-  items.unshift({
-    id, name, category: cats[0]||genders[0],
-    categories: cats, thumbnail: thumb, desc,
-    hasObj: true, objData: pendingObjData
+function getSelectedGenders(prefix) {
+  return GENDERS.filter(g => {
+    const el = document.getElementById(prefix+'-g-'+g.toLowerCase().slice(0,3));
+    return el && el.checked;
   });
-
-  pendingObjData = null;
-  clearAddForm();
-  saveData();
-  renderAll();
-  showToast('Modelo adicionado! Clique em Publicar catálogo.','success');
-  switchPage('models');
 }
-
-function clearAddForm() {
-  document.getElementById('add-name').value = '';
-  document.getElementById('add-thumb').value = '';
-  document.getElementById('add-desc').value = '';
-  document.getElementById('add-thumb-preview').innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
-  const area  = document.getElementById('obj-drop-area');
-  const label = document.getElementById('obj-drop-label');
-  area.classList.remove('has-file');
-  label.textContent = 'Clique aqui ou arraste o arquivo .obj';
-  label.style.color = '';
-  document.getElementById('add-obj-file').value = '';
+function getSelectedSubcats(prefix) {
+  return categories.filter(c => {
+    const el = document.getElementById(prefix+'-sub-'+c);
+    return el && el.checked;
+  });
+}
+function setGenderChecks(prefix, selected) {
   GENDERS.forEach(g => {
-    const el = document.getElementById('chk-add-gender-'+g);
-    if (el) el.checked = false;
+    const el = document.getElementById(prefix+'-g-'+g.toLowerCase().slice(0,3));
+    if (el) el.checked = selected.includes(g);
   });
-  pendingObjData = null;
-  populateCatSelect('add-cat');
+}
+function setSubcatChecks(prefix, selected) {
+  categories.forEach(c => {
+    const el = document.getElementById(prefix+'-sub-'+c);
+    if (el) el.checked = selected.includes(c);
+  });
 }
 
-// ── MODELS TABLE ──────────────────────────────────────────────────────────────
-function renderModels() {
+// MODELS TABLE
+function renderModelsTable() {
   const tbody = document.getElementById('models-tbody');
-  if (!items.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Nenhum modelo cadastrado.</td></tr>`;
-    return;
-  }
+  if (!items.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Nenhum modelo cadastrado.</td></tr>'; return; }
   tbody.innerHTML = items.map(item => {
     const imgUrl = gdriveImg(item.thumbnail);
-    const gender = (item.categories||[item.category]).filter(c=>GENDERS.includes(c)).join(', ') || '—';
-    const objBadge = (item.hasObj || item.objData) 
-      ? '<span class="badge badge-ok">✓ OBJ</span>'
-      : '<span class="badge badge-no">Sem OBJ</span>';
+    const cats = item.categories || [item.category];
+    const genders = cats.filter(c=>GENDERS.includes(c)).join(', ') || '—';
+    const subcats = cats.filter(c=>!GENDERS.includes(c)).join(', ') || '—';
     return `<tr>
-      <td><input type="checkbox" class="row-check" value="${item.id}" onchange="updateBulkUI()"></td>
-      <td><div class="thumb-tiny">${imgUrl ? `<img src="${imgUrl}" onerror="this.style.display='none'">` : ''}</div></td>
+      <td><div class="thumb-tiny">${imgUrl?`<img src="${imgUrl}" onerror="this.style.display='none'">`:''}</div></td>
       <td style="font-weight:500">${item.name}</td>
-      <td><span class="badge" style="background:rgba(155,48,255,.15);color:var(--purple)">${gender}</span></td>
-      <td>${objBadge}</td>
-      <td style="display:flex;gap:0.4rem;align-items:center">
+      <td><span class="badge badge-cat">${genders}</span></td>
+      <td style="color:var(--muted);font-size:0.82rem">${subcats}</td>
+      <td style="color:var(--muted);font-size:0.78rem">${item.glbUrl ? '✓' : '—'}</td>
+      <td><div style="display:flex;gap:0.5rem">
         <button class="btn btn-outline btn-sm" onclick="openEdit('${item.id}')">Editar</button>
         <button class="btn btn-danger btn-sm" onclick="deleteModel('${item.id}')">Excluir</button>
-      </td>
+      </div></td>
     </tr>`;
   }).join('');
 }
 
+// ADD
+function addModel() {
+  const name  = document.getElementById('add-name').value.trim();
+  const glbUrl= document.getElementById('add-glb').value.trim();
+  const thumb = document.getElementById('add-thumb').value.trim();
+  const desc  = document.getElementById('add-desc').value.trim();
+  const colorsRaw = document.getElementById('add-colors').value.trim();
+
+  const genders = getSelectedGenders('add');
+  const subcats = getSelectedSubcats('add');
+  const allCats = [...genders, ...subcats];
+
+  if (!name)          { showToast('Preencha o nome da roupa.','error'); return; }
+  if (!genders.length){ showToast('Selecione pelo menos um gênero.','error'); return; }
+  if (!glbUrl)        { showToast('Cole o link do arquivo .glb.','error'); return; }
+  if (!thumb)         { showToast('Cole o link da foto PNG.','error'); return; }
+
+  const colors = colorsRaw ? colorsRaw.split(',').map(c=>c.trim()).filter(Boolean) : [];
+  items.unshift({ id: Date.now(), name, category: allCats[0]||genders[0], categories: allCats, glbUrl, thumbnail: thumb, desc, colors });
+  saveData(); renderAll(); clearAddForm();
+  showToast('Modelo adicionado!','success');
+}
+
+function clearAddForm() {
+  ['add-name','add-glb','add-thumb','add-desc','add-colors'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
+  document.getElementById('add-g-fem').checked = false;
+  document.getElementById('add-g-mas').checked = false;
+  populateSubcatChecks('add');
+}
+
+// DELETE
 function deleteModel(id) {
   if (!confirm('Excluir este modelo?')) return;
-  items = items.filter(i => String(i.id) !== String(id));
+  items = items.filter(i=>String(i.id)!==String(id));
   saveData(); renderAll();
-  showToast('Modelo excluído. Clique em Publicar para atualizar.','success');
+  showToast('Modelo excluído.','success');
 }
 
-function toggleSelectAll(cb) {
-  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
-  updateBulkUI();
-}
-function updateBulkUI() {
-  const checked = document.querySelectorAll('.row-check:checked');
-  const btn = document.getElementById('bulk-delete-btn');
-  document.getElementById('selected-count').textContent = checked.length;
-  btn.style.display = checked.length ? 'flex' : 'none';
-}
-function bulkDelete() {
-  const ids = [...document.querySelectorAll('.row-check:checked')].map(c => c.value);
-  if (!ids.length || !confirm(`Excluir ${ids.length} modelo(s)?`)) return;
-  items = items.filter(i => !ids.includes(String(i.id)));
-  saveData(); renderAll();
-  showToast(`${ids.length} modelo(s) excluído(s).`,'success');
-}
-
-// ── EDIT MODAL ────────────────────────────────────────────────────────────────
+// EDIT
 function openEdit(id) {
-  const item = items.find(i => String(i.id) === String(id));
+  const item = items.find(i=>String(i.id)===String(id));
   if (!item) return;
-  pendingEditObjData = null;
-  populateCatSelect('edit-cat');
-  document.getElementById('edit-id').value   = item.id;
-  document.getElementById('edit-name').value = item.name;
-  document.getElementById('edit-thumb').value = item.thumbnail || '';
-  document.getElementById('edit-desc').value  = item.desc || '';
-  setSelectedCats('edit', item.categories || [item.category]);
+  populateSubcatChecks('edit');
+  document.getElementById('edit-id').value    = item.id;
+  document.getElementById('edit-name').value  = item.name;
+  document.getElementById('edit-glb').value   = item.glbUrl||'';
+  document.getElementById('edit-thumb').value = item.thumbnail||'';
+  document.getElementById('edit-desc').value  = item.desc||'';
+  document.getElementById('edit-colors').value= (item.colors||[]).join(', ');
+  const cats = item.categories || [item.category];
+  setGenderChecks('edit', cats.filter(c=>GENDERS.includes(c)));
+  setSubcatChecks('edit', cats.filter(c=>!GENDERS.includes(c)));
   const imgUrl = gdriveImg(item.thumbnail);
   const box = document.getElementById('edit-thumb-preview');
-  box.innerHTML = imgUrl ? `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover">` : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
-  const lbl = document.getElementById('edit-obj-label');
-  lbl.style.color = '';
-  lbl.textContent = (item.hasObj || item.objData) ? '✓ OBJ atual mantido — clique para trocar' : 'Sem OBJ. Clique para adicionar.';
-  document.getElementById('edit-obj-area').classList.remove('has-file');
+  box.innerHTML = imgUrl ? `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
   document.getElementById('edit-overlay').classList.add('open');
 }
-function closeEdit() { document.getElementById('edit-overlay').classList.remove('open'); pendingEditObjData = null; }
+function closeEdit() { document.getElementById('edit-overlay').classList.remove('open'); }
 function saveEdit() {
-  const id   = document.getElementById('edit-id').value;
-  const idx  = items.findIndex(i => String(i.id) === String(id));
-  if (idx === -1) return;
-  const editName    = document.getElementById('edit-name').value.trim();
-  const editCats    = getSelectedCats('edit');
-  const editGenders = editCats.filter(c => GENDERS.includes(c));
-  if (!editName) { showToast('Nome obrigatório.','error'); return; }
-  if (!editGenders.length) { showToast('Selecione um gênero.','error'); return; }
-  if (isDuplicateName(editName, editGenders, id)) {
-    showToast(`Já existe "${editName}" nesse gênero.`,'error'); return;
-  }
-  items[idx] = {
-    ...items[idx],
-    name:       editName,
-    categories: editCats,
-    category:   editCats[0] || items[idx].category,
-    thumbnail:  document.getElementById('edit-thumb').value.trim() || null,
+  const id  = document.getElementById('edit-id').value;
+  const idx = items.findIndex(i=>String(i.id)===String(id));
+  if (idx===-1) return;
+  const genders = getSelectedGenders('edit');
+  const subcats = getSelectedSubcats('edit');
+  if (!genders.length) { showToast('Selecione pelo menos um gênero.','error'); return; }
+  const allCats = [...genders, ...subcats];
+  const colorsRaw = document.getElementById('edit-colors').value.trim();
+  items[idx] = { ...items[idx],
+    name:       document.getElementById('edit-name').value.trim(),
+    categories: allCats,
+    category:   allCats[0],
+    glbUrl:     document.getElementById('edit-glb').value.trim(),
+    thumbnail:  document.getElementById('edit-thumb').value.trim()||null,
     desc:       document.getElementById('edit-desc').value.trim(),
-    hasObj:     !!(pendingEditObjData || items[idx].hasObj || items[idx].objData),
-    objData:    pendingEditObjData || items[idx].objData || null,
+    colors:     colorsRaw ? colorsRaw.split(',').map(c=>c.trim()).filter(Boolean) : [],
   };
-  pendingEditObjData = null;
   saveData(); renderAll(); closeEdit();
-  showToast('Modelo atualizado! Clique em Publicar.','success');
+  showToast('Modelo atualizado!','success');
 }
-document.getElementById('edit-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('edit-overlay')) closeEdit();
-});
+document.getElementById('edit-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('edit-overlay')) closeEdit(); });
 
-// ── DUPLICATE CHECK ───────────────────────────────────────────────────────────
-function isDuplicateName(name, genders, excludeId) {
-  return items.some(i => {
-    if (excludeId && String(i.id) === String(excludeId)) return false;
-    if (i.name.toLowerCase() !== name.toLowerCase()) return false;
-    const iGenders = (i.categories || [i.category]).filter(c => GENDERS.includes(c));
-    return genders.some(g => iGenders.includes(g));
-  });
-}
-
-// ── CATEGORIES ────────────────────────────────────────────────────────────────
+// CATEGORIES (subcategorias)
 function renderCategories() {
-  const list = document.getElementById('cat-list');
-  if (!categories.length) { list.innerHTML = '<span style="color:var(--muted);font-size:0.82rem">Nenhuma categoria.</span>'; return; }
-  list.innerHTML = categories.map((c,i) => `
-    <div class="cat-tag" id="cat-item-${i}">
-      <span class="cat-tag-name" id="cat-name-${i}">${c}</span>
-      <span class="cat-tag-editing" id="cat-edit-${i}"><input type="text" id="cat-input-${i}" value="${c}"></span>
-      <button class="cat-action edit" onclick="startEditCat(${i})" id="cat-btn-edit-${i}" title="Editar">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-      <button class="cat-action save" onclick="saveEditCat(${i})" id="cat-btn-save-${i}" style="display:none" title="Salvar">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-      </button>
-      <button class="cat-action cancel-edit" onclick="cancelEditCat(${i})" id="cat-btn-cancel-${i}" style="display:none" title="Cancelar">
+  const el = document.getElementById('cat-list');
+  if (!categories.length) { el.innerHTML='<span style="color:var(--muted);font-size:0.82rem">Nenhuma subcategoria criada.</span>'; return; }
+  el.innerHTML = categories.map(c=>`
+    <div class="cat-tag">${c}
+      <button class="cat-remove" onclick="removeCategory('${c}')">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-      <button class="cat-action remove" onclick="removeCategory(${i})" id="cat-btn-remove-${i}" title="Excluir">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
       </button>
     </div>`).join('');
 }
-function startEditCat(i) {
-  document.getElementById('cat-name-'+i).style.display='none';
-  document.getElementById('cat-edit-'+i).style.display='flex';
-  document.getElementById('cat-btn-edit-'+i).style.display='none';
-  document.getElementById('cat-btn-remove-'+i).style.display='none';
-  document.getElementById('cat-btn-save-'+i).style.display='inline-flex';
-  document.getElementById('cat-btn-cancel-'+i).style.display='inline-flex';
-  const inp = document.getElementById('cat-input-'+i);
-  inp.focus();
-  inp.onkeydown = e => { if(e.key==='Enter') saveEditCat(i); if(e.key==='Escape') cancelEditCat(i); };
-}
-function cancelEditCat(i) {
-  document.getElementById('cat-name-'+i).style.display='';
-  document.getElementById('cat-edit-'+i).style.display='none';
-  document.getElementById('cat-btn-edit-'+i).style.display='';
-  document.getElementById('cat-btn-remove-'+i).style.display='';
-  document.getElementById('cat-btn-save-'+i).style.display='none';
-  document.getElementById('cat-btn-cancel-'+i).style.display='none';
-}
-function saveEditCat(i) {
-  const val = document.getElementById('cat-input-'+i).value.trim();
-  if (!val) { showToast('Nome inválido.','error'); return; }
-  if (categories.includes(val) && categories[i] !== val) { showToast('Já existe.','error'); return; }
-  const old = categories[i];
-  categories[i] = val;
-  items.forEach(item => {
-    if (item.category === old) item.category = val;
-    if (item.categories) item.categories = item.categories.map(c => c===old ? val : c);
-  });
-  saveData(); renderAll();
-  showToast(`Categoria renomeada para "${val}".`,'success');
-}
 function addCategory() {
   const val = document.getElementById('new-cat-input').value.trim();
-  if (!val || categories.includes(val)) { showToast('Inválida ou já existe.','error'); return; }
-  categories.push(val); saveData(); renderAll();
-  document.getElementById('new-cat-input').value = '';
+  if (!val || categories.includes(val) || GENDERS.includes(val)) { showToast('Inválida ou já existe.','error'); return; }
+  categories.push(val); saveData(); renderCategories(); populateSubcatChecks('add');
+  document.getElementById('new-cat-input').value='';
   showToast(`"${val}" adicionada.`,'success');
 }
-function removeCategory(i) {
-  const cat = categories[i];
-  if (GENDERS.includes(cat)) { showToast('Masculino/Feminino não podem ser removidos.','error'); return; }
-  if (items.some(item => (item.categories||[item.category]).includes(cat))) {
-    showToast(`Há modelos em "${cat}". Mova-os primeiro.`,'error'); return;
-  }
-  categories.splice(i,1); saveData(); renderAll();
-  showToast(`"${cat}" excluída.`,'success');
-}
-function populateCatSelect(id) {
-  const suffix    = id === 'add-cat' ? 'add' : 'edit';
-  const container = document.getElementById(suffix+'-cat-multi');
-  if (!container) return;
-  const subcats = categories.filter(c => !GENDERS.includes(c));
-  container.innerHTML = subcats.map(c => `
-    <input type="checkbox" class="cat-check" id="chk-${suffix}-${c}" value="${c}">
-    <label class="cat-check-label" for="chk-${suffix}-${c}">${c}</label>
-  `).join('');
-}
-function getSelectedCats(suffix) {
-  const genders = GENDERS.filter(g => { const el = document.getElementById('chk-'+suffix+'-gender-'+g); return el && el.checked; });
-  const subcats = categories.filter(c => !GENDERS.includes(c) && (() => { const el = document.getElementById('chk-'+suffix+'-'+c); return el && el.checked; })());
-  return [...genders, ...subcats];
-}
-function setSelectedCats(suffix, selected) {
-  const arr = Array.isArray(selected) ? selected : [selected];
-  GENDERS.forEach(g => { const el = document.getElementById('chk-'+suffix+'-gender-'+g); if (el) el.checked = arr.includes(g); });
-  categories.filter(c=>!GENDERS.includes(c)).forEach(c => { const el = document.getElementById('chk-'+suffix+'-'+c); if (el) el.checked = arr.includes(c); });
+function removeCategory(cat) {
+  if (items.some(i=>(i.categories||[i.category]).includes(cat))) { showToast('Há modelos nessa subcategoria.','error'); return; }
+  if (!confirm(`Remover subcategoria "${cat}"?`)) return;
+  categories=categories.filter(c=>c!==cat); saveData(); renderCategories(); populateSubcatChecks('add');
+  showToast('Subcategoria removida.','success');
 }
 
-// ── GITHUB SYNC ───────────────────────────────────────────────────────────────
-async function getFileSHA(path) {
-  try {
-    const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}?t=${Date.now()}`, {
-      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (r.status === 404) return null;
-    const d = await r.json();
-    return d.sha || null;
-  } catch(e) { return null; }
-}
-
-async function putFile(path, content, sha, isBinary) {
-  const body = { message: `update ${path}`, content };
-  if (sha) body.sha = sha;
-  const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!r.ok) {
-    const err = await r.json();
-    throw new Error(err.message || r.status);
-  }
-  return r.json();
-}
-
-function setProgress(pct, msg) {
-  const bar  = document.getElementById('publish-progress');
-  const fill = document.getElementById('publish-progress-fill');
-  const log  = document.getElementById('publish-log');
-  bar.style.display = 'block';
-  log.style.display = 'block';
-  fill.style.width  = pct + '%';
-  log.textContent   = msg;
-}
-
-async function syncToGitHub() {
-  if (!GITHUB_TOKEN) { showToast('Configure o GitHub Token primeiro.','error'); return; }
-  const btn = document.getElementById('publish-btn');
-  btn.disabled = true;
-  btn.textContent = 'Publicando...';
-  setProgress(5, 'Iniciando publicação...');
-
-  try {
-    // 1. Upload OBJ files para modelos novos/editados
-    const toUpload = items.filter(i => i.objData && typeof i.objData === 'string');
-    for (let idx = 0; idx < toUpload.length; idx++) {
-      const item = toUpload[idx];
-      setProgress(10 + (idx / Math.max(toUpload.length,1)) * 60, `Enviando OBJ: ${item.name}...`);
-      const base64 = btoa(unescape(encodeURIComponent(item.objData)));
-      const sha    = await getFileSHA(`models/${item.id}.obj`);
-      await putFile(`models/${item.id}.obj`, base64, sha, false);
-      item.hasObj  = true;
-      item.objData = null; // limpa da memória após upload
-    }
-
-    // 2. Salva catalog-data.json
-    setProgress(75, 'Salvando catálogo...');
-    const meta = {
-      categories,
-      items: items.map(i => ({
-        id: i.id, name: i.name, category: i.category,
-        categories: i.categories, thumbnail: i.thumbnail,
-        desc: i.desc, hasObj: i.hasObj || false
-      }))
-    };
-    const jsonB64 = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
-    const jsonSha = await getFileSHA(GITHUB_FILE);
-    await putFile(GITHUB_FILE, jsonB64, jsonSha, false);
-
-    setProgress(100, '✓ Publicado com sucesso!');
-    saveData();
-    showToast('Catálogo publicado!','success');
-    setTimeout(() => {
-      document.getElementById('publish-progress').style.display = 'none';
-      document.getElementById('publish-log').style.display = 'none';
-    }, 3000);
-
-  } catch(e) {
-    setProgress(0, '✗ Erro: ' + e.message);
-    showToast('Erro: ' + e.message,'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Publicar catálogo';
-  }
-}
-
-// ── BACKUP ────────────────────────────────────────────────────────────────────
+// BACKUP
 function exportData() {
-  const blob = new Blob([JSON.stringify({items,categories},null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `bd-catalogo-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
+  const blob=new Blob([JSON.stringify({items,categories},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`bd-catalogo-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
 }
 function importData(input) {
-  const file = input.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const d = JSON.parse(e.target.result);
-      if (!d.items || !d.categories) throw new Error();
-      items = d.items; categories = d.categories;
-      saveData(); renderAll();
-      showToast('Backup importado!','success');
-    } catch { showToast('Arquivo inválido.','error'); }
-  };
-  reader.readAsText(file);
-  input.value = '';
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{ try { const d=JSON.parse(e.target.result); if(!d.items) throw new Error(); items=d.items; categories=(d.categories||[]).filter(c=>!GENDERS.includes(c)); saveData(); renderAll(); showToast('Backup importado!','success'); } catch { showToast('Arquivo inválido.','error'); } };
+  reader.readAsText(file); input.value='';
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function renderStats() {
-  document.getElementById('stat-total').textContent = items.length;
-  document.getElementById('stat-cats').textContent  = categories.filter(c=>!GENDERS.includes(c)).length;
-}
-function renderAll() {
-  renderStats(); renderModels(); renderCategories();
-  populateCatSelect('add-cat'); populateCatSelect('edit-cat');
-}
-
-// ── NAV ───────────────────────────────────────────────────────────────────────
-function switchPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+name)?.classList.add('active');
-  document.querySelector(`.nav-item[data-page="${name}"]`)?.classList.add('active');
-}
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
+// TOAST
 let toastTimer;
 function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast ${type} show`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { t.className = 'toast'; }, 4000);
+  const t=document.getElementById('toast'); t.textContent=msg; t.className=`toast ${type} show`;
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>{t.className='toast';},3000);
 }
 </script>
 </body>
