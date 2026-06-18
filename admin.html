@@ -185,6 +185,10 @@ tr:hover td{background:rgba(255,45,120,0.03);}
             ⚠️ Os dados ficam salvos no localStorage deste navegador. Use sempre o mesmo navegador/computador para gerenciar. Faça backup regularmente.
           </p>
           <div class="btn-row">
+            <button class="btn btn-primary" onclick="syncToGitHub()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Publicar catálogo
+            </button>
             <button class="btn btn-outline btn-sm" onclick="exportData()">Exportar backup JSON</button>
             <label class="btn btn-outline btn-sm" style="cursor:pointer">Importar backup <input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
           </div>
@@ -336,13 +340,84 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 <script>
 const ADMIN_PASSWORD = 'bdstudio2024'; // ← MUDE AQUI
 const STORAGE_KEY = 'bd_catalog_v2';
+const GITHUB_TOKEN = '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';
+const GITHUB_REPO = 'brunacdacroce/catalogo-mods-roupas-bdstudio';
+const GITHUB_FILE = 'catalog-data.json';
 let items = [];
 let categories = ['Feminino','Masculino','Unissex','Uniforme','Facção','Especial'];
 
 function loadData() {
   try { const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); items=d.items||[]; categories=d.categories||categories; } catch(e){}
 }
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify({items,categories})); }
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({items,categories}));
+}
+
+async function syncToGitHub() {
+  showToast('Salvando no servidor...','success');
+  try {
+    // Prepare data without large base64 glbData for JSON file
+    // We store glbData separately per item as individual files
+    const meta = {
+      categories,
+      items: items.map(i => ({
+        id: i.id,
+        name: i.name,
+        category: i.category,
+        categories: i.categories,
+        thumbnail: i.thumbnail,
+        desc: i.desc,
+        colors: i.colors,
+        hasGlb: !!i.glbData
+      }))
+    };
+
+    // Save metadata JSON
+    await saveFileToGitHub(GITHUB_FILE, btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2)))));
+
+    // Save each GLB as separate file if it has glbData
+    for (const item of items) {
+      if (item.glbData) {
+        const base64 = item.glbData.split(',')[1];
+        if (base64) {
+          await saveFileToGitHub(`models/${item.id}.glb`, base64);
+        }
+      }
+    }
+
+    showToast('Catálogo salvo e publicado!','success');
+  } catch(e) {
+    showToast('Erro ao salvar: ' + e.message,'error');
+  }
+}
+
+async function saveFileToGitHub(path, base64Content) {
+  // Check if file exists to get SHA
+  let sha = null;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res.ok) { const d = await res.json(); sha = d.sha; }
+  } catch(e) {}
+
+  const body = { message: `Update ${path}`, content: base64Content };
+  if (sha) body.sha = sha;
+
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || 'GitHub API error');
+  }
+}
 
 // LOGIN
 function doLogin() {
@@ -489,6 +564,7 @@ function addModel() {
   items.push({ id: Date.now(), name, categories: cats, category: cats[0], glbData: pendingGlbData, thumbnail: thumb, desc, colors });
   saveData(); renderAll(); clearAddForm();
   showToast('Modelo adicionado!','success');
+  syncToGitHub();
 }
 
 function clearAddForm() {
@@ -505,6 +581,7 @@ function deleteModel(id) {
   items = items.filter(i=>String(i.id)!==String(id));
   saveData(); renderAll();
   showToast('Modelo excluído.','success');
+  syncToGitHub();
 }
 
 // EDIT
@@ -544,6 +621,7 @@ function saveEdit() {
   document.getElementById('edit-glb-label').textContent = 'Clique para trocar o arquivo .glb';
   saveData(); renderAll(); closeEdit();
   showToast('Modelo atualizado!','success');
+  syncToGitHub();
 }
 document.getElementById('edit-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('edit-overlay')) closeEdit(); });
 
