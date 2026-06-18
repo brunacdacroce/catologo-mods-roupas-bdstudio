@@ -253,13 +253,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
               <textarea id="add-desc" placeholder="Detalhes, estilo, variações disponíveis..."></textarea>
             </div>
           </div>
-          <div class="form-grid full" style="margin-top:0.75rem">
-            <div class="form-group">
-              <label>Cores disponíveis (opcional)</label>
-              <input type="text" id="add-colors" placeholder="#FF2D78, #9B30FF, #FFFFFF">
-              <span class="hint">Códigos hex separados por vírgula.</span>
-            </div>
-          </div>
+
         </div>
 
         <div class="card-box">
@@ -355,7 +349,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         </div>
       </div>
       <div class="form-group"><label>Descrição</label><textarea id="edit-desc"></textarea></div>
-      <div class="form-group"><label>Cores (hex, separados por vírgula)</label><input type="text" id="edit-colors"></div>
+
       <div class="btn-row">
         <button class="btn btn-primary" onclick="saveEdit()">Salvar alterações</button>
         <button class="btn btn-outline" onclick="closeEdit()">Cancelar</button>
@@ -407,7 +401,7 @@ function updateTokenUI() {
 
 async function syncToGitHub() {
   if (!GITHUB_TOKEN) { showToast('Configure o GitHub Token no Dashboard primeiro.','error'); return; }
-  showToast('Publicando...','success');
+  showToast('Enviando para o servidor...','success');
   try {
     // 1. Upload GLBs first (new files only)
     await ensureModelsFolder();
@@ -689,7 +683,6 @@ function addModel() {
   const cats = getSelectedCats('add');
   const thumb = document.getElementById('add-thumb').value.trim();
   const desc = document.getElementById('add-desc').value.trim();
-  const colorsRaw = document.getElementById('add-colors').value.trim();
   if (!name) { showToast('Preencha o nome da roupa.','error'); return; }
   if (!cats.length) { showToast('Selecione pelo menos uma categoria.','error'); return; }
   if (!pendingGlbData) { showToast('Selecione o arquivo .glb.','error'); return; }
@@ -699,15 +692,16 @@ function addModel() {
     return;
   }
   if (!thumb) { showToast('Cole o link da foto PNG.','error'); return; }
-  const colors = colorsRaw ? colorsRaw.split(',').map(c=>c.trim()).filter(Boolean) : [];
-  items.push({ id: Date.now(), name, categories: cats, category: cats[0], glbData: pendingGlbData, thumbnail: thumb, desc, colors });
+  items.push({ id: Date.now(), name, categories: cats, category: cats[0], glbData: pendingGlbData, thumbnail: thumb, desc, colors: [] });
   saveData(); renderAll(); clearAddForm();
-  showToast('Modelo adicionado!','success');
-  syncToGitHub();
+  if (btn) { btn.textContent = 'Publicando...'; btn.disabled = true; }
+  syncToGitHub().finally(() => {
+    if (btn) { btn.textContent = 'Adicionar ao Catálogo'; btn.disabled = false; }
+  });
 }
 
 function clearAddForm() {
-  ['add-name','add-thumb','add-desc','add-colors'].forEach(id=>document.getElementById(id).value='');
+  ['add-name','add-thumb','add-desc'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
   pendingGlbData = null;
   document.getElementById('glb-drop-label').textContent = 'Clique aqui ou arraste o arquivo .glb';
@@ -791,7 +785,6 @@ function saveEdit() {
     showToast(`Já existe "${editName}" no mesmo gênero. Altere o nome.`,'error');
     return;
   }
-  const colorsRaw = document.getElementById('edit-colors').value.trim();
   items[idx] = { ...items[idx],
     name: document.getElementById('edit-name').value.trim(),
     categories: getSelectedCats('edit'),
@@ -799,7 +792,7 @@ function saveEdit() {
     glbData: pendingEditGlbData || items[idx].glbData,
     thumbnail: document.getElementById('edit-thumb').value.trim()||null,
     desc: document.getElementById('edit-desc').value.trim(),
-    colors: colorsRaw ? colorsRaw.split(',').map(c=>c.trim()).filter(Boolean) : [],
+    colors: items[idx].colors||[],
   };
   pendingEditGlbData = null;
   document.getElementById('edit-glb-label').textContent = 'Clique para trocar o arquivo .glb';
