@@ -184,6 +184,16 @@ tr:hover td{background:rgba(255,45,120,0.03);}
           <p style="font-size:0.82rem;color:var(--muted);line-height:1.6">
             ⚠️ Os dados ficam salvos no localStorage deste navegador. Use sempre o mesmo navegador/computador para gerenciar. Faça backup regularmente.
           </p>
+          <div id="token-section" style="margin-top:1rem;padding:1rem;background:var(--dark3);border:1px solid var(--border);border-radius:8px;">
+            <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">GitHub Token</div>
+            <div id="token-set-info" style="display:none;font-size:0.82rem;color:var(--green);margin-bottom:0.5rem;">✓ Token configurado</div>
+            <div id="token-not-set" style="font-size:0.82rem;color:var(--red);margin-bottom:0.5rem;">⚠️ Token não configurado — publicação desativada</div>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <input type="password" id="token-input" placeholder="Cole seu GitHub token aqui" style="flex:1;background:var(--dark);border:1px solid var(--border);color:var(--text);padding:0.55rem 0.85rem;border-radius:7px;font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;">
+              <button class="btn btn-primary btn-sm" onclick="saveToken()">Salvar</button>
+              <button class="btn btn-danger btn-sm" onclick="clearToken()">Limpar</button>
+            </div>
+          </div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="syncToGitHub()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -340,7 +350,7 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 <script>
 const ADMIN_PASSWORD = 'bdstudio2024'; // ← MUDE AQUI
 const STORAGE_KEY = 'bd_catalog_v2';
-const GITHUB_TOKEN = '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';
+let GITHUB_TOKEN = localStorage.getItem('bd_github_token') || '';
 const GITHUB_REPO = 'brunacdacroce/catalogo-mods-roupas-bdstudio';
 const GITHUB_FILE = 'catalog-data.json';
 let items = [];
@@ -353,7 +363,31 @@ function saveData() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({items,categories}));
 }
 
+function saveToken() {
+  const val = document.getElementById('token-input').value.trim();
+  if (!val) { showToast('Cole o token antes de salvar.','error'); return; }
+  GITHUB_TOKEN = val;
+  localStorage.setItem('bd_github_token', val);
+  document.getElementById('token-input').value = '';
+  updateTokenUI();
+  showToast('Token salvo!','success');
+}
+
+function clearToken() {
+  GITHUB_TOKEN = '';
+  localStorage.removeItem('bd_github_token');
+  updateTokenUI();
+  showToast('Token removido.','success');
+}
+
+function updateTokenUI() {
+  const has = !!GITHUB_TOKEN;
+  document.getElementById('token-set-info').style.display = has ? 'block' : 'none';
+  document.getElementById('token-not-set').style.display = has ? 'none' : 'block';
+}
+
 async function syncToGitHub() {
+  if (!GITHUB_TOKEN) { showToast('Configure o GitHub Token no Dashboard primeiro.','error'); return; }
   showToast('Salvando no servidor...','success');
   try {
     // Prepare data without large base64 glbData for JSON file
@@ -454,6 +488,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
 function renderAll() {
   document.getElementById('stat-total').textContent = items.length;
   document.getElementById('stat-cats').textContent = categories.length;
+  updateTokenUI();
   renderModelsTable(); renderCategories();
   populateCatSelect('add-cat'); populateCatSelect('edit-cat');
 }
