@@ -19,7 +19,8 @@
     "Óculos",
     "Sapatos",
     "Bikinis | Calcinhas",
-    "Juicy Body (Bundão)"
+    "Juicy Body (Bundão)",
+    "Espartilho"
   ],
   "items": [
     {
@@ -284,6 +285,20 @@
         "Policia"
       ],
       "thumbnail": "https://drive.google.com/file/d/1F0WSdxdDRVv4YDpny9C0OdH0Q3mW14rW/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
+    },
+    {
+      "id": 1781766625460,
+      "name": "Espartilho #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Croppeds",
+        "Espartilho"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1Pv-I_h5GJAsNHOkEyIczWLaAyX9G_JGM/view?usp=drive_link",
       "desc": "",
       "colors": [],
       "hasGlb": true
