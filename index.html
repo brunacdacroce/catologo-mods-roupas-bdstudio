@@ -473,7 +473,33 @@ const STORAGE_KEY = 'bd_catalog_v2';
 let items = [], categories = ['Feminino','Masculino','Unissex','Uniforme','Facção','Especial'];
 let activeCategory = 'Todos', searchQuery = '', currentViewer = null;
 
-function loadData() {
+async function loadData() {
+  // Try GitHub first
+  try {
+    const res = await fetch('https://raw.githubusercontent.com/brunacdacroce/catalogo-mods-roupas-bdstudio/main/catalog-data.json?t=' + Date.now());
+    if (res.ok) {
+      const d = await res.json();
+      categories = d.categories || categories;
+      // Fetch GLB files for each item
+      items = await Promise.all((d.items||[]).map(async item => {
+        if (item.hasGlb) {
+          try {
+            const glbRes = await fetch(`https://raw.githubusercontent.com/brunacdacroce/catalogo-mods-roupas-bdstudio/main/models/${item.id}.glb?t=` + Date.now());
+            if (glbRes.ok) {
+              const buf = await glbRes.arrayBuffer();
+              const bytes = new Uint8Array(buf);
+              let binary = '';
+              bytes.forEach(b => binary += String.fromCharCode(b));
+              item.glbData = 'data:model/gltf-binary;base64,' + btoa(binary);
+            }
+          } catch(e) {}
+        }
+        return item;
+      }));
+      return;
+    }
+  } catch(e) {}
+  // Fallback to localStorage
   try { const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); items=d.items||[]; categories=d.categories||categories; } catch(e){}
 }
 
@@ -724,7 +750,7 @@ async function initViewer(url) {
   } catch(e){ loading.innerHTML='<span style="color:var(--muted);font-size:0.82rem">Visualizador indisponível.</span>'; }
 }
 
-loadData(); renderFilters(); renderGrid();
+loadData().then(() => { renderFilters(); renderGrid(); });
 initScrollReveal();
 </script>
 </body>
