@@ -80,23 +80,6 @@
       "hasGlb": true
     },
     {
-      "id": 1781756124935,
-      "name": "Camiseta #1",
-      "category": "Masculino",
-      "categories": [
-        "Masculino",
-        "Camisetas",
-        "Hospital",
-        "Mecânica",
-        "Policia",
-        "Restaurante"
-      ],
-      "thumbnail": "https://drive.google.com/file/d/1LEEm3UlipYbZiNlglWCCcQXw3aKGa6M9/view?usp=sharing",
-      "desc": "",
-      "colors": [],
-      "hasGlb": true
-    },
-    {
       "id": 1781757349614,
       "name": "Camiseta #1",
       "category": "Masculino",
