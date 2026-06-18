@@ -378,6 +378,20 @@
       "desc": "",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781767586219,
+      "name": "Camiseta #2",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Camisetas",
+        "Mecânica"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1QOK1q8kz85g5MCAEjQWmovh93oLSPo7g/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
