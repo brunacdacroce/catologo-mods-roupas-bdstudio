@@ -347,6 +347,20 @@
       "desc": "Peça do Conjunto coladinho",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781767256375,
+      "name": "Calça #2",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calças",
+        "Peça única (conjunto)"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/19F7thLcKXXEWcR33tbPXN_FFSt2KbAPy/view?usp=drive_link",
+      "desc": "Peça do Conjunto  coladinho",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
