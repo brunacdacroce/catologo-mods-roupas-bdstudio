@@ -34,7 +34,7 @@
       "thumbnail": "https://drive.google.com/file/d/1LHOtVnTAouXwV3rU4Dl50y9a_Xfumqy7/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781752638916,
@@ -51,7 +51,7 @@
       "thumbnail": "https://drive.google.com/file/d/1EZj1vkceOFeSLQf6Azcd0kWMHa3IQtpl/view?usp=sharing",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781754389171,
@@ -64,7 +64,7 @@
       "thumbnail": "https://drive.google.com/file/d/1LmuDwwQbp7PwXeOcvZTdiwiPqC9A4ez7/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781755247412,
@@ -77,7 +77,7 @@
       "thumbnail": "https://drive.google.com/file/d/1bmL79vu0mdNpZqNsNT3T8saNMFVnJSjx/view?usp=sharing",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781757349614,
@@ -94,7 +94,7 @@
       "thumbnail": "https://drive.google.com/file/d/1LEEm3UlipYbZiNlglWCCcQXw3aKGa6M9/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781758154877,
@@ -108,7 +108,7 @@
       "thumbnail": "https://drive.google.com/file/d/1cZFWcgdbF0de6oKwQ5AHYFmyUZW1tl07/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781758341074,
@@ -122,7 +122,7 @@
       "thumbnail": "https://drive.google.com/file/d/1h220O78m-GZy9kPPuHEEv5Mr69wQED_Y/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781758651583,
@@ -135,7 +135,7 @@
       "thumbnail": "https://drive.google.com/file/d/1Zc4OHCXrFbvtVxP3S3_ucqwKNETCZpKO/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781758815074,
@@ -150,7 +150,7 @@
       "thumbnail": "https://drive.google.com/file/d/1Xx3uD2tyRe6uvAKCaV6CHkfv9cRvMboV/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781758972607,
@@ -163,7 +163,7 @@
       "thumbnail": "https://drive.google.com/file/d/14Xd4az57zi9r6oFy46oqhz44YV0t21FR/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781759081686,
@@ -176,7 +176,7 @@
       "thumbnail": "https://drive.google.com/file/d/185rGMM6vnzcYSwh2r_N9tiHpqFNKgEgj/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781759182314,
@@ -189,7 +189,7 @@
       "thumbnail": "https://drive.google.com/file/d/1AP-dwpS2ZlQYdY9UzAZgJkFn_IZuTMcr/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781759412355,
@@ -204,7 +204,7 @@
       "thumbnail": "https://drive.google.com/file/d/1n1YYiJnVuCq8ZE1l6RCOd2qpausP_kYD/view?usp=drive_link",
       "desc": "",
       "colors": [],
-      "hasGlb": true
+      "hasGlb": false
     },
     {
       "id": 1781762102639,
@@ -215,6 +215,19 @@
         "Calções"
       ],
       "thumbnail": "https://drive.google.com/file/d/1N4z6qW6rGNsJVkPkXHYTONZUFMd6ADCl/view?usp=drive_link",
+      "desc": "Calção com a perna mais grossinha",
+      "colors": [],
+      "hasGlb": false
+    },
+    {
+      "id": 1781765073771,
+      "name": "Saia #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Saias"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/19adWYWAn_EwdhwTHTlPWqHHN-l-h177V/view?usp=drive_link",
       "desc": "",
       "colors": [],
       "hasGlb": true
