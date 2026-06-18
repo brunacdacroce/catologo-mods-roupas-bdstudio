@@ -1,7 +1,5 @@
 {
   "categories": [
-    "Feminino",
-    "Masculino",
     "Calças",
     "Camisetas",
     "Jaquetas",
@@ -27,5 +25,18 @@
     "Coletes",
     "Moletom"
   ],
-  "items": []
+  "items": [
+    {
+      "id": 1781819305262,
+      "name": "Camiseta #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Camisetas"
+      ],
+      "glbUrl": "https://drive.google.com/file/d/1_jMOghsMQMygS1A0Hp1mU1SMumsOE7vl/view?usp=drive_link",
+      "thumbnail": "https://drive.google.com/file/d/1PuMuc-R2qA9Z1AHlyGaiSvO1Tz1hBBDl/view?usp=drive_link",
+      "desc": ""
+    }
+  ]
 }
