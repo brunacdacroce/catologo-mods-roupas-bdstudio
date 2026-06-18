@@ -611,7 +611,7 @@ function renderGrid() {
     const matchSubcat = activeSubcat==='Todos' || cats.includes(activeSubcat);
     const matchQ = !searchQuery||i.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchGender && matchSubcat && matchQ;
-  });
+  }).sort((a,b) => Number(b.id) - Number(a.id));
   const labelParts = [activeGender!=='Todos'?activeGender:'', activeSubcat!=='Todos'?activeSubcat:''].filter(Boolean);
   label.textContent = labelParts.length ? labelParts.join(' · ').toUpperCase() : 'TODOS OS MODELOS';
   if(!filtered.length){
