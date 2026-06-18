@@ -230,20 +230,16 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         <div class="card-box">
           <h3>Arquivos do Google Drive</h3>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start;">
-            <div>
-              <div class="thumb-upload-area">
-                <div class="thumb-preview-box" id="add-thumb-preview">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-                </div>
-                <div class="thumb-input-col">
-                  <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Foto (PNG) *</label>
-                  <input type="url" id="add-thumb" placeholder="Link do Drive do PNG" oninput="previewThumb('add-thumb','add-thumb-preview')">
-                </div>
+            <div class="form-group">
+              <label>Foto (PNG) *</label>
+              <input type="url" id="add-thumb" placeholder="Link do Drive do PNG" oninput="previewThumb('add-thumb','add-thumb-preview')">
+              <div id="add-thumb-preview" style="margin-top:0.5rem;width:100%;height:120px;border-radius:8px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
               </div>
             </div>
             <div class="form-group">
               <label>Arquivo 3D (.GLB) *</label>
-              <input type="url" id="add-glb" placeholder="Link do Drive do .glb" style="margin-top:0.25rem">
+              <input type="url" id="add-glb" placeholder="Link do Drive do .glb">
             </div>
           </div>
           <span class="hint" style="margin-top:0.75rem;display:block"><strong>Como pegar o link:</strong> Drive → botão direito no arquivo → Compartilhar → "Qualquer pessoa com o link" → Copiar link.</span>
@@ -298,13 +294,11 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start;">
-        <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:0.85rem;display:flex;gap:0.75rem;align-items:flex-start;">
-          <div class="thumb-preview-box" id="edit-thumb-preview" style="width:60px;height:60px;border-radius:6px;flex-shrink:0;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <div class="form-group">
+          <label>Foto PNG *</label>
+          <input type="url" id="edit-thumb" placeholder="Link Drive do PNG" oninput="previewThumb('edit-thumb','edit-thumb-preview')">
+          <div id="edit-thumb-preview" style="margin-top:0.5rem;width:100%;height:100px;border-radius:8px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;gap:0.35rem;">
-            <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Foto PNG *</label>
-            <input type="url" id="edit-thumb" placeholder="Link Drive do PNG" oninput="previewThumb('edit-thumb','edit-thumb-preview')">
           </div>
         </div>
         <div class="form-group">
@@ -486,7 +480,7 @@ function addModel() {
 
 function clearAddForm() {
   ['add-name','add-glb','add-thumb','add-desc'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
+  document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
   document.getElementById('add-g-fem').checked = false;
   document.getElementById('add-g-mas').checked = false;
   populateSubcatChecks('add');
