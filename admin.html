@@ -210,9 +210,15 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         <div class="page-title">Modelos</div>
         <div class="page-sub">Todos os modelos cadastrados no catálogo</div>
         <div class="card-box">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:0.75rem;">
+            <button class="btn btn-danger btn-sm" id="bulk-delete-btn" style="display:none" onclick="bulkDelete()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.3rem"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              Excluir selecionados (<span id="selected-count">0</span>)
+            </button>
+          </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Foto</th><th>Nome</th><th>Categoria</th><th>GLB</th><th>Ações</th></tr></thead>
+              <thead><tr><th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th><th>Foto</th><th>Nome</th><th>Categoria</th><th>GLB</th><th>Ações</th></tr></thead>
               <tbody id="models-tbody"></tbody>
             </table>
           </div>
@@ -687,6 +693,11 @@ function addModel() {
   if (!name) { showToast('Preencha o nome da roupa.','error'); return; }
   if (!cats.length) { showToast('Selecione pelo menos uma categoria.','error'); return; }
   if (!pendingGlbData) { showToast('Selecione o arquivo .glb.','error'); return; }
+  const addGenders = cats.filter(c => GENDERS.filter(g=>g!=='Todos').includes(c));
+  if (isDuplicateName(name, addGenders)) {
+    showToast(`Já existe "${name}" no mesmo gênero. Altere o nome antes de publicar.`,'error');
+    return;
+  }
   if (!thumb) { showToast('Cole o link da foto PNG.','error'); return; }
   const colors = colorsRaw ? colorsRaw.split(',').map(c=>c.trim()).filter(Boolean) : [];
   items.push({ id: Date.now(), name, categories: cats, category: cats[0], glbData: pendingGlbData, thumbnail: thumb, desc, colors });
@@ -710,6 +721,41 @@ function deleteModel(id) {
   saveData(); renderAll();
   showToast('Modelo excluído.','success');
   syncToGitHub();
+}
+
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+  updateBulkBtn();
+}
+
+function updateBulkBtn() {
+  const checked = document.querySelectorAll('.row-check:checked').length;
+  const btn = document.getElementById('bulk-delete-btn');
+  const cnt = document.getElementById('selected-count');
+  if (btn) btn.style.display = checked > 0 ? 'flex' : 'none';
+  if (cnt) cnt.textContent = checked;
+  const all = document.querySelectorAll('.row-check').length;
+  const sa = document.getElementById('select-all');
+  if (sa) sa.checked = checked === all && all > 0;
+}
+
+function bulkDelete() {
+  const ids = Array.from(document.querySelectorAll('.row-check:checked')).map(c => c.dataset.id);
+  if (!ids.length) return;
+  if (!confirm(`Excluir ${ids.length} modelo(s)?`)) return;
+  items = items.filter(i => !ids.includes(String(i.id)));
+  saveData(); renderAll();
+  showToast(`${ids.length} modelo(s) excluído(s).`,'success');
+  syncToGitHub();
+}
+
+function isDuplicateName(name, genders, excludeId=null) {
+  return items.some(item => {
+    if (excludeId && String(item.id) === String(excludeId)) return false;
+    if (item.name.toLowerCase() !== name.toLowerCase()) return false;
+    const itemGenders = (item.categories||[item.category]).filter(c => GENDERS.filter(g=>g!=='Todos').includes(c));
+    return genders.some(g => itemGenders.includes(g));
+  });
 }
 
 // EDIT
@@ -738,6 +784,13 @@ function saveEdit() {
   const id = document.getElementById('edit-id').value;
   const idx = items.findIndex(i=>String(i.id)===String(id));
   if (idx===-1) return;
+  const editName = document.getElementById('edit-name').value.trim();
+  const editCats = getSelectedCats('edit');
+  const editGenders = editCats.filter(c => GENDERS.filter(g=>g!=='Todos').includes(c));
+  if (isDuplicateName(editName, editGenders, id)) {
+    showToast(`Já existe "${editName}" no mesmo gênero. Altere o nome.`,'error');
+    return;
+  }
   const colorsRaw = document.getElementById('edit-colors').value.trim();
   items[idx] = { ...items[idx],
     name: document.getElementById('edit-name').value.trim(),
