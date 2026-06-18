@@ -409,9 +409,9 @@ async function syncToGitHub() {
     // Save metadata JSON
     await saveFileToGitHub(GITHUB_FILE, btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2)))));
 
-    // Save each GLB as separate file if it has glbData
+    // Save GLB only for items that have local glbData (new uploads)
     for (const item of items) {
-      if (item.glbData) {
+      if (item.glbData && item.glbData.startsWith('data:')) {
         const base64 = item.glbData.split(',')[1];
         if (base64) {
           await saveFileToGitHub(`models/${item.id}.glb`, base64);
