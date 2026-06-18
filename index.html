@@ -17,8 +17,43 @@ body{background:var(--dark);color:var(--text);font-family:'Outfit',sans-serif;mi
 
 /* ── PARTICLES ── */
 #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
-.particle{position:absolute;border-radius:50%;animation:float linear infinite;}
+.particle{position:absolute;border-radius:50%;animation:float linear infinite;filter:blur(0.5px);}
 @keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:0.4;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
+
+
+/* FLOATING LIPS */
+.floating-lip{position:fixed;pointer-events:none;z-index:0;opacity:0;animation:lip-float linear infinite;}
+@keyframes lip-float{
+  0%{transform:translateY(110vh) rotate(var(--rot)) scale(var(--sc));opacity:0;}
+  5%{opacity:var(--op);}
+  90%{opacity:calc(var(--op)*0.5);}
+  100%{transform:translateY(-15vh) rotate(calc(var(--rot) + 30deg)) scale(var(--sc));opacity:0;}
+}
+/* NEON GRID */
+#neon-grid{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:0.04;}
+.grid-line-h{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pink),var(--purple),transparent);}
+.grid-line-v{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--purple),var(--pink),transparent);}
+
+
+
+/* NEON CORNERS */
+.neon-corner{position:fixed;width:80px;height:80px;pointer-events:none;z-index:0;opacity:0.35;}
+.neon-corner.tl{top:80px;left:0;}
+.neon-corner.tr{top:80px;right:0;transform:scaleX(-1);}
+.neon-corner.bl{bottom:0;left:0;transform:scaleY(-1);}
+.neon-corner.br{bottom:0;right:0;transform:scale(-1);}
+
+/* NEON CARD GLOW on hover */
+.card::after{content:'';position:absolute;inset:-1px;border-radius:13px;background:linear-gradient(135deg,var(--pink),var(--purple));opacity:0;transition:opacity 0.3s;z-index:-1;filter:blur(8px);}
+.card:hover::after{opacity:0.25;}
+
+/* NEON PULSE on catalog header */
+.catalog-header-logo{animation:fade-up 0.7s 0.1s forwards, neon-flicker 6s 2s infinite;}
+@keyframes neon-flicker{0%,95%,100%{opacity:1;}96%{opacity:0.7;}97%{opacity:1;}98%{opacity:0.5;}99%{opacity:1;}}
+
+/* GLOW DOTS */
+.glow-dot{position:fixed;border-radius:50%;pointer-events:none;z-index:0;animation:glow-pulse 4s ease-in-out infinite;}
+@keyframes glow-pulse{0%,100%{transform:scale(1);opacity:0.15;}50%{transform:scale(1.4);opacity:0.3;}}
 
 /* ── HEADER ── */
 header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;transition:all 0.3s;}
@@ -224,6 +259,11 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;positio
 
 <!-- PARTICLES -->
 <div id="particles"></div>
+<div id="neon-grid"></div>
+<div class="neon-corner tl"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 78 L2 2 L78 2" stroke="url(#g1)" stroke-width="1.5"/><defs><linearGradient id="g1" x1="0" y1="1" x2="1" y2="0" gradientUnits="objectBoundingBox"><stop offset="0%" stop-color="#FF2D78"/><stop offset="100%" stop-color="#9B30FF"/></linearGradient></defs></svg></div>
+<div class="neon-corner tr"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 78 L2 2 L78 2" stroke="url(#g2)" stroke-width="1.5"/><defs><linearGradient id="g2" x1="0" y1="1" x2="1" y2="0" gradientUnits="objectBoundingBox"><stop offset="0%" stop-color="#FF2D78"/><stop offset="100%" stop-color="#9B30FF"/></linearGradient></defs></svg></div>
+<div class="glow-dot" style="width:300px;height:300px;top:20%;left:-5%;background:radial-gradient(circle,rgba(255,45,120,0.15),transparent 70%);"></div>
+<div class="glow-dot" style="width:400px;height:400px;top:50%;right:-10%;background:radial-gradient(circle,rgba(155,48,255,0.12),transparent 70%);animation-delay:2s;"></div>
 
 <!-- HEADER -->
 <header id="main-header">
@@ -527,20 +567,47 @@ window.addEventListener('scroll', ()=>{
 
 // ── PARTICLES ──
 (function(){
+  // Floating particles
   const container = document.getElementById('particles');
-  for (let i=0;i<18;i++) {
+  for (let i=0;i<25;i++) {
     const p = document.createElement('div');
     p.className = 'particle';
-    const size = Math.random()*3+1;
-    const colors = ['rgba(255,45,120,0.4)','rgba(155,48,255,0.4)','rgba(255,45,120,0.2)'];
-    p.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*12+8}s;
-      animation-delay:-${Math.random()*10}s;
-    `;
+    const size = Math.random()*4+1;
+    const isPink = Math.random() > 0.5;
+    const color = isPink ? 'rgba(255,45,120,' : 'rgba(155,48,255,';
+    const opacity = (Math.random()*0.4+0.2).toFixed(2);
+    const glow = isPink ? '0 0 6px rgba(255,45,120,0.8)' : '0 0 6px rgba(155,48,255,0.8)';
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${color+opacity});box-shadow:${glow};animation-duration:${Math.random()*14+8}s;animation-delay:-${Math.random()*12}s;`;
     container.appendChild(p);
+  }
+
+  // Floating lips
+  const lipCount = 8;
+  for (let i=0;i<lipCount;i++) {
+    const lip = document.createElement('img');
+    lip.className = 'floating-lip';
+    lip.src = 'https://lh3.googleusercontent.com/d/12tel7B8cjAdag7JDPyyjnp_xmt9V0Cjr';
+    const size = Math.random()*60+30;
+    const rot = (Math.random()*40-20).toFixed(1);
+    const op = (Math.random()*0.08+0.03).toFixed(2);
+    const sc = (Math.random()*0.4+0.8).toFixed(2);
+    lip.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;--rot:${rot}deg;--op:${op};--sc:${sc};animation-duration:${Math.random()*20+15}s;animation-delay:-${Math.random()*20}s;filter:hue-rotate(${Math.random()*30-15}deg) brightness(0.7);`;
+    document.body.appendChild(lip);
+  }
+
+  // Neon grid lines
+  const grid = document.getElementById('neon-grid');
+  for (let i=0;i<8;i++) {
+    const h = document.createElement('div');
+    h.className = 'grid-line-h';
+    h.style.top = (i * 12.5) + '%';
+    grid.appendChild(h);
+  }
+  for (let i=0;i<6;i++) {
+    const v = document.createElement('div');
+    v.className = 'grid-line-v';
+    v.style.left = (i * 16.66) + '%';
+    grid.appendChild(v);
   }
 })();
 
