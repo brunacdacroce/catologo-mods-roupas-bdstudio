@@ -440,29 +440,41 @@ async function syncToGitHub() {
 }
 
 async function saveFileToGitHub(path, base64Content) {
-  // Check if file exists to get SHA
+  // Always fetch fresh SHA to avoid conflicts
   let sha = null;
-  try {
+  let retries = 2;
+  
+  while (retries >= 0) {
+    try {
+      // Get current SHA
+      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+        headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' }
+      });
+      if (getRes.ok) { const d = await getRes.json(); sha = d.sha; }
+    } catch(e) {}
+
+    const body = { message: `Update ${path}`, content: base64Content };
+    if (sha) body.sha = sha;
+
     const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
     });
-    if (res.ok) { const d = await res.json(); sha = d.sha; }
-  } catch(e) {}
 
-  const body = { message: `Update ${path}`, content: base64Content };
-  if (sha) body.sha = sha;
+    if (res.ok) return; // success
 
-  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
     const err = await res.json().catch(()=>({message:'Erro desconhecido'}));
+    
+    // If SHA conflict, retry with fresh SHA
+    if (err.message && err.message.includes('but expected') && retries > 0) {
+      sha = null; retries--; continue;
+    }
+    
     throw new Error(err.message || 'GitHub API error');
   }
 }
