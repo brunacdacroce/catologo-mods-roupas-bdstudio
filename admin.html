@@ -243,25 +243,30 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         </div>
 
         <div class="card-box">
-          <h3>Arquivos do Google Drive</h3>
+          <h3>Arquivos</h3>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start;">
             <div class="form-group">
-              <label>Foto (PNG) *</label>
-              <input type="url" id="add-thumb" placeholder="Link do Drive do PNG" oninput="previewThumb('add-thumb','add-thumb-preview')">
+              <label>Foto (PNG) * — Link do Google Drive</label>
+              <input type="url" id="add-thumb" placeholder="https://drive.google.com/file/d/..." oninput="previewThumb('add-thumb','add-thumb-preview')">
               <div id="add-thumb-preview" style="margin-top:0.5rem;width:100%;height:120px;border-radius:8px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
               </div>
+              <span class="hint">Drive → botão direito → Compartilhar → "Qualquer pessoa com o link" → Copiar.</span>
             </div>
             <div class="form-group">
-              <label>Arquivo 3D (.GLB) *</label>
-              <input type="url" id="add-glb" placeholder="Link do Drive do .glb">
+              <label>Arquivo 3D (.GLB) * — Upload direto</label>
+              <div id="add-glb-drop" onclick="document.getElementById('add-glb-file').click()" style="margin-top:0.25rem;border:2px dashed var(--border);border-radius:8px;padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:border-color 0.2s;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
+                <input type="file" id="add-glb-file" accept=".glb" style="display:none" onchange="onGlbSelected(this,'add')">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span id="add-glb-label" style="font-size:0.82rem;color:var(--muted)">Clique ou arraste o .glb aqui</span>
+              </div>
+              <span class="hint">O arquivo será enviado para o GitHub automaticamente.</span>
             </div>
           </div>
-          <span class="hint" style="margin-top:0.75rem;display:block"><strong>Como pegar o link:</strong> Drive → botão direito no arquivo → Compartilhar → "Qualquer pessoa com o link" → Copiar link.</span>
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-primary" onclick="addModel()">Adicionar ao Catálogo</button>
+          <button class="btn btn-primary" id="btn-add-model" onclick="addModel()">Adicionar ao Catálogo</button>
           <button class="btn btn-outline" onclick="clearAddForm()">Limpar</button>
         </div>
       </div>
@@ -310,15 +315,19 @@ tr:hover td{background:rgba(255,45,120,0.03);}
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start;">
         <div class="form-group">
-          <label>Foto PNG *</label>
+          <label>Foto PNG * — Link Drive</label>
           <input type="url" id="edit-thumb" placeholder="Link Drive do PNG" oninput="previewThumb('edit-thumb','edit-thumb-preview')">
           <div id="edit-thumb-preview" style="margin-top:0.5rem;width:100%;height:100px;border-radius:8px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
           </div>
         </div>
         <div class="form-group">
-          <label>Arquivo GLB *</label>
-          <input type="url" id="edit-glb" placeholder="Link Drive do .glb">
+          <label>Arquivo .GLB — Upload (opcional: substitui atual)</label>
+          <div id="edit-glb-drop" onclick="document.getElementById('edit-glb-file').click()" style="margin-top:0.25rem;border:2px dashed var(--border);border-radius:8px;padding:1rem;text-align:center;cursor:pointer;transition:border-color 0.2s;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;">
+            <input type="file" id="edit-glb-file" accept=".glb" style="display:none" onchange="onGlbSelected(this,'edit')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="edit-glb-label" style="font-size:0.78rem;color:var(--muted)">Clique para trocar o .glb</span>
+          </div>
         </div>
       </div>
       <div class="form-group"><label>Descrição</label><textarea id="edit-desc"></textarea></div>
@@ -584,32 +593,96 @@ function renderModelsTable() {
   }).join('');
 }
 
+// GLB UPLOAD
+let pendingGlb = { add: null, edit: null }; // { file, name }
+
+function onGlbSelected(input, prefix) {
+  const file = input.files[0]; if (!file) return;
+  pendingGlb[prefix] = { file, name: file.name };
+  const label = document.getElementById(prefix+'-glb-label');
+  const drop  = document.getElementById(prefix+'-glb-drop');
+  label.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  label.style.color = 'var(--green)';
+  drop.style.borderColor = 'var(--green)';
+}
+
+async function uploadGlbToGitHub(file, filename) {
+  if (!GITHUB_TOKEN) throw new Error('Token do GitHub não configurado.');
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const base64 = e.target.result.split(',')[1];
+        const path   = `models/${filename}`;
+        // check existing SHA
+        let sha = null;
+        try {
+          const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}?t=${Date.now()}`, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+          });
+          if (r.ok) sha = (await r.json()).sha;
+        } catch(e) {}
+        const body = { message: `upload ${filename}`, content: base64 };
+        if (sha) body.sha = sha;
+        const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+          method: 'PUT',
+          headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!r.ok) throw new Error((await r.json()).message || r.status);
+        resolve(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/${path}`);
+      } catch(err) { reject(err); }
+    };
+    reader.onerror = () => reject(new Error('Erro ao ler arquivo.'));
+    reader.readAsDataURL(file);
+  });
+}
+
 // ADD
-function addModel() {
+async function addModel() {
   const name  = document.getElementById('add-name').value.trim();
-  const glbUrl= document.getElementById('add-glb').value.trim();
   const thumb = document.getElementById('add-thumb').value.trim();
   const desc  = document.getElementById('add-desc').value.trim();
-
   const genders = getSelectedGenders('add');
   const subcats = getSelectedSubcats('add');
   const allCats = [...genders, ...subcats];
 
-  if (!name)          { showToast('Preencha o nome da roupa.','error'); return; }
-  if (!genders.length){ showToast('Selecione pelo menos um gênero.','error'); return; }
-  if (!glbUrl)        { showToast('Cole o link do arquivo .glb.','error'); return; }
-  if (!thumb)         { showToast('Cole o link da foto PNG.','error'); return; }
+  if (!name)            { showToast('Preencha o nome da roupa.','error'); return; }
+  if (!genders.length)  { showToast('Selecione pelo menos um gênero.','error'); return; }
+  if (!thumb)           { showToast('Cole o link da foto PNG.','error'); return; }
+  if (!pendingGlb.add)  { showToast('Selecione o arquivo .glb.','error'); return; }
+  if (!GITHUB_TOKEN)    { showToast('Configure o Token do GitHub primeiro.','error'); return; }
 
-  items.unshift({ id: Date.now(), name, category: allCats[0]||genders[0], categories: allCats, glbUrl, thumbnail: thumb, desc, colors: [] });
-  saveData(); renderAll(); clearAddForm();
-  showToast('Modelo adicionado!','success');
+  const btn = document.getElementById('btn-add-model');
+  btn.disabled = true; btn.textContent = 'Enviando GLB...';
+
+  try {
+    const safeName = pendingGlb.add.name.replace(/\s+/g, '-').toLowerCase();
+    const glbUrl   = await uploadGlbToGitHub(pendingGlb.add.file, safeName);
+    const id       = Date.now();
+    items.unshift({ id, name, category: allCats[0]||genders[0], categories: allCats, glbUrl, thumbnail: thumb, desc, colors: [] });
+    pendingGlb.add = null;
+    saveData(); renderAll(); clearAddForm();
+    showToast('Modelo adicionado e GLB enviado!','success');
+  } catch(e) {
+    showToast('Erro ao enviar GLB: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Adicionar ao Catálogo';
+  }
 }
 
 function clearAddForm() {
-  ['add-name','add-glb','add-thumb','add-desc'].forEach(id=>document.getElementById(id).value='');
+  ['add-name','add-thumb','add-desc'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
   document.getElementById('add-g-fem').checked = false;
   document.getElementById('add-g-mas').checked = false;
+  const label = document.getElementById('add-glb-label');
+  const drop  = document.getElementById('add-glb-drop');
+  label.textContent = 'Clique ou arraste o .glb aqui';
+  label.style.color = '';
+  drop.style.borderColor = '';
+  document.getElementById('add-glb-file').value = '';
+  pendingGlb.add = null;
   populateSubcatChecks('add');
 }
 
@@ -628,7 +701,6 @@ function openEdit(id) {
   populateSubcatChecks('edit');
   document.getElementById('edit-id').value    = item.id;
   document.getElementById('edit-name').value  = item.name;
-  document.getElementById('edit-glb').value   = item.glbUrl||'';
   document.getElementById('edit-thumb').value = item.thumbnail||'';
   document.getElementById('edit-desc').value  = item.desc||'';
 
@@ -638,10 +710,17 @@ function openEdit(id) {
   const imgUrl = gdriveImg(item.thumbnail);
   const box = document.getElementById('edit-thumb-preview');
   box.innerHTML = imgUrl ? `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
+  // reset glb drop
+  const el = document.getElementById('edit-glb-label');
+  const dr = document.getElementById('edit-glb-drop');
+  el.textContent = item.glbUrl ? '✓ GLB atual — clique para substituir' : 'Clique para adicionar .glb';
+  el.style.color = item.glbUrl ? 'var(--green)' : '';
+  dr.style.borderColor = item.glbUrl ? 'rgba(34,197,94,0.4)' : '';
+  pendingGlb.edit = null;
   document.getElementById('edit-overlay').classList.add('open');
 }
-function closeEdit() { document.getElementById('edit-overlay').classList.remove('open'); }
-function saveEdit() {
+function closeEdit() { document.getElementById('edit-overlay').classList.remove('open'); pendingGlb.edit = null; }
+async function saveEdit() {
   const id  = document.getElementById('edit-id').value;
   const idx = items.findIndex(i=>String(i.id)===String(id));
   if (idx===-1) return;
@@ -649,17 +728,34 @@ function saveEdit() {
   const subcats = getSelectedSubcats('edit');
   if (!genders.length) { showToast('Selecione pelo menos um gênero.','error'); return; }
   const allCats = [...genders, ...subcats];
-  items[idx] = { ...items[idx],
-    name:       document.getElementById('edit-name').value.trim(),
-    categories: allCats,
-    category:   allCats[0],
-    glbUrl:     document.getElementById('edit-glb').value.trim(),
-    thumbnail:  document.getElementById('edit-thumb').value.trim()||null,
-    desc:       document.getElementById('edit-desc').value.trim(),
-    colors:     items[idx].colors || [],
-  };
-  saveData(); renderAll(); closeEdit();
-  showToast('Modelo atualizado!','success');
+
+  const btn = document.querySelector('#edit-overlay .btn-primary');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+
+  try {
+    let glbUrl = items[idx].glbUrl;
+    if (pendingGlb.edit) {
+      if (!GITHUB_TOKEN) throw new Error('Token do GitHub não configurado.');
+      btn.textContent = 'Enviando GLB...';
+      const safeName = pendingGlb.edit.name.replace(/\s+/g,'_').toLowerCase();
+      glbUrl = await uploadGlbToGitHub(pendingGlb.edit.file, safeName);
+      pendingGlb.edit = null;
+    }
+    items[idx] = { ...items[idx],
+      name:       document.getElementById('edit-name').value.trim(),
+      categories: allCats, category: allCats[0],
+      glbUrl,
+      thumbnail:  document.getElementById('edit-thumb').value.trim()||null,
+      desc:       document.getElementById('edit-desc').value.trim(),
+      colors:     items[idx].colors || [],
+    };
+    saveData(); renderAll(); closeEdit();
+    showToast('Modelo atualizado!','success');
+  } catch(e) {
+    showToast('Erro: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Salvar alterações';
+  }
 }
 document.getElementById('edit-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('edit-overlay')) closeEdit(); });
 
