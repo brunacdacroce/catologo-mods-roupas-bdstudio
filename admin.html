@@ -439,44 +439,51 @@ async function syncToGitHub() {
   }
 }
 
-async function saveFileToGitHub(path, base64Content) {
-  // Always fetch fresh SHA to avoid conflicts
-  let sha = null;
-  let retries = 2;
-  
-  while (retries >= 0) {
-    try {
-      // Get current SHA
-      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-        headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' }
-      });
-      if (getRes.ok) { const d = await getRes.json(); sha = d.sha; }
-    } catch(e) {}
-
-    const body = { message: `Update ${path}`, content: base64Content };
-    if (sha) body.sha = sha;
-
+async function getFileSHA(path) {
+  try {
     const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
     });
+    if (res.ok) { const d = await res.json(); return d.sha || null; }
+    return null;
+  } catch(e) { return null; }
+}
 
-    if (res.ok) return; // success
+async function saveFileToGitHub(path, base64Content) {
+  // Always get fresh SHA before writing
+  const sha = await getFileSHA(path);
+  
+  const body = { message: `Update ${path}`, content: base64Content };
+  if (sha) body.sha = sha;
 
-    const err = await res.json().catch(()=>({message:'Erro desconhecido'}));
-    
-    // If SHA conflict, retry with fresh SHA
-    if (err.message && err.message.includes('but expected') && retries > 0) {
-      sha = null; retries--; continue;
-    }
-    
-    throw new Error(err.message || 'GitHub API error');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (res.ok) return;
+
+  // If conflict, try once more with fresh SHA
+  const err = await res.json().catch(()=>({message:'Erro desconhecido'}));
+  if (err.message && (err.message.includes('expected') || err.message.includes('sha'))) {
+    const sha2 = await getFileSHA(path);
+    const body2 = { message: `Update ${path}`, content: base64Content };
+    if (sha2) body2.sha = sha2;
+    const res2 = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body2)
+    });
+    if (res2.ok) return;
+    const err2 = await res2.json().catch(()=>({message:'Erro desconhecido'}));
+    throw new Error(err2.message || 'GitHub API error');
   }
+  throw new Error(err.message || 'GitHub API error');
 }
 
 async function ensureModelsFolder() {
