@@ -496,6 +496,21 @@
       "desc": "",
       "colors": [],
       "hasGlb": true
+    },
+    {
+      "id": 1781768621801,
+      "name": "Colete #2",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Feminino",
+        "Policia",
+        "Coletes"
+      ],
+      "thumbnail": "https://drive.google.com/file/d/1TCH9xgLbZiDil18jGkH2F3P5VSS1rNST/view?usp=drive_link",
+      "desc": "",
+      "colors": [],
+      "hasGlb": true
     }
   ]
 }
