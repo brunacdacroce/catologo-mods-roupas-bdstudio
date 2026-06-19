@@ -27,6 +27,19 @@
   ],
   "items": [
     {
+      "id": 1781850511539,
+      "name": "Calça #10",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calças",
+        "Juicy Body (Bundão)"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calçafem10glb.glb",
+      "thumbnail": "https://drive.google.com/file/d/1d2rNZC-rgMuts6WkYCCLNo8nc5VUUk9J/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781850416400,
       "name": "Calça #9",
       "category": "Feminino",
