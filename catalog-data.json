@@ -28,6 +28,18 @@
   ],
   "items": [
     {
+      "id": 1781852754787,
+      "name": "Corset #2",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Corset"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/corsetem2.glb",
+      "thumbnail": "https://drive.google.com/file/d/153_trhC8DUJ1uRFWWKAZCXNp5so1C31Z/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781852626852,
       "name": "Corset #1",
       "category": "Feminino",
