@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BD Studio — Catálogo de Roupas</title>
+<title>BD Studio — Catálogo de Mods</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap');
 :root {
@@ -73,19 +73,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,
 .filter-btn.active{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
 .filter-btn.gender{font-size:0.85rem;font-weight:600;padding:0.5rem 1.4rem;}
 
-.search-wrap{max-width:1200px;margin:1rem auto 0;padding:0 2rem;}
-.search-box{position:relative;max-width:360px;}
-.search-box input{width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:0.65rem 1rem 0.65rem 2.4rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
-.search-box input:focus{border-color:var(--pink);}
-.search-icon{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
-
-.grid-section{max-width:1200px;margin:1.5rem auto 0;padding:0 2rem 6rem;}
-.section-label{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.15em;color:var(--pink);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;}
-.empty{grid-column:1/-1;text-align:center;padding:4rem 0;color:var(--muted);font-size:0.9rem;}
-
-/* CARD */
+/* SOCIAL PAGE */
 .card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;opacity:0;animation:card-in 0.5s forwards;}
 @keyframes card-in{to{opacity:1;transform:translateY(0);}}
 .card{transform:translateY(20px);}
@@ -106,23 +94,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,
 .card-cat{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
 .card-btn{margin-top:0.85rem;width:100%;padding:0.55rem;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;}
 .card-btn:hover{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
-
-/* SOBRE PAGE */
-.sobre-wrap{padding:100px 2rem 80px;max-width:900px;margin:0 auto;}
-.sobre-eyebrow{font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--pink);margin-bottom:1rem;}
-.sobre-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:0.04em;line-height:1;margin-bottom:1.5rem;}
-.sobre-title span{background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.sobre-intro{color:var(--muted);font-size:1rem;line-height:1.8;margin-bottom:3rem;max-width:720px;}
-.sobre-section{margin-bottom:2.5rem;}
-.sobre-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:0.12em;color:var(--pink);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;}
-.sobre-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
-.service-card{background:var(--dark2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
-.service-card:hover{border-color:rgba(255,45,120,0.35);}
-.service-card h4{font-size:0.88rem;font-weight:600;margin-bottom:0.75rem;}
-.service-card ul{list-style:none;display:flex;flex-direction:column;gap:0.3rem;}
-.service-card ul li{font-size:0.8rem;color:var(--muted);padding-left:1rem;position:relative;}
-.service-card ul li::before{content:'·';position:absolute;left:0;color:var(--pink);}
 
 /* SOCIAL PAGE */
 .social-wrap{padding:120px 2rem 80px;max-width:700px;margin:0 auto;text-align:center;}
@@ -168,6 +139,61 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 .footer-copy{font-size:0.78rem;color:var(--muted);}
 .footer-copy a{color:var(--pink);text-decoration:none;}
 
+/* LOGO IMG */
+.logo-img{height:36px;width:auto;object-fit:contain;}
+
+/* AVISO COMERCIAL */
+.aviso-comercial{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:0.75rem 1.25rem;display:flex;align-items:flex-start;gap:0.75rem;max-width:900px;margin:1rem auto 0;text-align:left;}
+.aviso-comercial svg{flex-shrink:0;margin-top:0.1rem;color:#ef4444;}
+.aviso-comercial p{font-size:0.8rem;color:var(--muted);line-height:1.6;}
+.aviso-comercial strong{color:#ef4444;}
+
+/* SEARCH centered */
+.search-wrap{max-width:1200px;margin:1.25rem auto 0;padding:0 2rem;display:flex;justify-content:center;}
+.search-box{position:relative;width:100%;max-width:420px;}
+.search-box input{width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:0.65rem 1rem 0.65rem 2.4rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+.search-box input:focus{border-color:var(--pink);}
+.search-icon{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+
+/* CORDOES BTN */
+.cordoes-btn{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;border:1px solid rgba(155,48,255,0.3);color:var(--purple);padding:0.4rem 1rem;border-radius:999px;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:500;text-decoration:none;transition:all 0.2s;letter-spacing:0.04em;cursor:pointer;}
+.cordoes-btn:hover{background:rgba(155,48,255,0.1);border-color:var(--purple);}
+
+/* SOBRE melhorado */
+.sobre-wrap{padding:100px 2rem 80px;max-width:960px;margin:0 auto;}
+.sobre-eyebrow{font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--pink);margin-bottom:1rem;}
+.sobre-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:0.04em;line-height:1;margin-bottom:1.5rem;}
+.sobre-title span{background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sobre-intro{color:var(--muted);font-size:0.95rem;line-height:1.85;margin-bottom:2.5rem;max-width:800px;}
+.sobre-section{margin-bottom:2.5rem;}
+.sobre-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.12em;color:var(--pink);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;}
+.sobre-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.service-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:border-color 0.2s,transform 0.2s;}
+.service-card:hover{border-color:rgba(255,45,120,0.35);transform:translateY(-2px);}
+.service-card h4{font-size:0.85rem;font-weight:700;margin-bottom:0.85rem;color:var(--pink);text-transform:uppercase;letter-spacing:0.08em;}
+.service-card ul{list-style:none;display:flex;flex-direction:column;gap:0.35rem;}
+.service-card ul li{font-size:0.8rem;color:var(--muted);padding-left:1rem;position:relative;line-height:1.4;}
+.service-card ul li::before{content:'·';position:absolute;left:0;color:var(--pink);}
+.missao-box{background:linear-gradient(135deg,rgba(255,45,120,0.06),rgba(155,48,255,0.06));border:1px solid var(--border);border-radius:12px;padding:1.5rem 2rem;margin-top:2rem;}
+.missao-box p{font-size:0.88rem;color:var(--muted);line-height:1.8;}
+.missao-box strong{color:var(--text);}
+.como-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.75rem;}
+.como-item{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.82rem;color:var(--muted);line-height:1.5;}
+.como-dot{width:18px;height:18px;border-radius:50%;background:rgba(255,45,120,0.15);color:var(--pink);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:0.1rem;}
+.como-dot svg{width:10px;height:10px;}
+
+/* ANIMAÇÕES */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+.fade-up-delay-1{transition-delay:0.1s;}
+.fade-up-delay-2{transition-delay:0.2s;}
+.fade-up-delay-3{transition-delay:0.3s;}
+.fade-up-delay-4{transition-delay:0.4s;}
+
+/* GLOW PULSE no titulo */
+@keyframes glow-pulse{0%,100%{text-shadow:0 0 20px rgba(255,45,120,0.3);}50%{text-shadow:0 0 40px rgba(255,45,120,0.6),0 0 80px rgba(155,48,255,0.2);}}
+
 @media(max-width:640px){
   .modal-body{flex-direction:column;}
   .modal-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);}
@@ -175,21 +201,24 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
   .catalog-hero{padding:2rem 1.25rem 1rem;}
 }
 </style>
-<!-- Three.js carregado como script global (compatível com GitHub Pages) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
 <div id="particles"></div>
 
 <header>
-  <div class="logo">BD Studio</div>
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <img src="https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/logobdstudio.png" alt="BD Studio" class="logo-img" onerror="this.style.display='none'">
+    <div class="logo">BD Studio</div>
+  </div>
   <nav class="header-nav">
     <a class="nav-link" onclick="showPage('catalog')" style="cursor:pointer">Catálogo</a>
     <a class="nav-link" onclick="showPage('sobre')" style="cursor:pointer">Sobre</a>
     <a class="nav-link" onclick="showPage('social')" style="cursor:pointer">Redes Sociais</a>
+    <a class="cordoes-btn" href="https://luuiiiszzzszzz.github.io/catalogo-bd/" target="_blank" title="Catálogo de Cordões">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Cordões
+    </a>
   </nav>
   <div class="header-discord">
     <a class="discord-btn" href="https://discord.gg/mmmEZmehVX" target="_blank">
@@ -236,6 +265,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
           </div>
         </div>
       </div>
+
+      <div class="aviso-comercial fade-up">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p><strong>Aviso importante:</strong> Os mods exibidos neste catálogo <strong>não são comercializados</strong>. Eles estão aqui apenas para apresentar as opções disponíveis para retexturização. O BD Studio trabalha <strong>exclusivamente com retexturização</strong> por cima de mods já existentes — não vendemos nem distribuímos os arquivos originais.</p>
+      </div>
     </div>
 
     <div class="filters-wrap">
@@ -264,16 +298,65 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 <!-- SOBRE PAGE -->
 <div class="page" id="page-sobre">
   <div class="sobre-wrap">
-    <div class="sobre-eyebrow">Quem somos</div>
-    <h1 class="sobre-title">BD <span>Studio</span></h1>
-    <p class="sobre-intro">Estúdio criativo especializado em assets para FiveM. Criamos roupas, veículos, props, peds e muito mais — tudo com qualidade profissional para elevar a experiência visual do seu servidor.</p>
-    <div class="sobre-section">
+    <div class="sobre-eyebrow fade-up">Quem somos</div>
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;" class="fade-up fade-up-delay-1">
+      <img src="https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/logobdstudio.png" alt="BD Studio" style="height:80px;width:auto;border-radius:12px" onerror="this.style.display='none'">
+      <h1 class="sobre-title" style="margin-bottom:0">BD <span>Studio</span></h1>
+    </div>
+    <p class="sobre-intro fade-up fade-up-delay-2">A BD Studio é um estúdio criativo especializado no universo FiveM, focado em transformar ideias em projetos visuais e funcionais de alto nível. Unimos design, desenvolvimento e estratégia para criar experiências que elevam a identidade e o padrão de servidores, facções e marcas. Nosso trabalho vai além da estética: entregamos organização, desempenho e consistência, sempre com atenção aos detalhes e foco em resultado.</p>
+
+    <div class="sobre-section fade-up">
       <div class="sobre-section-title">O QUE FAZEMOS</div>
       <div class="services-grid">
-        <div class="service-card"><h4>FiveM & In-Game</h4><ul><li>Roupas, uniformes e fardamentos</li><li>Retexturização e otimização</li><li>Acessórios 3D</li><li>Armas personalizadas</li><li>Veículos e plotagens</li><li>Cabelos, props e peds</li></ul></div>
-        <div class="service-card"><h4>Design & Identidade Visual</h4><ul><li>Logotipos estáticas e animadas</li><li>Banners, loadscreen e artes</li><li>Barrinhas, overlays e emotes</li><li>Flyers para divulgação</li></ul></div>
-        <div class="service-card"><h4>Social Media & Vídeos</h4><ul><li>Posts, stories e carrosseis</li><li>Padronização de perfil</li><li>Vídeos para TikTok e Reels</li><li>Cinematics</li></ul></div>
+        <div class="service-card"><h4>FiveM & In-Game</h4><ul>
+          <li>Roupas, uniformes, kit tropas e fardamentos</li>
+          <li>Retexturização, conversão e otimização</li>
+          <li>Acessórios 3D (cordões, colares, anéis)</li>
+          <li>Armas personalizadas (neon, texturas)</li>
+          <li>Veículos e plotagens</li>
+          <li>Cabelos, props e peds</li>
+          <li>Mapas</li>
+          <li>Ajustes técnicos e projetos sob demanda</li>
+        </ul></div>
+        <div class="service-card"><h4>Design & Identidade Visual</h4><ul>
+          <li>Logotipos estáticas e animadas</li>
+          <li>Banners estáticos e animados, loadscreen e artes</li>
+          <li>Barrinhas/Divisórias, overlays e emotes personalizados</li>
+          <li>Flyers para divulgação de facções</li>
+        </ul></div>
+        <div class="service-card"><h4>Social Media</h4><ul>
+          <li>Posts, stories e carrosséis</li>
+          <li>Estruturação e padronização de perfil</li>
+        </ul></div>
+        <div class="service-card"><h4>Vídeos & Conteúdo</h4><ul>
+          <li>Vídeos para TikTok e Reels</li>
+          <li>Cinematics</li>
+          <li>Vídeos institucionais</li>
+        </ul></div>
+        <div class="service-card"><h4>Gestão de Mídias & Posicionamento</h4><ul>
+          <li>Presença digital constante</li>
+          <li>Divulgação de cidades, servidores e marcas</li>
+          <li>Posicionamento e fortalecimento de identidade</li>
+          <li>Planejamento de conteúdo e cronograma</li>
+          <li>Gestão visual com foco em crescimento e autoridade</li>
+        </ul></div>
       </div>
+    </div>
+
+    <div class="sobre-section fade-up">
+      <div class="sobre-section-title">COMO TRABALHAMOS</div>
+      <div class="como-grid">
+        <div class="como-item"><div class="como-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Atendimento via ticket</span></div>
+        <div class="como-item"><div class="como-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Briefing detalhado antes de qualquer projeto</span></div>
+        <div class="como-item"><div class="como-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Criações 100% autorais</span></div>
+        <div class="como-item"><div class="como-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Ajustes dentro do escopo definido</span></div>
+        <div class="como-item"><div class="como-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Prazos e cronogramas alinhados previamente</span></div>
+        <div class="como-item"><div class="como-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Serviços avulsos e planos mensais disponíveis</span></div>
+      </div>
+    </div>
+
+    <div class="missao-box fade-up">
+      <p><strong>Nossa missão:</strong> Criar experiências visuais fortes, coerentes e profissionais, ajudando projetos digitais a se destacarem, crescerem e se posicionarem com autoridade. Nossa equipe está aqui para lhe ajudar em tudo o que precisar — <a href="https://discord.gg/mmmEZmehVX" target="_blank" style="color:var(--pink);text-decoration:none">abra seu ticket</a> e fale com a gente!</p>
     </div>
   </div>
 </div>
@@ -301,6 +384,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 </div>
 
 <footer>
+  <img src="https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/logobdstudio.png" alt="BD Studio" style="height:56px;width:auto;margin-bottom:0.5rem;opacity:0.85" onerror="this.style.display='none'">
   <div class="footer-logo">BD Studio</div>
   <div class="footer-copy">© 2026 BD Studio · Todos os assets são propriedade intelectual do studio · <a href="https://discord.gg/mmmEZmehVX" target="_blank">Discord</a></div>
 </footer>
@@ -343,7 +427,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
   </div>
 </div>
 
-<script>
+<script type="module">
 const STORAGE_KEY = 'bd_catalog_v2';
 const GENDERS = ['Feminino','Masculino'];
 let items = [];
@@ -496,6 +580,9 @@ async function openModal(id) {
   document.getElementById('s-desc').textContent=item.desc||'Sem descrição.';
   document.getElementById('modal').classList.add('open');
   buildSwatches();
+  // primeiro swatch (preto) ativo por padrão
+  const firstSwatch = document.querySelector('#s-colors .swatch');
+  if (firstSwatch) firstSwatch.style.borderColor = '#fff';
   document.getElementById('viewer-loading').style.display='flex';
   document.getElementById('viewer-loading').innerHTML='<div class="spinner"></div><span>Carregando modelo...</span>';
   if(item.glbUrl) await initViewer(gdriveDirect(item.glbUrl));
@@ -507,8 +594,8 @@ document.getElementById('modal').addEventListener('click',e=>{ if(e.target===doc
 
 // 3D VIEWER
 const SWATCH_COLORS = [
-  { hex:'#ffffff', label:'Branco' },
   { hex:'#111111', label:'Preto' },
+  { hex:'#ffffff', label:'Branco' },
   { hex:'#c0c0c0', label:'Cinza' },
   { hex:'#8B4513', label:'Marrom' },
   { hex:'#1a1a6e', label:'Azul Marinho' },
@@ -576,10 +663,13 @@ async function initViewer(url) {
   const loading=document.getElementById('viewer-loading');
   if(currentViewer){currentViewer.dispose();currentViewer=null;}
   viewerModel=null; viewerScene=null; viewerKeyLight=null; viewerFillLight=null;
+  // reset controls
   document.getElementById('brightness-slider').value = defaultBrightness;
   document.querySelectorAll('#s-colors .swatch').forEach(s=>s.style.borderColor='rgba(255,255,255,0.1)');
   try {
-    if(typeof THREE==='undefined'||!THREE.WebGLRenderer) throw new Error('Three.js não carregado.');
+    const THREE=await import('https://unpkg.com/three@0.128.0/build/three.module.js');
+    const {GLTFLoader}=await import('https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js');
+    const {OrbitControls}=await import('https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js');
     const container=canvas.parentElement;
     const W=container.clientWidth,H=container.clientHeight;
     const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
@@ -588,14 +678,13 @@ async function initViewer(url) {
     const scene=new THREE.Scene();scene.background=new THREE.Color(0x111118);
     viewerScene=scene;
     const camera=new THREE.PerspectiveCamera(45,W/H,0.01,1000);camera.position.set(0,1,3);
-    const controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=0.08;controls.minDistance=0.3;controls.maxDistance=12;
+    const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=0.08;controls.minDistance=0.3;controls.maxDistance=12;
     scene.add(new THREE.AmbientLight(0xffffff,0.6));
     const key=new THREE.DirectionalLight(0xfff0f8,1.4);key.position.set(2,4,3);scene.add(key);
     const fill=new THREE.DirectionalLight(0xf0e8ff,0.6);fill.position.set(-3,2,-2);scene.add(fill);
     const rim=new THREE.PointLight(0xFF2D78,0.8,20);rim.position.set(-2,3,-3);scene.add(rim);
     viewerKeyLight=key; viewerFillLight=fill;
-    const loader=new THREE.GLTFLoader();
-    loader.load(url,gltf=>{
+    new GLTFLoader().load(url,gltf=>{
       const model=gltf.scene;
       const box=new THREE.Box3().setFromObject(model);
       const center=box.getCenter(new THREE.Vector3());
@@ -605,12 +694,12 @@ async function initViewer(url) {
       scene.add(model);viewerModel=model;loading.style.display='none';
       controls.autoRotate=true;controls.autoRotateSpeed=1.5;
       canvas.addEventListener('pointerdown',()=>{controls.autoRotate=false;},{once:true});
-    },undefined,(err)=>{ console.error('GLB load error:',err); loading.innerHTML='<span style="color:var(--pink);font-size:0.82rem">Erro ao carregar o modelo.</span>'; });
+    },undefined,()=>{ loading.innerHTML='<span style="color:var(--pink);font-size:0.82rem">Erro ao carregar o modelo.</span>'; });
     const ro=new ResizeObserver(()=>{ const W2=container.clientWidth,H2=container.clientHeight; renderer.setSize(W2,H2);camera.aspect=W2/H2;camera.updateProjectionMatrix(); });
     ro.observe(container);
     let raf; const animate=()=>{raf=requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);}; animate();
     currentViewer={dispose(){cancelAnimationFrame(raf);ro.disconnect();renderer.dispose();viewerModel=null;viewerScene=null;viewerKeyLight=null;viewerFillLight=null;}};
-  } catch(e){ console.error('initViewer error:',e); loading.innerHTML='<span style="color:var(--muted);font-size:0.82rem">Visualizador indisponível.</span>'; }
+  } catch(e){ loading.innerHTML='<span style="color:var(--muted);font-size:0.82rem">Visualizador indisponível.</span>'; }
 }
 
 // PARTICLES
@@ -628,6 +717,12 @@ async function initViewer(url) {
 })();
 
 loadData(); renderFilters(); renderGrid();
+
+// FADE-UP OBSERVER
+const fadeObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 </script>
 </body>
 </html>
