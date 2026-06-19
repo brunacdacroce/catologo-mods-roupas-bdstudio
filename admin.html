@@ -183,6 +183,25 @@ tr:hover td{background:rgba(255,45,120,0.03);}
         </div>
 
         <div class="card-box">
+          <h3>Logo do Site</h3>
+          <div style="display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap;">
+            <div id="logo-preview-box" style="width:90px;height:90px;border-radius:10px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+              <img id="logo-preview-img" src="https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/logobdstudio.png" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:0.5rem;">
+              <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Trocar logo</div>
+              <div id="logo-drop" onclick="document.getElementById('logo-file').click()" style="border:2px dashed var(--border);border-radius:8px;padding:0.85rem 1rem;text-align:center;cursor:pointer;transition:border-color 0.2s;display:flex;align-items:center;justify-content:center;gap:0.6rem;">
+                <input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="onLogoSelected(this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span id="logo-drop-label" style="font-size:0.82rem;color:var(--muted)">Clique para selecionar a imagem</span>
+              </div>
+              <button class="btn btn-primary btn-sm" id="logo-upload-btn" onclick="uploadLogo()" style="display:none">Enviar logo para o site</button>
+              <span class="hint">PNG, JPG ou WebP. A logo aparece no header, página Sobre e footer do site.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
           <h3>Backup Manual</h3>
           <div class="btn-row">
             <button class="btn btn-outline btn-sm" onclick="exportData()">Exportar JSON</button>
