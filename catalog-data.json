@@ -29,6 +29,18 @@
   ],
   "items": [
     {
+      "id": 1781861244242,
+      "name": "Calção #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calções"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calçaofem1.glb",
+      "thumbnail": "https://drive.google.com/file/d/1tXdKrtM3ZsFTKKCJugYXFI0Y75aR5Vp2/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781861028877,
       "name": "Cropped #2",
       "category": "Feminino",
