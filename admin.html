@@ -841,6 +841,7 @@ async function saveEdit() {
     showToast(`Já existe "${editName}" no gênero selecionado.`,'error'); return;
   }
   const allCats = [...genders, ...subcats];
+  const btn = document.querySelector('#edit-overlay .btn-primary');
   btn.disabled = true; btn.textContent = 'Salvando...';
 
   try {
