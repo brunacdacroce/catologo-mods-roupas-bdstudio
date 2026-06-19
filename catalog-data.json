@@ -27,6 +27,18 @@
   ],
   "items": [
     {
+      "id": 1781849774998,
+      "name": "Calça #4",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calças"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calçafem4glb.glb",
+      "thumbnail": "https://drive.google.com/file/d/1yigD3WItE36iRc0-JJ76S6yfVgqoyYb2/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781849671790,
       "name": "Calça #3",
       "category": "Feminino",
