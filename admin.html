@@ -425,6 +425,81 @@ function updateTokenStatus() {
   }
 }
 
+// LOGO UPLOAD
+let pendingLogoFile = null;
+
+function onLogoSelected(input) {
+  const file = input.files[0]; if (!file) return;
+  pendingLogoFile = file;
+  const label = document.getElementById('logo-drop-label');
+  const drop  = document.getElementById('logo-drop');
+  const btn   = document.getElementById('logo-upload-btn');
+  label.textContent = '✓ ' + file.name;
+  label.style.color = 'var(--green)';
+  drop.style.borderColor = 'var(--green)';
+  btn.style.display = 'inline-flex';
+  // preview local
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('logo-preview-img');
+    img.src = e.target.result;
+    img.style.display = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadLogo() {
+  if (!pendingLogoFile) return;
+  if (!GITHUB_TOKEN) { showToast('Configure o Token do GitHub primeiro.','error'); return; }
+  const btn = document.getElementById('logo-upload-btn');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  try {
+    const base64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result.split(',')[1]);
+      reader.onerror = () => rej(new Error('Erro ao ler arquivo.'));
+      reader.readAsDataURL(pendingLogoFile);
+    });
+    // Sempre salva como logobdstudio.png independente da extensão original
+    const filename = 'logobdstudio.png';
+    let sha = null;
+    try {
+      const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filename}?t=${Date.now()}`, {
+        headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+      });
+      if (r.ok) sha = (await r.json()).sha;
+    } catch(e) {}
+    const body = { message: 'update logo', content: base64 };
+    if (sha) body.sha = sha;
+    const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filename}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) {
+      const err = await r.json();
+      throw new Error(err.message || r.status);
+    }
+    pendingLogoFile = null;
+    document.getElementById('logo-file').value = '';
+    // Atualiza preview com a nova logo (após delay do CDN)
+    setTimeout(() => {
+      const img = document.getElementById('logo-preview-img');
+      img.src = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/${filename}?t=${Date.now()}`;
+      img.style.display = '';
+    }, 3000);
+    showToast('Logo enviada! Aguarde ~1 minuto para aparecer no site.','success');
+    btn.style.display = 'none';
+    document.getElementById('logo-drop-label').textContent = 'Clique para selecionar a imagem';
+    document.getElementById('logo-drop-label').style.color = '';
+    document.getElementById('logo-drop').style.borderColor = '';
+  } catch(e) {
+    showToast('Erro ao enviar logo: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar logo para o site';
+  }
+}
+
 // GITHUB SYNC
 async function getFileSHA() {
   try {
@@ -553,14 +628,15 @@ function previewThumb(inputId, previewId) {
   }
 }
 
-// SUBCAT CHECKBOXES
+// SUBCAT CHECKBOXES — ordenadas alfabeticamente
 function populateSubcatChecks(prefix) {
   const container = document.getElementById(prefix+'-subcat-group');
   if (!container) return;
-  container.innerHTML = categories.map(c => `
+  const sorted = [...categories].sort((a,b) => a.localeCompare(b,'pt'));
+  container.innerHTML = sorted.map(c => `
     <div class="check-pill">
-      <input type="checkbox" id="${prefix}-sub-${c}" value="${c}">
-      <label for="${prefix}-sub-${c}">${c}</label>
+      <input type="checkbox" id="${prefix}-sub-${c.replace(/\s/g,'_')}" value="${c}">
+      <label for="${prefix}-sub-${c.replace(/\s/g,'_')}">${c}</label>
     </div>`).join('');
 }
 
@@ -572,7 +648,7 @@ function getSelectedGenders(prefix) {
 }
 function getSelectedSubcats(prefix) {
   return categories.filter(c => {
-    const el = document.getElementById(prefix+'-sub-'+c);
+    const el = document.getElementById(prefix+'-sub-'+c.replace(/\s/g,'_'));
     return el && el.checked;
   });
 }
@@ -584,8 +660,18 @@ function setGenderChecks(prefix, selected) {
 }
 function setSubcatChecks(prefix, selected) {
   categories.forEach(c => {
-    const el = document.getElementById(prefix+'-sub-'+c);
+    const el = document.getElementById(prefix+'-sub-'+c.replace(/\s/g,'_'));
     if (el) el.checked = selected.includes(c);
+  });
+}
+
+// Verifica nome duplicado no mesmo gênero
+function isDuplicateName(name, genders, excludeId = null) {
+  return items.some(item => {
+    if (excludeId && String(item.id) === String(excludeId)) return false;
+    if (item.name.toLowerCase() !== name.toLowerCase()) return false;
+    const itemGenders = (item.categories || [item.category]).filter(c => GENDERS.includes(c));
+    return genders.some(g => itemGenders.includes(g));
   });
 }
 
@@ -671,6 +757,10 @@ async function addModel() {
   if (!thumb)           { showToast('Cole o link da foto PNG.','error'); return; }
   if (!pendingGlb.add)  { showToast('Selecione o arquivo .glb.','error'); return; }
   if (!GITHUB_TOKEN)    { showToast('Configure o Token do GitHub primeiro.','error'); return; }
+  if (isDuplicateName(name, genders)) {
+    showToast(`Já existe "${name}" no gênero selecionado. Nomes iguais só são permitidos em gêneros diferentes.`,'error');
+    return;
+  }
 
   const btn = document.getElementById('btn-add-model');
   btn.disabled = true; btn.textContent = 'Enviando GLB...';
@@ -746,9 +836,11 @@ async function saveEdit() {
   const genders = getSelectedGenders('edit');
   const subcats = getSelectedSubcats('edit');
   if (!genders.length) { showToast('Selecione pelo menos um gênero.','error'); return; }
+  const editName = document.getElementById('edit-name').value.trim();
+  if (isDuplicateName(editName, genders, id)) {
+    showToast(`Já existe "${editName}" no gênero selecionado.`,'error'); return;
+  }
   const allCats = [...genders, ...subcats];
-
-  const btn = document.querySelector('#edit-overlay .btn-primary');
   btn.disabled = true; btn.textContent = 'Salvando...';
 
   try {
@@ -822,13 +914,16 @@ function saveCatEdit(i) {
     if (item.categories) item.categories = item.categories.map(c => c===oldVal ? newVal : c);
   });
   categories[i] = newVal;
+  categories.sort((a,b) => a.localeCompare(b, 'pt'));
   saveData(); renderCategories(); populateSubcatChecks('add');
   showToast(`Renomeada para "${newVal}".`,'success');
 }
 function addCategory() {
   const val = document.getElementById('new-cat-input').value.trim();
   if (!val || categories.includes(val) || GENDERS.includes(val)) { showToast('Inválida ou já existe.','error'); return; }
-  categories.push(val); saveData(); renderCategories(); populateSubcatChecks('add');
+  categories.push(val);
+  categories.sort((a,b) => a.localeCompare(b, 'pt'));
+  saveData(); renderCategories(); populateSubcatChecks('add');
   document.getElementById('new-cat-input').value='';
   showToast(`"${val}" adicionada.`,'success');
 }
