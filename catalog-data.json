@@ -28,6 +28,18 @@
   ],
   "items": [
     {
+      "id": 1781853776244,
+      "name": "Jaqueta #2",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Jaquetas"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/jaquetafem2.glb",
+      "thumbnail": "https://drive.google.com/file/d/1VxzkPGsjagG3BwVjb8gCyTcgE2J6RvNk/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781853454086,
       "name": "Jaqueta #1",
       "category": "Feminino",
