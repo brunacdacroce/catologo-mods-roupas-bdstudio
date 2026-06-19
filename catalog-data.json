@@ -29,6 +29,18 @@
   ],
   "items": [
     {
+      "id": 1781863022738,
+      "name": "Calção #18",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calções"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calçaofem18.glb",
+      "thumbnail": "https://drive.google.com/file/d/1-Px9imgGF8ukChnDMQ0UzeFmWMdgS9Io/view?usp=drive_link",
+      "desc": "Perna mais grossinha"
+    },
+    {
       "id": 1781862918147,
       "name": "Calção #17",
       "category": "Feminino",
