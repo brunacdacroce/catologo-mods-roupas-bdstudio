@@ -29,6 +29,18 @@
   ],
   "items": [
     {
+      "id": 1781861662788,
+      "name": "Calção #5",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calções"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calçaofem5.glb",
+      "thumbnail": "https://drive.google.com/file/d/1Z-3F2oE8lRZeqf6iOaU38neqT_ZsHVCI/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781861531229,
       "name": "Calção #4",
       "category": "Feminino",
