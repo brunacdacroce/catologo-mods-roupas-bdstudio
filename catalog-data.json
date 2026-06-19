@@ -28,6 +28,19 @@
   ],
   "items": [
     {
+      "id": 1781852361164,
+      "name": "Top #7",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Croppeds",
+        "Tops"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/topfem7.glb",
+      "thumbnail": "https://drive.google.com/file/d/15JaB_QWwv1kOi3OQSBI3_bGln9bilWF8/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781852271239,
       "name": "Top #6",
       "category": "Feminino",
