@@ -36,42 +36,30 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,
 .catalog-wrap{padding-top:64px;min-height:100vh;}
 
 /* HERO CATALOG */
-.catalog-hero{padding:3rem 2rem 1.5rem;text-align:center;position:relative;}
-.catalog-hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:250px;background:radial-gradient(ellipse,rgba(155,48,255,0.1) 0%,transparent 70%);pointer-events:none;}
-.catalog-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:0.08em;line-height:1;margin-bottom:0.5rem;}
+.catalog-hero{padding:1.75rem 2rem 0;text-align:center;max-width:1400px;margin:0 auto;}
+.catalog-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:0.08em;line-height:1;margin-bottom:0.25rem;}
 .catalog-title span{background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.catalog-sub{font-size:0.78rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.25rem;}
-.catalog-howto{display:inline-block;background:var(--dark2);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1.25rem;font-size:0.83rem;color:var(--muted);line-height:1.6;max-width:680px;text-align:left;}
-.catalog-howto strong{color:var(--text);}
+.catalog-sub{font-size:0.7rem;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0;}
 
-.info-cards{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:900px;margin:0 auto;text-align:left;}
-.info-card{border-radius:14px;padding:1.25rem 1.5rem;}
-.info-how{background:rgba(155,48,255,0.05);border:1px solid rgba(155,48,255,0.18);}
-.info-warn{background:rgba(255,160,0,0.04);border:1px solid rgba(255,160,0,0.2);}
-.info-card-header{display:flex;align-items:center;gap:0.65rem;margin-bottom:1rem;}
-.info-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.info-how .info-card-icon{background:rgba(155,48,255,0.15);color:var(--purple);}
-.info-warn .info-card-icon{background:rgba(255,160,0,0.12);color:#f59e0b;}
-.info-card-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;}
+/* INFO CARDS — ficam dentro do catalog-main, sem max-width próprio */
+.info-cards{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;text-align:left;}
+.info-card{border-radius:8px;padding:0.75rem 1rem;}
+.info-how{background:rgba(155,48,255,0.04);border:1px solid rgba(155,48,255,0.1);}
+.info-warn{background:rgba(255,160,0,0.03);border:1px solid rgba(255,160,0,0.1);}
+.info-card-header{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;}
+.info-card-icon{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.info-how .info-card-icon{background:rgba(155,48,255,0.12);color:var(--purple);}
+.info-warn .info-card-icon{background:rgba(255,160,0,0.1);color:#f59e0b;}
+.info-card-title{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;}
 .info-how .info-card-title{color:var(--purple);}
 .info-warn .info-card-title{color:#f59e0b;}
-.info-steps{display:flex;flex-direction:column;gap:0.5rem;}
-.info-step{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.82rem;color:var(--muted);line-height:1.5;}
-.info-step-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;flex-shrink:0;margin-top:0.05rem;}
-.info-how .info-step-dot{background:rgba(155,48,255,0.2);color:var(--purple);}
-.info-warn .info-step-dot{background:rgba(255,160,0,0.15);color:#f59e0b;}
-.info-step strong{color:var(--text);}
+.info-steps{display:flex;flex-direction:column;gap:0.28rem;}
+.info-step{display:flex;align-items:flex-start;gap:0.4rem;font-size:0.75rem;color:var(--muted);line-height:1.4;}
+.info-step-dot{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;flex-shrink:0;margin-top:0.1rem;}
+.info-how .info-step-dot{background:rgba(155,48,255,0.15);color:var(--purple);}
+.info-warn .info-step-dot{background:rgba(255,160,0,0.12);color:#f59e0b;}
+.info-step strong{color:var(--text);font-weight:600;}
 @media(max-width:640px){.info-cards{grid-template-columns:1fr;}}
-
-/* FILTERS */
-.filters-wrap{max-width:1200px;margin:1.5rem auto 0;padding:0 2rem;}
-.gender-row{display:flex;gap:0.6rem;margin-bottom:0.75rem;flex-wrap:wrap;justify-content:center;}
-.subcat-row{display:flex;gap:0.5rem;flex-wrap:wrap;min-height:32px;justify-content:center;animation:fade-in 0.25s ease;}
-@keyframes fade-in{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-.filter-btn{background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:0.45rem 1.1rem;border-radius:999px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;}
-.filter-btn:hover{border-color:var(--pink);color:var(--text);}
-.filter-btn.active{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
-.filter-btn.gender{font-size:0.85rem;font-weight:600;padding:0.5rem 1.4rem;}
 
 /* SOCIAL PAGE */
 .card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;opacity:0;animation:card-in 0.5s forwards;}
@@ -94,6 +82,51 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,
 .card-cat{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
 .card-btn{margin-top:0.85rem;width:100%;padding:0.55rem;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;}
 .card-btn:hover{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
+
+/* INFO BAR — full width acima do layout */
+.catalog-info-bar{max-width:1400px;margin:0 auto;padding:0.75rem 2rem 0;}
+.catalog-info-bar .info-cards{max-width:100%;}
+
+/* CATALOG LAYOUT COM SIDEBAR */
+.catalog-body{display:flex;gap:1.5rem;max-width:1400px;margin:0 auto;padding:1.25rem 2rem 6rem;}
+.filter-sidebar{width:210px;flex-shrink:0;}
+.filter-sidebar-inner{position:sticky;top:80px;background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:1.1rem;}
+.filter-sidebar h4{font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;display:flex;align-items:center;justify-content:space-between;}
+.filter-clear{font-size:0.7rem;font-family:'Outfit',sans-serif;color:var(--pink);cursor:pointer;font-weight:500;letter-spacing:0;background:none;border:none;padding:0;opacity:0.8;}
+.filter-clear:hover{opacity:1;text-decoration:underline;}
+.filter-group{margin-bottom:1.1rem;}
+.filter-group:last-child{margin-bottom:0;}
+.filter-group-title{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);}
+.filter-check-item{display:flex;align-items:center;gap:0.45rem;padding:0.25rem 0;cursor:pointer;user-select:none;}
+.filter-check-item input[type=checkbox]{display:none;}
+.filter-check-box{width:14px;height:14px;border-radius:3px;border:1px solid rgba(255,255,255,0.15);background:var(--dark3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;}
+.filter-check-item input:checked + .filter-check-box{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;}
+.filter-check-item input:checked + .filter-check-box::after{content:'';display:block;width:7px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translateY(-1px);}
+.filter-check-label{font-size:0.8rem;color:var(--muted);transition:color 0.15s;display:flex;align-items:center;justify-content:space-between;flex:1;gap:0.3rem;}
+.filter-check-item:hover .filter-check-label{color:var(--text);}
+.filter-check-item input:checked ~ .filter-check-label{color:var(--text);}
+.filter-count{font-size:0.65rem;color:var(--muted);background:var(--dark3);padding:0.05rem 0.35rem;border-radius:999px;flex-shrink:0;}
+.catalog-main{flex:1;min-width:0;}
+.filter-active-tags{display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.75rem;}
+.filter-tag{display:inline-flex;align-items:center;gap:0.25rem;background:rgba(255,45,120,0.08);border:1px solid rgba(255,45,120,0.2);color:var(--pink);padding:0.2rem 0.55rem;border-radius:999px;font-size:0.72rem;font-weight:500;}
+.filter-tag button{background:none;border:none;color:var(--pink);cursor:pointer;line-height:1;padding:0;font-size:0.8rem;opacity:0.7;}
+.filter-tag button:hover{opacity:1;}
+.results-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.results-count{font-size:0.78rem;color:var(--muted);}
+.filter-toggle-btn{display:none;align-items:center;gap:0.5rem;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.82rem;cursor:pointer;margin-bottom:1rem;}
+.filter-sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:50;}
+@media(max-width:768px){
+  .catalog-body{flex-direction:column;padding:1rem 1rem 4rem;}
+  .filter-sidebar{width:100%;position:fixed;left:0;bottom:0;top:auto;background:var(--dark2);border-top:1px solid var(--border);z-index:51;padding:1.25rem;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s;border-radius:16px 16px 0 0;}
+  .filter-sidebar .filter-sidebar-inner{position:static;background:none;border:none;padding:0;}
+  .filter-sidebar.open{transform:translateY(0);}
+  .filter-sidebar-overlay.open{display:block;}
+  .filter-toggle-btn{display:flex;}
+}
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.15em;color:var(--pink);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;}
+.empty{grid-column:1/-1;text-align:center;padding:4rem 0;color:var(--muted);font-size:0.9rem;}
 
 /* SOCIAL PAGE */
 .social-wrap{padding:120px 2rem 80px;max-width:700px;margin:0 auto;text-align:center;}
@@ -231,66 +264,78 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 <!-- CATALOG PAGE -->
 <div class="page active" id="page-catalog">
   <div class="catalog-wrap">
+
+    <!-- TÍTULO -->
     <div class="catalog-hero">
       <div class="catalog-title">CATÁLOGO DE MODS DE ROUPA <span>— FIVEM</span></div>
       <div class="catalog-sub">BD Studio · Catálogo Oficial</div>
+    </div>
 
+    <!-- INFO + AVISO — faixa fina acima do layout principal -->
+    <div class="catalog-info-bar">
       <div class="info-cards">
         <div class="info-card info-how">
           <div class="info-card-header">
-            <div class="info-card-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-            </div>
+            <div class="info-card-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
             <div class="info-card-title">Visualizador 3D</div>
           </div>
           <div class="info-steps">
             <div class="info-step"><div class="info-step-dot">1</div><span>Clique em qualquer mod para abrir o visualizador</span></div>
-            <div class="info-step"><div class="info-step-dot">2</div><span><strong>Arraste</strong> para girar · <strong>Scroll</strong> para aproximar ou afastar</span></div>
-            <div class="info-step"><div class="info-step-dot">3</div><span>O modelo gira sozinho — clique para controlar manualmente</span></div>
-            <div class="info-step"><div class="info-step-dot">4</div><span>Use o painel lateral para <strong>trocar a cor</strong> e ajustar o <strong>brilho</strong></span></div>
-            <div class="info-step"><div class="info-step-dot">5</div><span>Anote o nome do mod e informe no ticket do Discord</span></div>
+            <div class="info-step"><div class="info-step-dot">2</div><span><strong>Arraste</strong> para girar · <strong>Scroll</strong> para zoom</span></div>
+            <div class="info-step"><div class="info-step-dot">3</div><span>Painel lateral: <strong>trocar cor</strong> e ajustar <strong>brilho</strong></span></div>
+            <div class="info-step"><div class="info-step-dot">4</div><span>Anote o nome e informe no ticket do Discord</span></div>
           </div>
         </div>
         <div class="info-card info-warn">
           <div class="info-card-header">
-            <div class="info-card-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
+            <div class="info-card-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
             <div class="info-card-title">Atenção</div>
           </div>
           <div class="info-steps">
-            <div class="info-step"><div class="info-step-dot">!</div><span>Os mods exibidos são os <strong>disponíveis no acervo</strong>, mas nem todos foram testados para retexturização</span></div>
-            <div class="info-step"><div class="info-step-dot">!</div><span>Ao escolher um modelo, <strong>informe no ticket</strong> — confirmaremos a compatibilidade antes de iniciar</span></div>
-            <div class="info-step"><div class="info-step-dot">!</div><span>As cores exibidas no visualizador são apenas para <strong>prévia</strong> — a textura final pode variar</span></div>
+            <div class="info-step"><div class="info-step-dot">!</div><span>Nem todos os mods foram testados para retexturização — confirme no ticket</span></div>
+            <div class="info-step"><div class="info-step-dot">!</div><span>Os mods <strong>não são comercializados</strong> — trabalhamos só com retexturização</span></div>
+            <div class="info-step"><div class="info-step-dot">!</div><span>Cores no visualizador são apenas <strong>prévia</strong> — textura final pode variar</span></div>
           </div>
         </div>
       </div>
-
-      <div class="aviso-comercial fade-up">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <p><strong>Aviso importante:</strong> Os mods exibidos neste catálogo <strong>não são comercializados</strong>. Eles estão aqui apenas para apresentar as opções disponíveis para retexturização. O BD Studio trabalha <strong>exclusivamente com retexturização</strong> por cima de mods já existentes — não vendemos nem distribuímos os arquivos originais.</p>
-      </div>
     </div>
 
-    <div class="filters-wrap">
-      <div class="gender-row" id="gender-filters">
-        <button class="filter-btn gender active" data-gender="Todos" onclick="setGender(this,'Todos')">Todos</button>
-        <button class="filter-btn gender" data-gender="Feminino" onclick="setGender(this,'Feminino')">Feminino</button>
-        <button class="filter-btn gender" data-gender="Masculino" onclick="setGender(this,'Masculino')">Masculino</button>
-      </div>
-      <div class="subcat-row" id="subcat-filters"></div>
-    </div>
+    <!-- LAYOUT PRINCIPAL: sidebar + grid -->
+    <div class="catalog-body">
+      <aside class="filter-sidebar" id="filter-sidebar">
+        <div class="filter-sidebar-inner">
+          <h4>FILTROS <button class="filter-clear" onclick="clearAllFilters()">Limpar</button></h4>
+          <div class="filter-group">
+            <div class="filter-group-title">Gênero</div>
+            <label class="filter-check-item"><input type="checkbox" id="fg-feminino" onchange="applyFilters()"><div class="filter-check-box"></div><span class="filter-check-label">Feminino</span></label>
+            <label class="filter-check-item"><input type="checkbox" id="fg-masculino" onchange="applyFilters()"><div class="filter-check-box"></div><span class="filter-check-label">Masculino</span></label>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group-title">Categoria</div>
+            <div id="sidebar-subcats"></div>
+          </div>
+        </div>
+      </aside>
+      <div class="filter-sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-    <div class="search-wrap">
-      <div class="search-box">
-        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="search-input" placeholder="Buscar mod...">
+      <div class="catalog-main">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+          <button class="filter-toggle-btn" onclick="openSidebar()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+            Filtros
+          </button>
+          <div style="position:relative;flex:1;max-width:340px;">
+            <svg style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="search-input" placeholder="Buscar mod..." style="width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:0.55rem 1rem 0.55rem 2.25rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--pink)'" onblur="this.style.borderColor=''">
+          </div>
+        </div>
+        <div class="filter-active-tags" id="active-tags"></div>
+        <div class="results-bar">
+          <div class="section-label" id="section-label" style="flex:1;margin-bottom:0">TODOS OS MODELOS</div>
+          <div class="results-count" id="results-count"></div>
+        </div>
+        <div class="grid" id="items-grid"></div>
       </div>
-    </div>
-
-    <div class="grid-section">
-      <div class="section-label" id="section-label">TODOS OS MODELOS</div>
-      <div class="grid" id="items-grid"></div>
     </div>
   </div>
 </div>
@@ -431,16 +476,16 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;
 const STORAGE_KEY = 'bd_catalog_v2';
 const GENDERS = ['Feminino','Masculino'];
 let items = [];
-let categories = ['Feminino','Masculino','Unissex','Uniforme','Facção','Especial'];
-let activeGender = 'Todos';
-let activeSubcat = 'Todos';
+let categories = [];
+let activeGenders = new Set(); // vazio = todos
+let activeSubcats = new Set(); // vazio = todas
 let searchQuery = '';
 let currentViewer = null;
 
 function loadData() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) { const d=JSON.parse(raw); items=d.items||[]; categories=d.categories||categories; }
+    if (raw) { const d=JSON.parse(raw); items=d.items||[]; categories=(d.categories||[]).filter(c=>!GENDERS.includes(c)); }
   } catch(e) {}
 }
 
@@ -451,46 +496,78 @@ window.showPage = function(name) {
   window.scrollTo(0,0);
 };
 
-// FILTERS
-function renderFilters() {
-  // subcats ficam escondidas até escolher gênero
-  document.getElementById('subcat-filters').innerHTML = '';
+// SIDEBAR MOBILE
+window.openSidebar = function() {
+  document.getElementById('filter-sidebar').classList.add('open');
+  document.getElementById('sidebar-overlay').classList.add('open');
+};
+window.closeSidebar = function() {
+  document.getElementById('filter-sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+};
+
+// BUILD SIDEBAR SUBCATS
+function buildSidebarSubcats() {
+  const container = document.getElementById('sidebar-subcats');
+  const subcats = categories.filter(c => !GENDERS.includes(c));
+  if (!subcats.length) { container.innerHTML = '<span style="font-size:0.78rem;color:var(--muted)">Nenhuma subcategoria.</span>'; return; }
+  container.innerHTML = subcats.map(c => {
+    const count = items.filter(i => (i.categories||[i.category]).includes(c)).length;
+    return `<label class="filter-check-item">
+      <input type="checkbox" id="fsc-${c.replace(/\s/g,'_')}" value="${c}" onchange="applyFilters()">
+      <div class="filter-check-box"></div>
+      <span class="filter-check-label">${c}<span class="filter-count">${count}</span></span>
+    </label>`;
+  }).join('');
 }
 
-window.setGender = function(btn, val) {
-  document.querySelectorAll('#gender-filters .filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activeGender = val;
-  activeSubcat = 'Todos';
+// APPLY FILTERS
+window.applyFilters = function() {
+  // gênero
+  activeGenders = new Set();
+  if (document.getElementById('fg-feminino')?.checked) activeGenders.add('Feminino');
+  if (document.getElementById('fg-masculino')?.checked) activeGenders.add('Masculino');
+  // subcats
+  activeSubcats = new Set();
+  document.querySelectorAll('#sidebar-subcats input:checked').forEach(el => activeSubcats.add(el.value));
+  renderGrid();
+  renderActiveTags();
+};
 
-  const wrap = document.getElementById('subcat-filters');
-  if (val === 'Todos') {
-    wrap.innerHTML = '';
+window.clearAllFilters = function() {
+  document.getElementById('fg-feminino').checked = false;
+  document.getElementById('fg-masculino').checked = false;
+  document.querySelectorAll('#sidebar-subcats input').forEach(el => el.checked = false);
+  activeGenders = new Set();
+  activeSubcats = new Set();
+  renderGrid();
+  renderActiveTags();
+};
+
+window.removeFilter = function(type, val) {
+  if (type === 'gender') {
+    const id = val === 'Feminino' ? 'fg-feminino' : 'fg-masculino';
+    document.getElementById(id).checked = false;
+    activeGenders.delete(val);
   } else {
-    // filtra subcategorias que têm pelo menos um item nesse gênero
-    const GENDERS = ['Feminino','Masculino'];
-    const relevantSubcats = categories.filter(c => {
-      if (GENDERS.includes(c)) return false;
-      return items.some(item => {
-        const cats = item.categories || [item.category];
-        return cats.includes(val) && cats.includes(c);
-      });
-    });
-    if (!relevantSubcats.length) { wrap.innerHTML = ''; }
-    else {
-      wrap.innerHTML = `<button class="filter-btn active" onclick="setSubcat(this,'Todos')">Todas</button>` +
-        relevantSubcats.map(c=>`<button class="filter-btn" onclick="setSubcat(this,'${c}')">${c}</button>`).join('');
-    }
+    const el = document.getElementById('fsc-'+val.replace(/\s/g,'_'));
+    if (el) el.checked = false;
+    activeSubcats.delete(val);
   }
   renderGrid();
+  renderActiveTags();
 };
 
-window.setSubcat = function(btn, val) {
-  document.querySelectorAll('#subcat-filters .filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activeSubcat = val;
-  renderGrid();
-};
+function renderActiveTags() {
+  const wrap = document.getElementById('active-tags');
+  const tags = [];
+  activeGenders.forEach(g => tags.push(`<div class="filter-tag">${g}<button onclick="removeFilter('gender','${g}')">×</button></div>`));
+  activeSubcats.forEach(s => tags.push(`<div class="filter-tag">${s}<button onclick="removeFilter('subcat','${s}')">×</button></div>`));
+  wrap.innerHTML = tags.join('');
+}
+
+// RENDER FILTERS (compat)
+function renderFilters() { buildSidebarSubcats(); }
 
 // GRID
 function gdriveImg(url) {
@@ -519,30 +596,37 @@ function getBadge(item) {
 function renderGrid() {
   const grid = document.getElementById('items-grid');
   const label = document.getElementById('section-label');
+  const countEl = document.getElementById('results-count');
 
   const filtered = items.filter(item => {
     const cats = item.categories || [item.category];
-    // gender filter
-    if (activeGender !== 'Todos') {
-      if (!cats.includes(activeGender)) return false;
+    // gênero
+    if (activeGenders.size > 0) {
+      if (!cats.some(c => activeGenders.has(c))) return false;
     }
-    // subcat filter
-    if (activeSubcat !== 'Todos') {
-      if (!cats.includes(activeSubcat)) return false;
+    // subcats (OR — mostra se tem qualquer uma das selecionadas)
+    if (activeSubcats.size > 0) {
+      if (!cats.some(c => activeSubcats.has(c))) return false;
     }
-    // search
+    // busca
     if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
 
-  if (activeGender === 'Todos') label.textContent = 'TODOS OS MODELOS';
-  else if (activeSubcat !== 'Todos') label.textContent = `${activeGender.toUpperCase()} — ${activeSubcat.toUpperCase()}`;
-  else label.textContent = activeGender.toUpperCase();
+  // label
+  if (activeGenders.size === 0 && activeSubcats.size === 0 && !searchQuery) label.textContent = 'TODOS OS MODELOS';
+  else if (activeGenders.size > 0 && activeSubcats.size === 0) label.textContent = [...activeGenders].join(' & ').toUpperCase();
+  else label.textContent = 'RESULTADOS';
+
+  if (countEl) countEl.textContent = `${filtered.length} modelo${filtered.length !== 1 ? 's' : ''}`;
 
   if (!filtered.length) {
     grid.innerHTML = `<div class="empty">${items.length===0?'Nenhum modelo disponível no momento.':'Nenhum resultado encontrado.'}</div>`;
     return;
   }
+
+  // Ordenação alfanumérica — ex: Calção #1, Calção #2, Calção #10 (não #10 antes de #2)
+  filtered.sort((a, b) => a.name.localeCompare(b.name, 'pt', { numeric: true, sensitivity: 'base' }));
 
   grid.innerHTML = filtered.map((item,i) => {
     const imgUrl = gdriveImg(item.thumbnail);
@@ -594,8 +678,8 @@ document.getElementById('modal').addEventListener('click',e=>{ if(e.target===doc
 
 // 3D VIEWER
 const SWATCH_COLORS = [
-  { hex:'#111111', label:'Preto' },
   { hex:'#ffffff', label:'Branco' },
+  { hex:'#111111', label:'Preto' },
   { hex:'#c0c0c0', label:'Cinza' },
   { hex:'#8B4513', label:'Marrom' },
   { hex:'#1a1a6e', label:'Azul Marinho' },
@@ -716,7 +800,25 @@ async function initViewer(url) {
   }
 })();
 
-loadData(); renderFilters(); renderGrid();
+const GITHUB_RAW = 'https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main';
+
+async function loadCatalog() {
+  try {
+    const r = await fetch(GITHUB_RAW + '/catalog-data.json?t=' + Date.now());
+    if (r.ok) {
+      const d = await r.json();
+      items = d.items || [];
+      categories = (d.categories || []).filter(c => !GENDERS.includes(c));
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({items, categories})); } catch(e) {}
+    } else throw new Error();
+  } catch(e) {
+    loadData();
+  }
+  buildSidebarSubcats();
+  renderGrid();
+}
+
+loadCatalog();
 
 // FADE-UP OBSERVER
 const fadeObserver = new IntersectionObserver(entries => {
