@@ -672,8 +672,10 @@ async function openModal(id) {
   if (firstSwatch) firstSwatch.style.borderColor = '#fff';
   document.getElementById('viewer-loading').style.display='flex';
   document.getElementById('viewer-loading').innerHTML='<div class="spinner"></div><span>Carregando modelo...</span>';
-  if(item.glbUrl) await initViewer(gdriveDirect(item.glbUrl));
-  else document.getElementById('viewer-loading').innerHTML='<span style="color:var(--muted);font-size:0.82rem">URL do modelo não configurada.</span>';
+  if(item.glbUrl) {
+    const glbUrl = item.glbUrl.includes('raw.githubusercontent.com') ? item.glbUrl : gdriveDirect(item.glbUrl);
+    await initViewer(glbUrl);
+  } else document.getElementById('viewer-loading').innerHTML='<span style="color:var(--muted);font-size:0.82rem">URL do modelo não configurada.</span>';
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); if(currentViewer){currentViewer.dispose();currentViewer=null;} }
 document.getElementById('modal-close-btn').addEventListener('click',closeModal);
