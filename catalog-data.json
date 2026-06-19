@@ -28,6 +28,18 @@
   ],
   "items": [
     {
+      "id": 1781860903674,
+      "name": "Top #9",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Tops"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/topfem9.glb",
+      "thumbnail": "https://drive.google.com/file/d/19maYVCQoZ_GgvWWUv8rHkavzH5RpsMJ3/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781860787492,
       "name": "Top #8",
       "category": "Feminino",
