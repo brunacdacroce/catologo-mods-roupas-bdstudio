@@ -509,7 +509,7 @@ window.closeSidebar = function() {
 // BUILD SIDEBAR SUBCATS
 function buildSidebarSubcats() {
   const container = document.getElementById('sidebar-subcats');
-  const subcats = categories.filter(c => !GENDERS.includes(c));
+  const subcats = [...categories].filter(c => !GENDERS.includes(c)).sort((a,b) => a.localeCompare(b,'pt'));
   if (!subcats.length) { container.innerHTML = '<span style="font-size:0.78rem;color:var(--muted)">Nenhuma subcategoria.</span>'; return; }
   container.innerHTML = subcats.map(c => {
     const count = items.filter(i => (i.categories||[i.category]).includes(c)).length;
