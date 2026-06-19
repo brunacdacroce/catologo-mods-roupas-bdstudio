@@ -28,6 +28,18 @@
   ],
   "items": [
     {
+      "id": 1781860787492,
+      "name": "Top #8",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Tops"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/topfem8.glb",
+      "thumbnail": "https://drive.google.com/file/d/1d6zUM9w2nnq-dq8eYgLS8g_b-UGxoh5k/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781860410486,
       "name": "Corset #5",
       "category": "Feminino",
