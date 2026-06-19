@@ -752,13 +752,14 @@ async function initViewer(url) {
   const loading=document.getElementById('viewer-loading');
   if(currentViewer){currentViewer.dispose();currentViewer=null;}
   viewerModel=null; viewerScene=null; viewerKeyLight=null; viewerFillLight=null;
-  // reset controls
-  document.getElementById('brightness-slider').value = defaultBrightness;
-  document.querySelectorAll('#s-colors .swatch').forEach(s=>s.style.borderColor='rgba(255,255,255,0.1)');
   try {
-    const THREE=await import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js');
-    const {GLTFLoader}=await import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/jsm/loaders/GLTFLoader.js');
-    const {OrbitControls}=await import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/jsm/controls/OrbitControls.js');
+    // reset controls
+    const sliderEl = document.getElementById('brightness-slider');
+    if(sliderEl) sliderEl.value = defaultBrightness;
+    document.querySelectorAll('#s-colors .swatch').forEach(s=>s.style.borderColor='rgba(255,255,255,0.1)');
+    const THREE=await import('https://unpkg.com/three@0.128.0/build/three.module.js');
+    const {GLTFLoader}=await import('https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js');
+    const {OrbitControls}=await import('https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js');
     const container=canvas.parentElement;
     const W=container.clientWidth,H=container.clientHeight;
     const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
