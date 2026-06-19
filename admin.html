@@ -763,12 +763,48 @@ document.getElementById('edit-overlay').addEventListener('click', e=>{ if(e.targ
 function renderCategories() {
   const el = document.getElementById('cat-list');
   if (!categories.length) { el.innerHTML='<span style="color:var(--muted);font-size:0.82rem">Nenhuma subcategoria criada.</span>'; return; }
-  el.innerHTML = categories.map(c=>`
-    <div class="cat-tag">${c}
-      <button class="cat-remove" onclick="removeCategory('${c}')">
+  el.innerHTML = categories.map((c,i)=>`
+    <div class="cat-tag" id="cat-tag-${i}">
+      <span class="cat-tag-name" id="cat-name-${i}">${c}</span>
+      <input type="text" class="cat-tag-input" id="cat-input-${i}" value="${c}" style="display:none;background:transparent;border:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.82rem;outline:none;width:80px;" onkeydown="if(event.key==='Enter')saveCatEdit(${i});if(event.key==='Escape')cancelCatEdit(${i})">
+      <button class="cat-remove" id="cat-edit-btn-${i}" onclick="startCatEdit(${i})" title="Editar" style="color:var(--muted)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="cat-remove" id="cat-save-btn-${i}" onclick="saveCatEdit(${i})" title="Salvar" style="display:none;color:var(--green)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <button class="cat-remove" id="cat-del-btn-${i}" onclick="removeCategory('${c}')" title="Excluir">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
     </div>`).join('');
+}
+function startCatEdit(i) {
+  document.getElementById('cat-name-'+i).style.display='none';
+  document.getElementById('cat-input-'+i).style.display='';
+  document.getElementById('cat-edit-btn-'+i).style.display='none';
+  document.getElementById('cat-save-btn-'+i).style.display='';
+  document.getElementById('cat-input-'+i).focus();
+  document.getElementById('cat-input-'+i).select();
+}
+function cancelCatEdit(i) {
+  document.getElementById('cat-name-'+i).style.display='';
+  document.getElementById('cat-input-'+i).style.display='none';
+  document.getElementById('cat-edit-btn-'+i).style.display='';
+  document.getElementById('cat-save-btn-'+i).style.display='none';
+}
+function saveCatEdit(i) {
+  const newVal = document.getElementById('cat-input-'+i).value.trim();
+  const oldVal = categories[i];
+  if (!newVal) { showToast('Nome inválido.','error'); return; }
+  if (newVal !== oldVal && categories.includes(newVal)) { showToast('Já existe.','error'); return; }
+  // atualiza nos itens também
+  items.forEach(item => {
+    if (item.category === oldVal) item.category = newVal;
+    if (item.categories) item.categories = item.categories.map(c => c===oldVal ? newVal : c);
+  });
+  categories[i] = newVal;
+  saveData(); renderCategories(); populateSubcatChecks('add');
+  showToast(`Renomeada para "${newVal}".`,'success');
 }
 function addCategory() {
   const val = document.getElementById('new-cat-input').value.trim();
