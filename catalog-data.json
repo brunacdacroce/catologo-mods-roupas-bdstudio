@@ -29,6 +29,19 @@
   ],
   "items": [
     {
+      "id": 1781861428002,
+      "name": "Calção #3",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calções",
+        "Juicy Body (Bundão)"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calçaofem3.glb",
+      "thumbnail": "https://drive.google.com/file/d/1YEPgzSjvkJahg_5Eo4933k9E7udAf4ps/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781861326620,
       "name": "Calção #2",
       "category": "Feminino",
