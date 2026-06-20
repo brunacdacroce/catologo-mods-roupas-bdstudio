@@ -30,6 +30,18 @@
   ],
   "items": [
     {
+      "id": 1781915673298,
+      "name": "Conjunto #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Peça única (conjunto)"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/conjuntofem1.glb",
+      "thumbnail": "https://drive.google.com/file/d/1zMGJhy5784CHgit0P7iIAyFMrTb56bkW/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781915353946,
       "name": "Vestido #6",
       "category": "Feminino",
