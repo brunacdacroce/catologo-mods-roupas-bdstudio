@@ -30,6 +30,18 @@
   ],
   "items": [
     {
+      "id": 1781914274051,
+      "name": "Vestido #2",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Vestidos"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/vestidofem2.glb",
+      "thumbnail": "https://drive.google.com/file/d/1HuqtI_m7z4nhkIjFyIh4LEuPyLX0RxUb/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781914162153,
       "name": "Vestido #1",
       "category": "Feminino",
