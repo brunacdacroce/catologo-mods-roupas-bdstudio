@@ -30,6 +30,20 @@
   ],
   "items": [
     {
+      "id": 1781916005087,
+      "name": "Calcinha (Conjunto)  #4",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Bikinis | Calcinhas",
+        "Peça única (conjunto)",
+        "Vanilla"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calcinhafem4.glb",
+      "thumbnail": "https://drive.google.com/file/d/1m3OX4fGQGTXDpJNPhYE2QkE1ut_WOlJ6/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1781915673298,
       "name": "Conjunto #1",
       "category": "Feminino",
