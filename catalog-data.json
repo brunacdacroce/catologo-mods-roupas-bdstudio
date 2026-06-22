@@ -30,6 +30,18 @@
   ],
   "items": [
     {
+      "id": 1782148167828,
+      "name": "Calça #13",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Calças"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calçafem13.glb",
+      "thumbnail": "https://drive.google.com/file/d/1lHsaqFsIBGdkCoM1JMUecWkILaNEGT8D/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1782148077617,
       "name": "Saia #3",
       "category": "Feminino",
