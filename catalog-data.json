@@ -30,6 +30,19 @@
   ],
   "items": [
     {
+      "id": 1782155038171,
+      "name": "Coldre #1",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Acessórios",
+        "Mecânica"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/coldrefem1.glb",
+      "thumbnail": "https://drive.google.com/file/d/1-fs0VLqAMJ8z6N7H8e4lUPNeno9KZ81q/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1782154739889,
       "name": "Conjunto #3",
       "category": "Feminino",
