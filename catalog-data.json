@@ -7,6 +7,7 @@
     "Camisetas",
     "Coldres",
     "Coletes",
+    "Conjuntos",
     "Corset",
     "Croppeds",
     "Hospital",
@@ -19,7 +20,6 @@
     "Moletom",
     "Óculos",
     "Outros",
-    "Peça única (conjunto)",
     "Policia",
     "Restaurante",
     "Saias",
@@ -36,7 +36,7 @@
       "categories": [
         "Feminino",
         "Mecânica",
-        "Peça única (conjunto)"
+        "Conjuntos"
       ],
       "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/conjuntofem2.glb",
       "thumbnail": "https://drive.google.com/file/d/13LOpwVTddd2YhFDwRC_6QzPHB3cOMDzW/view?usp=drive_link",
@@ -243,7 +243,7 @@
       "categories": [
         "Feminino",
         "Bikinis | Calcinhas",
-        "Peça única (conjunto)",
+        "Conjuntos",
         "Vanilla"
       ],
       "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/calcinhafem4.glb",
@@ -256,7 +256,7 @@
       "category": "Feminino",
       "categories": [
         "Feminino",
-        "Peça única (conjunto)"
+        "Conjuntos"
       ],
       "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/conjuntofem1.glb",
       "thumbnail": "https://drive.google.com/file/d/1zMGJhy5784CHgit0P7iIAyFMrTb56bkW/view?usp=drive_link",
