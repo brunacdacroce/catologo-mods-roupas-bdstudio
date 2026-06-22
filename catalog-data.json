@@ -30,6 +30,19 @@
   ],
   "items": [
     {
+      "id": 1782154269520,
+      "name": "Jaqueta #6",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Jaquetas",
+        "Mecânica"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/jaquetafemmec.glb",
+      "thumbnail": "https://drive.google.com/file/d/1og3T8zAy0YAf5GWDgcpxTJLN37UizGWD/view?usp=drive_link",
+      "desc": "Conjunto #2"
+    },
+    {
       "id": 1782154098231,
       "name": "Conjunto #2",
       "category": "Feminino",
