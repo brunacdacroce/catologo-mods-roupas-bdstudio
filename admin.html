@@ -818,12 +818,7 @@ function clearAddForm() {
   document.getElementById('add-thumb-preview').innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
   document.getElementById('add-g-fem').checked = false;
   document.getElementById('add-g-mas').checked = false;
-  const label = document.getElementById('add-glb-label');
-  const drop  = document.getElementById('add-glb-drop');
-  label.textContent = 'Clique ou arraste o .glb aqui';
-  label.style.color = '';
-  drop.style.borderColor = '';
-  document.getElementById('add-glb-file').value = '';
+  resetUploadDrop('add');
   pendingGlb.add = null;
   populateSubcatChecks('add');
 }
@@ -853,11 +848,11 @@ function openEdit(id) {
   const box = document.getElementById('edit-thumb-preview');
   box.innerHTML = imgUrl ? `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
   // reset glb drop
+  resetUploadDrop('edit');
   const el = document.getElementById('edit-glb-label');
   const dr = document.getElementById('edit-glb-drop');
-  el.textContent = item.glbUrl ? '✓ GLB atual — clique para substituir' : 'Clique para adicionar .glb';
-  el.style.color = item.glbUrl ? 'var(--green)' : '';
-  dr.style.borderColor = item.glbUrl ? 'rgba(34,197,94,0.4)' : '';
+  if (el) { el.innerHTML = item.glbUrl ? '✓ GLB atual — clique para substituir' : 'Clique para adicionar .glb'; el.style.color = item.glbUrl ? 'var(--green)' : ''; }
+  if (dr) dr.style.borderColor = item.glbUrl ? 'rgba(34,197,94,0.4)' : '';
   pendingGlb.edit = null;
   document.getElementById('edit-overlay').classList.add('open');
 }
