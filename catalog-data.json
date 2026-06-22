@@ -30,6 +30,19 @@
   ],
   "items": [
     {
+      "id": 1782151765837,
+      "name": "Coldre #1",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Acessórios",
+        "Coldres"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/coldremasc1.glb",
+      "thumbnail": "https://drive.google.com/file/d/1a0vHmEmnO9ib0MshPEp6Dcfw3x3JjcH5/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1782151661077,
       "name": "Calça #1",
       "category": "Masculino",
