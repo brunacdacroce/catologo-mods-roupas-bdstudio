@@ -682,7 +682,9 @@ async function openModal(id) {
   document.getElementById('viewer-loading').style.display='flex';
   document.getElementById('viewer-loading').innerHTML='<div class="spinner"></div><span>Carregando modelo...</span>';
   if(item.glbUrl) {
-    const glbUrl = item.glbUrl.includes('raw.githubusercontent.com') ? item.glbUrl : gdriveDirect(item.glbUrl);
+    const glbUrl = item.glbUrl.includes('raw.githubusercontent.com')
+      ? item.glbUrl + '?t=' + Date.now()
+      : gdriveDirect(item.glbUrl);
     await initViewer(glbUrl);
   } else document.getElementById('viewer-loading').innerHTML='<span style="color:var(--muted);font-size:0.82rem">URL do modelo não configurada.</span>';
 }
