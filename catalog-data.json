@@ -30,6 +30,20 @@
   ],
   "items": [
     {
+      "id": 1782155547848,
+      "name": "Coldre #2",
+      "category": "Masculino",
+      "categories": [
+        "Masculino",
+        "Acessórios",
+        "Coldres",
+        "Mecânica"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/coldremasc2.glb",
+      "thumbnail": "https://drive.google.com/file/d/1Du458gV6bH-eSo8s9zok383W1XjV0YOc/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1782155398366,
       "name": "Coldre #4",
       "category": "Feminino",
