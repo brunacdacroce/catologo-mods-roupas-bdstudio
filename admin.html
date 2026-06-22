@@ -699,27 +699,58 @@ function renderModelsTable() {
 }
 
 // GLB UPLOAD
-let pendingGlb = { add: null, edit: null }; // { file, name }
+let pendingGlb = { add: null, edit: null };
 
 function onGlbSelected(input, prefix) {
   const file = input.files[0]; if (!file) return;
   pendingGlb[prefix] = { file, name: file.name };
   const label = document.getElementById(prefix+'-glb-label');
   const drop  = document.getElementById(prefix+'-glb-drop');
-  label.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  const sizeMB = (file.size/1024/1024).toFixed(2);
+  label.innerHTML = `✓ ${file.name} <span style="opacity:0.6">(${sizeMB} MB)</span>`;
   label.style.color = 'var(--green)';
   drop.style.borderColor = 'var(--green)';
 }
 
-async function uploadGlbToGitHub(file, filename) {
+function setUploadProgress(prefix, pct, msg) {
+  const drop = document.getElementById(prefix+'-glb-drop');
+  if (!drop) return;
+  drop.innerHTML = `
+    <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0.6rem;pointer-events:none">
+      <span style="font-size:0.8rem;color:var(--text)">${msg}</span>
+      <div style="width:100%;height:6px;background:var(--dark);border-radius:999px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:999px;transition:width 0.3s"></div>
+      </div>
+      <span style="font-size:0.72rem;color:var(--muted)">${pct}%</span>
+    </div>`;
+}
+
+function resetUploadDrop(prefix) {
+  const drop = document.getElementById(prefix+'-glb-drop');
+  if (!drop) return;
+  drop.innerHTML = `
+    <input type="file" id="${prefix}-glb-file" accept=".glb" style="display:none" onchange="onGlbSelected(this,'${prefix}')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <span id="${prefix}-glb-label" style="font-size:0.82rem;color:var(--muted)">Clique ou arraste o .glb aqui</span>`;
+  drop.onclick = () => document.getElementById(prefix+'-glb-file').click();
+}
+
+async function uploadGlbToGitHub(file, filename, prefix) {
   if (!GITHUB_TOKEN) throw new Error('Token do GitHub não configurado.');
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
+    // progresso da leitura
+    reader.onprogress = e => {
+      if (e.lengthComputable && prefix) {
+        const pct = Math.round((e.loaded/e.total)*50); // leitura = 0-50%
+        setUploadProgress(prefix, pct, 'Lendo arquivo...');
+      }
+    };
     reader.onload = async e => {
       try {
+        if (prefix) setUploadProgress(prefix, 55, 'Verificando repositório...');
         const base64 = e.target.result.split(',')[1];
         const path   = `models/${filename}`;
-        // check existing SHA
         let sha = null;
         try {
           const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}?t=${Date.now()}`, {
@@ -727,6 +758,7 @@ async function uploadGlbToGitHub(file, filename) {
           });
           if (r.ok) sha = (await r.json()).sha;
         } catch(e) {}
+        if (prefix) setUploadProgress(prefix, 65, 'Enviando para o GitHub...');
         const body = { message: `upload ${filename}`, content: base64 };
         if (sha) body.sha = sha;
         const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
@@ -735,6 +767,7 @@ async function uploadGlbToGitHub(file, filename) {
           body: JSON.stringify(body)
         });
         if (!r.ok) throw new Error((await r.json()).message || r.status);
+        if (prefix) setUploadProgress(prefix, 100, '✓ Enviado!');
         resolve(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/${path}`);
       } catch(err) { reject(err); }
     };
@@ -767,7 +800,7 @@ async function addModel() {
 
   try {
     const safeName = pendingGlb.add.name.replace(/\s+/g, '-').toLowerCase();
-    const glbUrl   = await uploadGlbToGitHub(pendingGlb.add.file, safeName);
+    const glbUrl   = await uploadGlbToGitHub(pendingGlb.add.file, safeName, 'add');
     const id       = Date.now();
     items.unshift({ id, name, category: allCats[0]||genders[0], categories: allCats, glbUrl, thumbnail: thumb, desc, colors: [] });
     pendingGlb.add = null;
@@ -850,7 +883,7 @@ async function saveEdit() {
       if (!GITHUB_TOKEN) throw new Error('Token do GitHub não configurado.');
       btn.textContent = 'Enviando GLB...';
       const safeName = pendingGlb.edit.name.replace(/\s+/g,'_').toLowerCase();
-      glbUrl = await uploadGlbToGitHub(pendingGlb.edit.file, safeName);
+      glbUrl = await uploadGlbToGitHub(pendingGlb.edit.file, safeName, 'edit');
       pendingGlb.edit = null;
     }
     items[idx] = { ...items[idx],
