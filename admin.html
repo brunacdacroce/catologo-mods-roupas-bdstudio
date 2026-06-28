@@ -65,13 +65,6 @@ header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop
 .check-pill label:hover{border-color:var(--pink);color:var(--text);}
 .check-pill input[type=checkbox]:checked + label{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff;}
 
-/* THUMB PREVIEW */
-.thumb-upload-area{display:flex;gap:1rem;align-items:flex-start;}
-.thumb-preview-box{width:90px;height:90px;border-radius:8px;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
-.thumb-preview-box img{width:100%;height:100%;object-fit:cover;}
-.thumb-preview-box svg{opacity:0.25;}
-.thumb-input-col{flex:1;display:flex;flex-direction:column;gap:0.35rem;}
-
 .btn{padding:0.65rem 1.5rem;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:opacity 0.2s;}
 .btn-primary{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;}
 .btn-primary:hover{opacity:0.85;}
@@ -928,6 +921,7 @@ async function saveEdit() {
   }
 }
 document.getElementById('edit-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('edit-overlay')) closeEdit(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeEdit(); });
 
 // CATEGORIES (subcategorias)
 function renderCategories() {
