@@ -31,6 +31,18 @@
   ],
   "items": [
     {
+      "id": 1782665862213,
+      "name": "Jaqueta #7",
+      "category": "Feminino",
+      "categories": [
+        "Feminino",
+        "Jaquetas"
+      ],
+      "glbUrl": "https://raw.githubusercontent.com/brunacdacroce/catologo-mods-roupas-bdstudio/main/models/jaquetafem7.glb",
+      "thumbnail": "https://drive.google.com/file/d/1cKMPX3P4IHNsTutqS0wVTRTaqbMRcrTq/view?usp=drive_link",
+      "desc": ""
+    },
+    {
       "id": 1782665605024,
       "name": "Boné #1",
       "category": "Feminino",
