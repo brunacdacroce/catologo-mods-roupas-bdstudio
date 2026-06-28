@@ -676,6 +676,14 @@ function isDuplicateName(name, genders, excludeId = null) {
 }
 
 // MODELS TABLE
+async function checkGlbStatus(url) {
+  if (!url) return 'none';
+  try {
+    const r = await fetch(url, { method: 'HEAD' });
+    return r.ok ? 'ok' : 'broken';
+  } catch(e) { return 'broken'; }
+}
+
 function renderModelsTable() {
   const tbody = document.getElementById('models-tbody');
   if (!items.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Nenhum modelo cadastrado.</td></tr>'; return; }
@@ -684,18 +692,32 @@ function renderModelsTable() {
     const cats = item.categories || [item.category];
     const genders = cats.filter(c=>GENDERS.includes(c)).join(', ') || '—';
     const subcats = cats.filter(c=>!GENDERS.includes(c)).join(', ') || '—';
+    const glbId = `glb-status-${item.id}`;
     return `<tr>
       <td><div class="thumb-tiny">${imgUrl?`<img src="${imgUrl}" onerror="this.style.display='none'">`:''}</div></td>
       <td style="font-weight:500">${item.name}</td>
       <td><span class="badge badge-cat">${genders}</span></td>
       <td style="color:var(--muted);font-size:0.82rem">${subcats}</td>
-      <td style="color:var(--muted);font-size:0.78rem">${item.glbUrl ? '✓' : '—'}</td>
+      <td id="${glbId}" style="font-size:0.78rem;color:var(--muted)">⟳</td>
       <td><div style="display:flex;gap:0.5rem">
         <button class="btn btn-outline btn-sm" onclick="openEdit('${item.id}')">Editar</button>
         <button class="btn btn-danger btn-sm" onclick="deleteModel('${item.id}')">Excluir</button>
       </div></td>
     </tr>`;
   }).join('');
+
+  // Checar status dos GLBs em background
+  items.forEach(async item => {
+    const el = document.getElementById(`glb-status-${item.id}`);
+    if (!el) return;
+    if (!item.glbUrl) { el.innerHTML = '<span style="color:var(--muted)">—</span>'; return; }
+    const status = await checkGlbStatus(item.glbUrl);
+    if (status === 'ok') {
+      el.innerHTML = '<span style="color:var(--green)">✓ OK</span>';
+    } else if (status === 'broken') {
+      el.innerHTML = '<span style="color:var(--red);cursor:pointer" onclick="openEdit(\''+item.id+'\')" title="Clique para reupar">✗ Reupar</span>';
+    }
+  });
 }
 
 // GLB UPLOAD
@@ -799,8 +821,12 @@ async function addModel() {
   btn.disabled = true; btn.textContent = 'Enviando GLB...';
 
   try {
-    const safeName = pendingGlb.add.name.replace(/\s+/g, '-').toLowerCase();
-    const glbUrl   = await uploadGlbToGitHub(pendingGlb.add.file, safeName, 'add');
+    const safeName = pendingGlb.add.name
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+      .replace(/[^a-zA-Z0-9._-]/g, '-') // substitui tudo que não é alfanum por -
+      .replace(/-+/g, '-') // remove hífens duplos
+      .toLowerCase();
+    const glbUrl = await uploadGlbToGitHub(pendingGlb.add.file, safeName, 'add');
     const id       = Date.now();
     items.unshift({ id, name, category: allCats[0]||genders[0], categories: allCats, glbUrl, thumbnail: thumb, desc, colors: [] });
     pendingGlb.add = null;
@@ -877,7 +903,11 @@ async function saveEdit() {
     if (pendingGlb.edit) {
       if (!GITHUB_TOKEN) throw new Error('Token do GitHub não configurado.');
       btn.textContent = 'Enviando GLB...';
-      const safeName = pendingGlb.edit.name.replace(/\s+/g,'_').toLowerCase();
+      const safeName = pendingGlb.edit.name
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9._-]/g, '-')
+        .replace(/-+/g, '-')
+        .toLowerCase();
       glbUrl = await uploadGlbToGitHub(pendingGlb.edit.file, safeName, 'edit');
       pendingGlb.edit = null;
     }
