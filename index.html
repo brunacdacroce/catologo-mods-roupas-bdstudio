@@ -567,9 +567,6 @@ function renderActiveTags() {
   wrap.innerHTML = tags.join('');
 }
 
-// RENDER FILTERS (compat)
-function renderFilters() { buildSidebarSubcats(); }
-
 // GRID
 function gdriveImg(url) {
   if (!url) return null;
@@ -681,9 +678,8 @@ async function openModal(id) {
   if (firstSwatch) firstSwatch.style.borderColor = '#fff';
   if(item.glbUrl) {
     const glbUrl = item.glbUrl.includes('raw.githubusercontent.com')
-      ? item.glbUrl + '?t=' + Date.now()
+      ? item.glbUrl
       : gdriveDirect(item.glbUrl);
-    loadingEl.innerHTML=`<div class="spinner"></div><span style="font-size:0.7rem;word-break:break-all;padding:0 1rem;text-align:center">Carregando...<br>${glbUrl}</span>`;
     await initViewer(glbUrl);
   } else loadingEl.innerHTML='<span style="color:var(--muted);font-size:0.82rem">URL do modelo não configurada.</span>';
 }
@@ -785,7 +781,48 @@ async function initViewer(url) {
     const fill=new THREE.DirectionalLight(0xf0e8ff,0.6);fill.position.set(-3,2,-2);scene.add(fill);
     const rim=new THREE.PointLight(0xFF2D78,0.8,20);rim.position.set(-2,3,-3);scene.add(rim);
     viewerKeyLight=key; viewerFillLight=fill;
-    new GLTFLoader().load(url,gltf=>{
+
+    // Fetch manual com progresso real e timeout de 30s
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+    let arrayBuffer;
+    try {
+      const resp = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const contentLength = resp.headers.get('content-length');
+      const total = contentLength ? parseInt(contentLength) : 0;
+      const reader = resp.body.getReader();
+      const chunks = [];
+      let received = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        if (total > 0) {
+          const pct = Math.round(received / total * 100);
+          loading.innerHTML = `<div class="spinner"></div><span>Carregando... ${pct}%</span>`;
+        } else {
+          loading.innerHTML = `<div class="spinner"></div><span>Carregando... ${(received/1024/1024).toFixed(1)} MB</span>`;
+        }
+      }
+      const combined = new Uint8Array(received);
+      let offset = 0;
+      for (const chunk of chunks) { combined.set(chunk, offset); offset += chunk.length; }
+      arrayBuffer = combined.buffer;
+    } catch(e) {
+      clearTimeout(timeout);
+      if (e.name === 'AbortError') {
+        loading.innerHTML = `<span style="color:var(--pink);font-size:0.82rem">Tempo esgotado — arquivo muito grande ou conexão lenta.</span>`;
+      } else {
+        loading.innerHTML = `<span style="color:var(--pink);font-size:0.82rem">Erro ao baixar: ${e.message}</span>`;
+      }
+      return;
+    }
+
+    loading.innerHTML = `<div class="spinner"></div><span>Processando modelo...</span>`;
+    new GLTFLoader().parse(arrayBuffer, '', gltf=>{
       const model=gltf.scene;
       const box=new THREE.Box3().setFromObject(model);
       const center=box.getCenter(new THREE.Vector3());
@@ -795,9 +832,7 @@ async function initViewer(url) {
       scene.add(model);viewerModel=model;loading.style.display='none';
       controls.autoRotate=true;controls.autoRotateSpeed=1.5;
       canvas.addEventListener('pointerdown',()=>{controls.autoRotate=false;},{once:true});
-    },
-    xhr=>{ if(xhr.lengthComputable) loading.innerHTML=`<div class="spinner"></div><span>Carregando... ${Math.round(xhr.loaded/xhr.total*100)}%</span>`; },
-    err=>{ console.error('GLTFLoader error:',err,url); loading.innerHTML=`<span style="color:var(--pink);font-size:0.82rem">Erro ao carregar: ${err?.message||'arquivo inválido ou inacessível'}</span>`; });
+    }, err=>{ loading.innerHTML=`<span style="color:var(--pink);font-size:0.82rem">Erro ao processar: ${err?.message||'arquivo inválido'}</span>`; console.error(err); });
     const ro=new ResizeObserver(()=>{ const W2=container.clientWidth,H2=container.clientHeight; renderer.setSize(W2,H2);camera.aspect=W2/H2;camera.updateProjectionMatrix(); });
     ro.observe(container);
     let raf; const animate=()=>{raf=requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);}; animate();
