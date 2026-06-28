@@ -207,12 +207,35 @@ tr:hover td{background:rgba(255,45,120,0.03);}
       <div class="page" id="page-models">
         <div class="page-title">Modelos</div>
         <div class="page-sub">Todos os modelos cadastrados</div>
+        <div class="card-box" style="padding:1rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;">
+          <div style="font-size:0.82rem;color:var(--muted)">✗ Reupar = arquivo inacessível. Use "Vincular GLBs" para associar arquivos já existentes no GitHub a cada modelo manualmente.</div>
+          <button class="btn btn-outline btn-sm" id="recover-btn" onclick="openGlbLinker()">🔗 Vincular GLBs do GitHub</button>
+        </div>
         <div class="card-box">
           <div class="table-wrap">
             <table>
               <thead><tr><th>Foto</th><th>Nome</th><th>Gênero</th><th>Subcategorias</th><th>GLB</th><th>Ações</th></tr></thead>
               <tbody id="models-tbody"></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- GLB LINKER OVERLAY -->
+      <div id="glb-linker-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:400;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;">
+        <div style="background:var(--dark2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:900px;margin:0 auto;">
+          <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--dark2);z-index:1;border-radius:14px 14px 0 0;">
+            <div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;">Vincular GLBs do GitHub</div>
+              <div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem">Para cada modelo, selecione o arquivo .glb correspondente na pasta models/ do repositório</div>
+            </div>
+            <div style="display:flex;gap:0.75rem;align-items:center;">
+              <button class="btn btn-primary btn-sm" onclick="saveGlbLinks()">Salvar vínculos</button>
+              <button class="edit-close" onclick="closeGlbLinker()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            </div>
+          </div>
+          <div id="glb-linker-body" style="padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="text-align:center;color:var(--muted);padding:2rem;font-size:0.85rem">Carregando arquivos do GitHub...</div>
           </div>
         </div>
       </div>
@@ -505,38 +528,48 @@ async function getFileSHA() {
 }
 
 let syncTimer = null;
+let syncRetryCount = 0;
 function syncToGitHub() {
-  // debounce — espera 1s depois da última alteração pra não spammar a API
   clearTimeout(syncTimer);
   syncTimer = setTimeout(async () => {
     updateSyncStatus('⟳ Salvando...');
-    try {
-      const meta = {
-        categories,
-        items: items.map(i => ({
-          id: i.id, name: i.name, category: i.category,
-          categories: i.categories, glbUrl: i.glbUrl,
-          thumbnail: i.thumbnail, desc: i.desc
-        }))
-      };
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
-      const sha = await getFileSHA();
-      const body = { message: 'update catalog', content };
-      if (sha) body.sha = sha;
-      const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
-        method: 'PUT',
-        headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!r.ok) throw new Error((await r.json()).message || r.status);
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-      updateSyncStatus('✓ ' + timeStr, true);
-    } catch(e) {
-      updateSyncStatus('✗ Erro: ' + e.message, false, true);
-      showToast('Erro ao sincronizar: ' + e.message, 'error');
+    syncRetryCount = 0;
+    await doSync();
+  }, 2000);
+}
+
+async function doSync() {
+  try {
+    const meta = {
+      categories,
+      items: items.map(i => ({
+        id: i.id, name: i.name, category: i.category,
+        categories: i.categories, glbUrl: i.glbUrl,
+        thumbnail: i.thumbnail, desc: i.desc
+      }))
+    };
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
+    const sha = await getFileSHA();
+    const body = { message: 'update catalog', content };
+    if (sha) body.sha = sha;
+    const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (r.status === 409 && syncRetryCount < 3) {
+      syncRetryCount++;
+      updateSyncStatus(`⟳ Retry ${syncRetryCount}...`);
+      await new Promise(res => setTimeout(res, 1500));
+      return doSync();
     }
-  }, 1000);
+    if (!r.ok) throw new Error((await r.json()).message || r.status);
+    const now = new Date();
+    updateSyncStatus('✓ ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), true);
+  } catch(e) {
+    updateSyncStatus('✗ ' + e.message, false, true);
+    showToast('Erro ao sincronizar: ' + e.message, 'error');
+  }
 }
 
 function updateSyncStatus(msg, ok, err) {
@@ -601,6 +634,100 @@ function renderAll() {
   document.getElementById('stat-cats').textContent = categories.length;
   renderModelsTable(); renderCategories();
   populateSubcatChecks('add');
+}
+
+// GLB LINKER
+let glbFilesCache = [];
+let glbLinks = {};
+
+async function openGlbLinker() {
+  if (!GITHUB_TOKEN) { showToast('Configure o Token do GitHub primeiro.','error'); return; }
+  const overlay = document.getElementById('glb-linker-overlay');
+  const body = document.getElementById('glb-linker-body');
+  overlay.style.display = 'flex';
+  body.innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem;font-size:0.85rem">Carregando arquivos do GitHub...</div>';
+  try {
+    const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/models?t=${Date.now()}`, {
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!r.ok) throw new Error('Não foi possível acessar a pasta models/');
+    const files = await r.json();
+    glbFilesCache = files.filter(f => f.name.endsWith('.glb')).map(f => f.name).sort();
+    glbLinks = {};
+    items.forEach(item => {
+      if (item.glbUrl && item.glbUrl.includes('raw.githubusercontent.com')) {
+        const parts = item.glbUrl.split('/');
+        glbLinks[item.id] = parts[parts.length - 1].split('?')[0];
+      }
+    });
+    renderLinkerBody();
+  } catch(e) {
+    body.innerHTML = `<div style="color:var(--red);text-align:center;padding:2rem">${e.message}</div>`;
+  }
+}
+
+function renderLinkerBody() {
+  const body = document.getElementById('glb-linker-body');
+  if (!glbFilesCache.length) {
+    body.innerHTML = '<div style="color:var(--muted);text-align:center;padding:2rem">Nenhum .glb encontrado na pasta models/</div>';
+    return;
+  }
+  body.innerHTML = items.map(item => {
+    const cats = item.categories || [item.category];
+    const gender = cats.filter(c => GENDERS.includes(c)).join(', ');
+    const current = glbLinks[item.id] || '';
+    const imgUrl = gdriveImg(item.thumbnail);
+    return `<div style="display:grid;grid-template-columns:44px 1fr auto;gap:0.75rem;align-items:center;padding:0.75rem;background:var(--dark3);border:1px solid var(--border);border-radius:8px;">
+      <div class="thumb-tiny">${imgUrl?`<img src="${imgUrl}" onerror="this.style.display='none'" loading="lazy">`:''}</div>
+      <div>
+        <div style="font-weight:600;font-size:0.88rem">${item.name}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">${gender}</div>
+      </div>
+      <select id="link-${item.id}" style="background:var(--dark2);border:1px solid ${current?'rgba(34,197,94,0.4)':'var(--border)'};color:${current?'var(--green)':'var(--muted)'};padding:0.45rem 0.75rem;border-radius:7px;font-family:'Outfit',sans-serif;font-size:0.8rem;outline:none;min-width:220px;max-width:280px;" onchange="glbLinks['${item.id}']=this.value;this.style.borderColor=this.value?'rgba(34,197,94,0.4)':'var(--border)';this.style.color=this.value?'var(--green)':'var(--muted)'">
+        <option value="">— sem GLB —</option>
+        ${glbFilesCache.map(f=>`<option value="${f}"${f===current?' selected':''}>${f}</option>`).join('')}
+      </select>
+    </div>`;
+  }).join('');
+}
+
+function closeGlbLinker() {
+  document.getElementById('glb-linker-overlay').style.display = 'none';
+}
+
+async function saveGlbLinks() {
+  let changed = 0;
+  items.forEach(item => {
+    const selected = glbLinks[item.id];
+    if (selected !== undefined) {
+      const newUrl = selected ? `https://raw.githubusercontent.com/${GITHUB_REPO}/main/models/${selected}` : null;
+      if (item.glbUrl !== newUrl) { item.glbUrl = newUrl; changed++; }
+    }
+  });
+  if (changed > 0) {
+    saveData(); renderModelsTable();
+    showToast(`${changed} vínculo${changed>1?'s':''} salvo${changed>1?'s':''}!`, 'success');
+  } else {
+    showToast('Nenhuma alteração.', 'success');
+  }
+  closeGlbLinker();
+}
+
+// CHECK GLB via GitHub API (evita CORS do HEAD request)
+async function checkGlbStatus(url) {
+  if (!url) return 'none';
+  if (!url.includes('raw.githubusercontent.com')) return 'unknown';
+  try {
+    const path = url.replace(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/`, '').split('?')[0];
+    if (GITHUB_TOKEN) {
+      const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+        headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+      });
+      return r.ok ? 'ok' : 'broken';
+    }
+    const r = await fetch(url, { method: 'HEAD' });
+    return r.ok ? 'ok' : 'broken';
+  } catch(e) { return 'broken'; }
 }
 
 // THUMB PREVIEW
