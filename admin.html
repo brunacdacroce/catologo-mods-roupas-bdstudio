@@ -384,17 +384,6 @@ const GENDERS = ['Feminino','Masculino'];
 let items = [];
 let categories = ['Unissex','Uniforme','Facção','Especial']; // subcategorias (sem gêneros)
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const d = JSON.parse(raw);
-      items = d.items || [];
-      // categories: remove genders if stored there (migração)
-      categories = (d.categories || categories).filter(c => !GENDERS.includes(c));
-    }
-  } catch(e) {}
-}
 const GITHUB_REPO = 'brunacdacroce/catologo-mods-roupas-bdstudio';
 const GITHUB_FILE = 'catalog-data.json';
 let GITHUB_TOKEN = localStorage.getItem('bd_github_token') || '';
@@ -730,6 +719,27 @@ async function checkGlbStatus(url) {
   } catch(e) { return 'broken'; }
 }
 
+async function checkAllGlbStatuses() {
+  // Verifica em lote, 3 por vez para não sobrecarregar a API
+  const batch = 3;
+  for (let i = 0; i < items.length; i += batch) {
+    const chunk = items.slice(i, i + batch);
+    await Promise.all(chunk.map(async item => {
+      const el = document.getElementById(`glb-status-${item.id}`);
+      if (!el) return;
+      if (!item.glbUrl) { el.innerHTML = '<span style="color:var(--muted)">—</span>'; return; }
+      const status = await checkGlbStatus(item.glbUrl);
+      if (status === 'ok') {
+        el.innerHTML = '<span style="color:var(--green)">✓ OK</span>';
+      } else if (status === 'broken') {
+        el.innerHTML = `<span style="color:var(--red);cursor:pointer" onclick="openEdit('${item.id}')" title="Clique para reupar">✗ Reupar</span>`;
+      } else {
+        el.innerHTML = '<span style="color:var(--muted)">?</span>';
+      }
+    }));
+  }
+}
+
 // THUMB PREVIEW
 function gdriveImg(url) {
   if (!url) return null;
@@ -796,14 +806,6 @@ function isDuplicateName(name, genders, excludeId = null) {
 }
 
 // MODELS TABLE
-async function checkGlbStatus(url) {
-  if (!url) return 'none';
-  try {
-    const r = await fetch(url, { method: 'HEAD' });
-    return r.ok ? 'ok' : 'broken';
-  } catch(e) { return 'broken'; }
-}
-
 function renderModelsTable() {
   const tbody = document.getElementById('models-tbody');
   if (!items.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Nenhum modelo cadastrado.</td></tr>'; return; }
@@ -814,7 +816,7 @@ function renderModelsTable() {
     const subcats = cats.filter(c=>!GENDERS.includes(c)).join(', ') || '—';
     const glbId = `glb-status-${item.id}`;
     return `<tr>
-      <td><div class="thumb-tiny">${imgUrl?`<img src="${imgUrl}" onerror="this.style.display='none'">`:''}</div></td>
+      <td><div class="thumb-tiny">${imgUrl?`<img src="${imgUrl}" onerror="this.style.display='none'" loading="lazy">`:''}</div></td>
       <td style="font-weight:500">${item.name}</td>
       <td><span class="badge badge-cat">${genders}</span></td>
       <td style="color:var(--muted);font-size:0.82rem">${subcats}</td>
@@ -825,19 +827,8 @@ function renderModelsTable() {
       </div></td>
     </tr>`;
   }).join('');
-
-  // Checar status dos GLBs em background
-  items.forEach(async item => {
-    const el = document.getElementById(`glb-status-${item.id}`);
-    if (!el) return;
-    if (!item.glbUrl) { el.innerHTML = '<span style="color:var(--muted)">—</span>'; return; }
-    const status = await checkGlbStatus(item.glbUrl);
-    if (status === 'ok') {
-      el.innerHTML = '<span style="color:var(--green)">✓ OK</span>';
-    } else if (status === 'broken') {
-      el.innerHTML = '<span style="color:var(--red);cursor:pointer" onclick="openEdit(\''+item.id+'\')" title="Clique para reupar">✗ Reupar</span>';
-    }
-  });
+  // Verifica GLBs em lote controlado
+  checkAllGlbStatuses();
 }
 
 // GLB UPLOAD
@@ -879,43 +870,52 @@ function resetUploadDrop(prefix) {
 
 async function uploadGlbToGitHub(file, filename, prefix) {
   if (!GITHUB_TOKEN) throw new Error('Token do GitHub não configurado.');
-  return new Promise((resolve, reject) => {
+
+  // Lê como ArrayBuffer — mais confiável que readAsDataURL para arquivos grandes
+  if (prefix) setUploadProgress(prefix, 10, 'Lendo arquivo...');
+  const arrayBuffer = await new Promise((res, rej) => {
     const reader = new FileReader();
-    // progresso da leitura
     reader.onprogress = e => {
       if (e.lengthComputable && prefix) {
-        const pct = Math.round((e.loaded/e.total)*50); // leitura = 0-50%
-        setUploadProgress(prefix, pct, 'Lendo arquivo...');
+        setUploadProgress(prefix, Math.round(e.loaded/e.total*40), 'Lendo arquivo...');
       }
     };
-    reader.onload = async e => {
-      try {
-        if (prefix) setUploadProgress(prefix, 55, 'Verificando repositório...');
-        const base64 = e.target.result.split(',')[1];
-        const path   = `models/${filename}`;
-        let sha = null;
-        try {
-          const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}?t=${Date.now()}`, {
-            headers: { Authorization: `token ${GITHUB_TOKEN}` }
-          });
-          if (r.ok) sha = (await r.json()).sha;
-        } catch(e) {}
-        if (prefix) setUploadProgress(prefix, 65, 'Enviando para o GitHub...');
-        const body = { message: `upload ${filename}`, content: base64 };
-        if (sha) body.sha = sha;
-        const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-          method: 'PUT',
-          headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        if (!r.ok) throw new Error((await r.json()).message || r.status);
-        if (prefix) setUploadProgress(prefix, 100, '✓ Enviado!');
-        resolve(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/${path}`);
-      } catch(err) { reject(err); }
-    };
-    reader.onerror = () => reject(new Error('Erro ao ler arquivo.'));
-    reader.readAsDataURL(file);
+    reader.onload = e => res(e.target.result);
+    reader.onerror = () => rej(new Error('Erro ao ler arquivo.'));
+    reader.readAsArrayBuffer(file);
   });
+
+  // Converte ArrayBuffer para base64 em chunks para evitar stack overflow
+  if (prefix) setUploadProgress(prefix, 45, 'Preparando...');
+  const bytes = new Uint8Array(arrayBuffer);
+  let binary = '';
+  const chunkSize = 8192;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  const base64 = btoa(binary);
+
+  if (prefix) setUploadProgress(prefix, 55, 'Verificando repositório...');
+  const path = `models/${filename}`;
+  let sha = null;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (r.ok) sha = (await r.json()).sha;
+  } catch(e) {}
+
+  if (prefix) setUploadProgress(prefix, 65, 'Enviando para o GitHub...');
+  const body = { message: `upload ${filename}`, content: base64 };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error((await r.json()).message || r.status);
+  if (prefix) setUploadProgress(prefix, 100, '✓ Enviado!');
+  return `https://raw.githubusercontent.com/${GITHUB_REPO}/main/${path}`;
 }
 
 // ADD
