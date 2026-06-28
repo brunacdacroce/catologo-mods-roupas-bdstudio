@@ -794,7 +794,9 @@ async function initViewer(url) {
       scene.add(model);viewerModel=model;loading.style.display='none';
       controls.autoRotate=true;controls.autoRotateSpeed=1.5;
       canvas.addEventListener('pointerdown',()=>{controls.autoRotate=false;},{once:true});
-    },undefined,()=>{ loading.innerHTML='<span style="color:var(--pink);font-size:0.82rem">Erro ao carregar o modelo.</span>'; });
+    },
+    xhr=>{ if(xhr.lengthComputable) loading.innerHTML=`<div class="spinner"></div><span>Carregando... ${Math.round(xhr.loaded/xhr.total*100)}%</span>`; },
+    err=>{ console.error('GLTFLoader error:',err,url); loading.innerHTML=`<span style="color:var(--pink);font-size:0.82rem">Erro ao carregar: ${err?.message||'arquivo inválido ou inacessível'}</span>`; });
     const ro=new ResizeObserver(()=>{ const W2=container.clientWidth,H2=container.clientHeight; renderer.setSize(W2,H2);camera.aspect=W2/H2;camera.updateProjectionMatrix(); });
     ro.observe(container);
     let raf; const animate=()=>{raf=requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);}; animate();
